@@ -1,0 +1,76 @@
+body {
+    font-family: Georgia;
+    background: linear-gradient(to top, rgba(228.0, 222.0, 219.0, 0), rgba(228.0, 222.0, 219.0, 1.0));
+    background-repeat: no-repeat;
+}
+
+header {
+    height: 500px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.header-container {
+    flex-basis: 0px;
+    flex-grow: 1;
+}
+
+.header-image-container {
+    position: relative;
+    top: 150px;
+    margin-left: auto;
+    width: 397px;
+}
+
+.headshot {
+    height: 250px;
+    width: 100%;
+    object-fit: contain;
+    object-position: right bottom; 
+    border-radius: 8px;
+}
+
+.header-info-container {
+   position: relative;
+   top: 200px;
+   margin-left: 25px;
+}
+
+body a:link {
+    text-decoration: none;
+    color: #A5B5BC;
+}
+
+body a:hover {
+    text-decoration: underline;
+    color: #A5B5BC;
+}
+
+body a:visited {
+    text-decoration: none;
+    color: #A5B5BC;
+}
+
+.bio-container{
+    position: relative;
+    bottom: 75px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 2.0;
+    width: 450px;
+}
+
+p {
+    text-indent: 50px;
+}
+
+.credits {
+    position: relative;
+    bottom: 5px;
+    left: 130px;
+    display: inline;
+    font-size: 10px;
+    color: #A5B5BC;
+    display: block;
+}
+
