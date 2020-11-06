@@ -1,0 +1,43 @@
+﻿body {
+    font-family: Georgia;
+    background: linear-gradient(to top, rgba(228.0, 222.0, 219.0, 0), rgba(228.0, 222.0, 219.0, 1.0));
+    background-repeat: no-repeat;
+}
+
+h1,h2 {
+    text-align: center;
+}
+
+h1 a:link, a:visited {
+    text-decoration: none;
+    color: #A5B5BC;
+}
+
+h1 a:hover {
+    color: black;
+}
+.post-image-container {
+    margin-top: 5%;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+
+.post-image {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+.title {
+    text-align: center;
+}
+
+.writing-container {
+    bottom: 75px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 2.5;
+    width: 50%;
+    text-indent: 50px;
+}
