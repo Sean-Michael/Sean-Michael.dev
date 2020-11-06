@@ -8,12 +8,12 @@ h1,h2 {
     text-align: center;
 }
 
-h1 a:link, a:visited {
+a:link, a:visited {
     text-decoration: none;
     color: #A5B5BC;
 }
 
-h1 a:hover {
+a:hover {
     color: black;
 }
 .post-image-container {
@@ -40,4 +40,22 @@ h1 a:hover {
     line-height: 2.5;
     width: 50%;
     text-indent: 50px;
+}
+
+.header-container {
+    position: absolute;
+    top:0px;
+    left: 0px;
+    height: 200px;
+    right: 0px;
+    overflow: hidden;
+}
+
+.content {
+    position: absolute; 
+    top: 150px;
+    bottom: 10px;
+    left: 0px;
+    right: 0px;
+    overflow: auto;
 }
