@@ -1,0 +1,68 @@
+body {
+    position: relative;
+    min-height: 100vh;
+    font-family: acumin-pro, sans-serif; 
+    background: linear-gradient(to top, rgba(228.0, 222.0, 219.0, 0), rgba(228.0, 222.0, 219.0, 1.0));
+    background-repeat: no-repeat;
+}
+
+header {
+    display: flex;
+    flex-direction: column;
+}
+
+.logo-container {
+    position: relative;
+    top: 150px;
+    margin: auto;
+}
+
+.smr-logo {
+   height: 25em;
+   width: 100%;
+   object-fit: contain;
+}
+
+.nav-container {
+    position: relative;
+    top: 150px;
+    margin: auto;
+}
+
+.nav-bar {
+   list-style-type: none;
+}
+
+.nav-link {
+    text-decoration: none;
+    padding-left: 3em;
+    padding-right: 3em;
+    font-size: 200%;
+}
+
+a.nav-link:hover {
+    text-decoration: none;
+    color: black;
+}
+
+.nav-link:visited {
+    text-decoration: none;
+    color: #A5B5BC;
+}
+
+li {
+    display: inline;
+    text-align: center;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    padding-bottom: 3em;
+    width: 100%;
+    text-align: center;
+    overflow: visible;
+}
+
+
+

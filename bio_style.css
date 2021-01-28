@@ -1,9 +1,12 @@
 body {
-    font-family: Georgia;
+    font-family: acumin-pro, sans-serif;
     background: linear-gradient(to top, rgba(228.0, 222.0, 219.0, 0), rgba(228.0, 222.0, 219.0, 1.0));
     background-repeat: no-repeat;
 }
 
+.name {
+    font-family: Georgia; 
+}
 header {
     height: 500px;
     display: flex;
