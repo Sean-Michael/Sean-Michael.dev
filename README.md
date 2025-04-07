@@ -18,14 +18,14 @@ This will be the folder for my personal web-site application.
 
 ### Core
 
-- [ ] [ ] `/` or `/home` or `/index`
+- [ ] `/` or `/home` or `/index`
   - [ ] Home page with shortened Bio, some links to recent blog posts of varying genres.
 - [ ] `/bio` or `/about`
   - [ ] Full biography and abridged Resume with experience and projects.
 - [ ] `/resume`
   - [ ] Downloadable and viewable full Resume/CV.
 - [ ] `/contact`
-  - [ ] Full contact details, links to LinkedIn, GitHub, email funciton.
+  - [ ] Full contact details, links to LinkedIn, GitHub, email function.
 - [ ] `/blog`
   - [ ] All blog posts with option to sort by date and category. Search function
 - [ ] `/blog/{postID}`
