@@ -9,3 +9,11 @@ It's going to be so much fun. :)
 I'm trying to do a 0% JS run and 100% server-side rendering with templating for simplicity since I'm not a web developer.
 
 I'll be using a simple FastAPI and HTMX stack to power my site with dynamic templating with Jinja2.
+
+### Development notes
+
+Running the application with reload:
+
+```bash
+uvicorn main:app --reload
+```
