@@ -1,4 +1,0 @@
-backend/config/
-frontend/node_modules
-package-lock.json
-backend/extensions/users-permissions/config/
