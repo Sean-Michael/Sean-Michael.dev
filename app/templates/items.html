@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>About</title>
+        <script src="https://unpkg.com/htmx.org"></script>
+        <link rel="stylesheet" href="static/style.css"
+    </head>
+    <body>
+        <h1> About </h1>
+        <p> My name is Sean-Michael</p>
+        <p> I love to work with computers and play outside!</p>
+        <h2>My Hobbies</h2>
+        <ul id="item-list">
+            {% for item in items %}
+            <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+        <form hx-post="/add-item" hx-target="#item-list" hx-swap="beforeend" hx-include="#item-input">
+            <input type="text" id="item-input" name="item" required>
+            <button type="submit">Add Item</button>
+        </form>
+    </body>
+</html>
