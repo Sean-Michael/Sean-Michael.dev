@@ -11,7 +11,7 @@
     <nav class="navbar">
         <div class="nav-content">
             <a href="/" class="nav-brand">SMR</a>
-            <div class="nav-links">
+            <div class="nav-links mobile-only">
                 <a href="/">Home</a>
                 <a href="/blog">Blog</a>
                 <a href="/about">About</a>
@@ -19,12 +19,27 @@
         </div>
     </nav>
 
+    <aside class="sidebar">
+        <div class="sidebar-nav">
+            <a href="/" class="sidebar-link{% if request.url.path == '/' %} active{% endif %}">
+                <span class="sidebar-icon">~</span>
+                Home
+            </a>
+            <a href="/blog" class="sidebar-link{% if '/blog' in request.url.path %} active{% endif %}">
+                <span class="sidebar-icon">/</span>
+                Blog
+            </a>
+            <a href="/about" class="sidebar-link{% if request.url.path == '/about' %} active{% endif %}">
+                <span class="sidebar-icon">@</span>
+                About
+            </a>
+        </div>
+    </aside>
+
     <div class="site-layout">
         <main class="main-content">
             {% block content %}{% endblock %}
         </main>
-
-        {% block sidebar %}{% endblock %}
     </div>
 </body>
 </html>
