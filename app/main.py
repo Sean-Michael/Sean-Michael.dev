@@ -8,7 +8,9 @@ from pathlib import Path
 import frontmatter
 import markdown
 
-CONTENT_DIR = Path(__file__).parent.parent / "content" / "blog"
+BASE_DIR = Path(__file__).parent.parent
+CONTENT_DIR = BASE_DIR / "content" / "blog"
+STATIC_DIR = BASE_DIR / "app" / "static"
 
 
 class Blog(BaseModel):
@@ -20,7 +22,7 @@ class Blog(BaseModel):
     tags: list[str] = []
 
 app = FastAPI()
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 templates = Jinja2Templates(directory="templates")
 
 items = ["Rock Climbing", "Skiing"]
