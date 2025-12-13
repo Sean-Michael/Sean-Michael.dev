@@ -3,36 +3,41 @@
 {% block title %}Blog | Sean-Michael{% endblock %}
 
 {% block content %}
-<div class="glass-container">
-    <h1>Blog</h1>
-
-    {% if all_tags %}
-    <div class="tag-filter">
-        <span class="tag-filter-label">Filter by tag</span>
-        <div class="tags">
-            <a href="/blog" class="tag {% if not active_tag %}active{% endif %}">all</a>
-            {% for tag in all_tags %}
-            <a href="/blog?tag={{ tag }}" class="tag {% if active_tag == tag %}active{% endif %}">{{ tag }}</a>
-            {% endfor %}
-        </div>
+<div class="window">
+    <div class="window-titlebar">
+        <span class="window-title">/blog{% if active_tag %} [{{ active_tag }}]{% endif %}</span>
     </div>
-    {% endif %}
+    <div class="window-body">
+        <h1>Blog</h1>
 
-    {% if active_tag %}
-    <p>Showing posts tagged "{{ active_tag }}"</p>
-    {% endif %}
+        {% if all_tags %}
+        <div class="tag-filter">
+            <span class="tag-filter-label">Filter by tag</span>
+            <div class="tags">
+                <a href="/blog" class="tag {% if not active_tag %}active{% endif %}">all</a>
+                {% for tag in all_tags %}
+                <a href="/blog?tag={{ tag }}" class="tag {% if active_tag == tag %}active{% endif %}">{{ tag }}</a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
 
-    <ul class="blog-list" id="blog_post-list">
-        {% for blog in blogs %}
-        <li>
-            <a href="/blog/{{ blog.slug }}">{{ blog.title }}</a>
-            <span class="date">{{ blog.date.strftime("%b %d, %Y") }}</span>
-        </li>
-        {% endfor %}
-    </ul>
+        {% if active_tag %}
+        <p>Showing posts tagged "{{ active_tag }}"</p>
+        {% endif %}
 
-    {% if not blogs %}
-    <p>No posts found.</p>
-    {% endif %}
+        <ul class="blog-list" id="blog_post-list">
+            {% for blog in blogs %}
+            <li>
+                <a href="/blog/{{ blog.slug }}">{{ blog.title }}</a>
+                <span class="date">{{ blog.date.strftime("%b %d, %Y") }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+
+        {% if not blogs %}
+        <p>No posts found.</p>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}

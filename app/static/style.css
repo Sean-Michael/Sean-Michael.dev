@@ -222,14 +222,44 @@ body::before {
     min-height: 100vh;
     display: flex;
     justify-content: center;
+    padding: 4rem 3rem;
 }
 
 .main-content {
-    padding: 2rem;
     width: 100%;
-    max-width: 720px;
+    max-width: 900px;
 }
 
+.window {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        0 2px 8px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+}
+
+.window-titlebar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.15);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.window-title {
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.window-body {
+    padding: 2rem;
+}
 
 .glass-container {
     position: relative;

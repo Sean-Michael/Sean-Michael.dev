@@ -3,24 +3,29 @@
 {% block title %}{{ blog.title }} | Sean-Michael{% endblock %}
 
 {% block content %}
-<div class="glass-container">
-    <a href="/blog" class="back-link">&larr; Back to posts</a>
-    <article>
-        <h1>{{ blog.title }}</h1>
-        <p class="meta">By {{ blog.author }} on {{ blog.date.strftime("%B %d, %Y") }}</p>
+<div class="window">
+    <div class="window-titlebar">
+        <span class="window-title">/blog/{{ blog.slug }}</span>
+    </div>
+    <div class="window-body">
+        <a href="/blog" class="back-link">&larr; Back to posts</a>
+        <article>
+            <h1>{{ blog.title }}</h1>
+            <p class="meta">By {{ blog.author }} on {{ blog.date.strftime("%B %d, %Y") }}</p>
 
-        {% if blog.tags %}
-        <div class="tags">
-            {% for tag in blog.tags %}
-            <a href="/blog?tag={{ tag }}" class="tag">{{ tag }}</a>
-            {% endfor %}
-        </div>
-        {% endif %}
+            {% if blog.tags %}
+            <div class="tags">
+                {% for tag in blog.tags %}
+                <a href="/blog?tag={{ tag }}" class="tag">{{ tag }}</a>
+                {% endfor %}
+            </div>
+            {% endif %}
 
-        <div class="blog-content">
-            {{ blog.content | safe }}
-        </div>
-    </article>
+            <div class="blog-content">
+                {{ blog.content | safe }}
+            </div>
+        </article>
+    </div>
 </div>
 {% endblock %}
 
