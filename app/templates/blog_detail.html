@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}{{ blog.title }} | Sean-Michael{% endblock %}
+
+{% block content %}
+<div class="glass-container">
+    <a href="/blog" class="back-link">&larr; Back to posts</a>
+    <article>
+        <h1>{{ blog.title }}</h1>
+        <p class="meta">By {{ blog.author }} on {{ blog.date.strftime("%B %d, %Y") }}</p>
+
+        {% if blog.tags %}
+        <div class="tags">
+            {% for tag in blog.tags %}
+            <a href="/blog?tag={{ tag }}" class="tag">{{ tag }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="blog-content">
+            {{ blog.content | safe }}
+        </div>
+    </article>
+</div>
+{% endblock %}
+
+{% block sidebar %}
+{% if related_posts %}
+<aside class="sidebar">
+    <div class="sidebar-content">
+        <h3>Related Posts</h3>
+        {% for post in related_posts %}
+        <a href="/blog/{{ post.slug }}" class="sidebar-item">
+            {{ post.title }}
+            <span class="date">{{ post.date.strftime("%b %d, %Y") }}</span>
+        </a>
+        {% endfor %}
+    </div>
+</aside>
+{% endif %}
+{% endblock %}
