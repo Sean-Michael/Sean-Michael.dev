@@ -102,3 +102,12 @@ def get_blog(request: Request, slug: str):
 @app.get("/about", response_class=HTMLResponse)
 async def about(request: Request):
     return templates.TemplateResponse("about.html", {"request": request})
+
+
+@app.get("/partials/sidebar-blogs", response_class=HTMLResponse)
+async def sidebar_blogs(request: Request):
+    blogs = load_all_blogs()
+    return templates.TemplateResponse(
+        "partials/sidebar_blogs.html",
+        {"request": request, "blogs": blogs}
+    )

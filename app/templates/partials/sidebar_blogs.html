@@ -1,0 +1,7 @@
+<div class="sidebar-dropdown-items">
+    {% for blog in blogs %}
+    <a href="/blog/{{ blog.slug }}" class="sidebar-sublink{% if request.url.path == '/blog/' + blog.slug %} active{% endif %}">
+        {{ blog.title }}
+    </a>
+    {% endfor %}
+</div>

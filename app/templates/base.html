@@ -25,10 +25,21 @@
                 <span class="sidebar-icon">~</span>
                 Home
             </a>
-            <a href="/blog" class="sidebar-link{% if '/blog' in request.url.path %} active{% endif %}">
-                <span class="sidebar-icon">/</span>
-                Blog
-            </a>
+            <div class="sidebar-dropdown">
+                <a href="/blog" class="sidebar-link{% if '/blog' in request.url.path %} active{% endif %}">
+                    <span class="sidebar-icon">/</span>
+                    Blog
+                    <button class="sidebar-chevron-btn"
+                            hx-get="/partials/sidebar-blogs"
+                            hx-target="#blog-dropdown"
+                            hx-swap="innerHTML"
+                            hx-trigger="click once"
+                            onclick="event.preventDefault(); event.stopPropagation(); this.closest('.sidebar-dropdown').classList.toggle('open')">
+                        <span class="sidebar-chevron">+</span>
+                    </button>
+                </a>
+                <div id="blog-dropdown" class="sidebar-dropdown-content"></div>
+            </div>
             <a href="/about" class="sidebar-link{% if request.url.path == '/about' %} active{% endif %}">
                 <span class="sidebar-icon">@</span>
                 About
