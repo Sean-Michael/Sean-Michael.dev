@@ -44,14 +44,11 @@ def load_blog(slug: str) -> Blog:
     with open(CONTENT_DIR / f"{slug}.md") as f:
         post = frontmatter.load(f)
 
-    return Blog(
-        title=post["title"],
-        date=post["date"],
-        author=post["author"],
-        content=markdown.markdown(post.content),
-        slug=slug,
-        tags=post.get("tags", [])
-    )
+    return Blog.model_validate({
+        **post.metadata,
+        "content": markdown.markdown(post.content),
+        "slug": slug,
+    })
 
 
 def load_all_blogs() -> list[Blog]:
