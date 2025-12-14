@@ -11,6 +11,7 @@ import markdown
 BASE_DIR = Path(__file__).parent.parent
 CONTENT_DIR = BASE_DIR / "content" / "blog"
 STATIC_DIR = BASE_DIR / "app" / "static"
+TEMPLATES_DIR = BASE_DIR / "app" / "templates"
 
 
 class Blog(BaseModel):
@@ -23,7 +24,7 @@ class Blog(BaseModel):
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 items = ["Rock Climbing", "Skiing"]
 
