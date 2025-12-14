@@ -1,1 +1,4 @@
 *creds*
+state.config
+.terraform*
+*.tfvars
