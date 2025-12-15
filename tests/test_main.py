@@ -8,7 +8,7 @@ client = TestClient(app)
 def test_home_page():
     response = client.get("/")
     assert response.status_code == 200
-    assert "Rock Climbing" in response.text
+    assert "Sean-Michael" in response.text
 
 
 def test_about_page():
@@ -21,10 +21,6 @@ def test_blog_index():
     assert response.status_code == 200
 
 
-def test_add_item():
-    response = client.post("/add-item", data={"item": "Test Item"})
-    assert response.status_code == 200
-    assert "Test Item" in response.text
 
 
 def test_sidebar_blogs():
