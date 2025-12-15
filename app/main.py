@@ -33,6 +33,7 @@ templates = Jinja2Templates(directory=TEMPLATES_DIR)
 async def home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
+
 def load_blog(slug: str) -> Blog:
     with open(CONTENT_DIR / f"{slug}.md") as f:
         post = frontmatter.load(f)
