@@ -1,12 +1,13 @@
-from fastapi import FastAPI, Request, Form
-from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
-from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
 from datetime import date
 from pathlib import Path
+
 import frontmatter
 import markdown
+from fastapi import FastAPI, Form, Request
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from pydantic import BaseModel
 
 BASE_DIR = Path(__file__).parent.parent
 CONTENT_DIR = BASE_DIR / "content" / "blog"
@@ -21,6 +22,7 @@ class Blog(BaseModel):
     content: str
     slug: str
     tags: list[str] = []
+
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
@@ -37,18 +39,20 @@ async def get_items(request: Request):
 @app.post("/add-item")
 def add_item(request: Request, item: str = Form(...)):
     items.append(item)
-    return templates.TemplateResponse("partials/item.html",  {"request": request, "item": item})
+    return templates.TemplateResponse("partials/item.html", {"request": request, "item": item})
 
 
 def load_blog(slug: str) -> Blog:
     with open(CONTENT_DIR / f"{slug}.md") as f:
         post = frontmatter.load(f)
 
-    return Blog.model_validate({
-        **post.metadata,
-        "content": markdown.markdown(post.content),
-        "slug": slug,
-    })
+    return Blog.model_validate(
+        {
+            **post.metadata,
+            "content": markdown.markdown(post.content),
+            "slug": slug,
+        }
+    )
 
 
 def load_all_blogs() -> list[Blog]:
@@ -84,7 +88,7 @@ async def get_blogs(request: Request, tag: str | None = None):
         blogs = [b for b in blogs if tag in b.tags]
     return templates.TemplateResponse(
         "blog_index.html",
-        {"request": request, "blogs": blogs, "all_tags": all_tags, "active_tag": tag}
+        {"request": request, "blogs": blogs, "all_tags": all_tags, "active_tag": tag},
     )
 
 
@@ -94,8 +98,7 @@ def get_blog(request: Request, slug: str):
     all_blogs = load_all_blogs()
     related = get_related_posts(blog, all_blogs)
     return templates.TemplateResponse(
-        "blog_detail.html",
-        {"request": request, "blog": blog, "related_posts": related}
+        "blog_detail.html", {"request": request, "blog": blog, "related_posts": related}
     )
 
 
@@ -108,6 +111,5 @@ async def about(request: Request):
 async def sidebar_blogs(request: Request):
     blogs = load_all_blogs()
     return templates.TemplateResponse(
-        "partials/sidebar_blogs.html",
-        {"request": request, "blogs": blogs}
+        "partials/sidebar_blogs.html", {"request": request, "blogs": blogs}
     )
