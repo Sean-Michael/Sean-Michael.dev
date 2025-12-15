@@ -21,8 +21,6 @@ def test_blog_index():
     assert response.status_code == 200
 
 
-
-
 def test_sidebar_blogs():
     response = client.get("/partials/sidebar-blogs")
     assert response.status_code == 200

@@ -1,5 +1,7 @@
 # Personal Website as Code
 
+[![Deploy to EC2](https://github.com/Sean-Michael/Sean-Michael.dev/actions/workflows/deploy-latest.yaml/badge.svg)](https://github.com/Sean-Michael/Sean-Michael.dev/actions/workflows/deploy-latest.yaml)
+
 This repositor *is* my website. From the infrastructure code that deploys the hosting setup in AWS, to the frontend and backend python code for the web content. Including the CI/CD in GitHub Actions to build, test, and deploy!
 
 It's going to be so much fun. :)
