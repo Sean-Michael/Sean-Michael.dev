@@ -1,29 +1,108 @@
 # Personal Website as Code
 
-[![Test and Lint](https://github.com/Sean-Michael/Sean-Michael.dev/actions/workflows/test-and-lint.yaml/badge.svg)](https://github.com/Sean-Michael/Sean-Michael.dev/actions/workflows/test-and-lint.yaml) [![Build and Push to Dockerhub](https://github.com/Sean-Michael/Sean-Michael.dev/actions/workflows/build-and-push.yaml/badge.svg)](https://github.com/Sean-Michael/Sean-Michael.dev/actions/workflows/build-and-push.yaml) [![Deploy to EC2](https://github.com/Sean-Michael/Sean-Michael.dev/actions/workflows/deploy-latest.yaml/badge.svg)](https://github.com/Sean-Michael/Sean-Michael.dev/actions/workflows/deploy-latest.yaml) 
+[![Test and Lint](https://github.com/Sean-Michael/Sean-Michael.dev/actions/workflows/test-and-lint.yaml/badge.svg)](https://github.com/Sean-Michael/Sean-Michael.dev/actions/workflows/test-and-lint.yaml) [![Build and Push to Dockerhub](https://github.com/Sean-Michael/Sean-Michael.dev/actions/workflows/build-and-push.yaml/badge.svg)](https://github.com/Sean-Michael/Sean-Michael.dev/actions/workflows/build-and-push.yaml) [![Deploy to EC2](https://github.com/Sean-Michael/Sean-Michael.dev/actions/workflows/deploy-latest.yaml/badge.svg)](https://github.com/Sean-Michael/Sean-Michael.dev/actions/workflows/deploy-latest.yaml)
 
-This repositor *is* my website. From the infrastructure code that deploys the hosting setup in AWS, to the frontend and backend python code for the web content. Including the CI/CD in GitHub Actions to build, test, and deploy!
+This repository **is** my website. Infrastructure, application source, CI/CD pipelines, all defined as code. I make changes locally, push to main and boom. #GitOps
 
-It's going to be so much fun. :)
+## File Tree
 
-## Phase 1: Website
+Here's the map of everything included.
 
-I'm trying to do a 0% JS run and 100% server-side rendering with templating for simplicity since I'm not a web developer.
-
-I'll be using a simple FastAPI and HTMX stack to power my site with dynamic templating with Jinja2.
-
-### Development notes
-
-Running the application with reload:
-
-```bash
-uvicorn main:app --reload
+```
+.
+├── app/                    # FastAPI application with HTMX
+│   ├── main.py             # Routes and blog loading logic
+│   ├── templates/          # Jinja2 templates
+│   └── static/             # CSS, images, etc.
+├── content/                # Markdown blog posts (to be moved to s3)
+├── infrastructure/         # Terraform for AWS
+│   ├── main.tf             # EC2, security groups, IAM, S3
+│   ├── scripts/setup.sh    # Instance bootstrapping
+│   └── ...
+├── .github/workflows/      # CI/CD pipelines
+└── Dockerfile              # App Container image
 ```
 
-For styling I'm trying to go for a look similar to my MacOS Sequioa mbp. I really dig the silver aerogel look with the opacity and blur on the transparent background of Patagonia. That's a place that just looks so beautifully rugged and alpine. The big ass glaciers, turqoise lakes and jagged peaks really stir the wonder in me.
+## The Stack
 
-Might be a bit cliche but I don't really care. Also the JetBrains mono font because I am #basic and it looks nice. :P
+Going for a 0% JS run with server-side rendering.
 
-![demo-styling-draft](./imgs/style-draft.png)
+- **FastAPI** - Core API functionality handles routing
+- **HTMX** - Enables dynamic content without JavaScript
+- **Jinja2** - Templating engine
+- **Markdown** - Blog posts with frontmatter metadata.
+- **Docker** - Containerized for easy tests and deploys.
+- **Nginx** - Reverse proxy sitting in front of uvicorn.
 
-Trippy right? I wanted it to look just like my terminal. Could probably do with a couple bumps up on the opacity and a lightening of the background to improve readability of the dark fonts. I also might consider cropping the image but I'll likely replace it with one of my film photos.
+## Infrastructure
+
+Everything runs on AWS and the Terraform that defines it lives in `infrastructure/`. What you see is what you get with this one.
+
+- **EC2** (Ubuntu 24.04) - Single instance running Docker Compose
+- **Elastic IP** - Pointing my Squarespace domain DNS to this IP
+- **S3** - Content bucket for blog assets (WIP)
+- **IAM** - Least privelaged roles for EC2 (SSM access) and GitHub Actions (deploy permissions)
+- **Security Groups** - SSH from my laptop only, HTTP/HTTPS from anywhere
+
+The EC2 instance bootstraps itself via user data script that installs Docker and pulls the latest image. No SSH required for deployments.
+
+S3 also stores the terraform state but that's hidden in `.gitignore` so please don't try and dox me.
+
+## CI/CD Pipeline
+
+This was honestly the whole point of the exercise. I really wanted to flesh out the 'Website as Code' concept with some easy and fluid automation for updating the site incrementally.
+
+Three workflows chain together automatically:
+
+1. **Test and Lint** - Runs on push to main. Ruff for linting, pytest for tests. If this fails, nothing else runs. Style issues just raise an error.
+2. **Build and Push** - Triggers after tests pass. Builds the Docker image and pushes to Docker Hub with SHA and updates `latest` tags.
+3. **Deploy to EC2** - Triggers after build succeeds. Uses AWS SSM to run `docker compose pull && docker compose up -d` on the instance. No SSH keys or networking to manage with GitHub Action runners.
+
+So with one push to main or merged PR, our website is updated in a matter of minutes!
+
+## Development
+
+I've been using [uv](https://docs.astral.sh/uv/) to manage the packages and virtual environment for this project.
+
+```bash
+# Create virtual environment and install dependencies
+uv sync
+
+# Or to include dev dependencies (pytest, ruff, httpx)
+uv sync --dev
+
+# Activate the virtual environment
+source .venv/bin/activate
+
+# Run locally with hot reload
+uvicorn app.main:app --reload
+
+# Run tests
+pytest -v
+
+# Lint
+ruff check app/ tests/
+ruff format app/ tests/
+```
+
+## Styling Notes
+
+I was inspired in part by my perferred developer experience these days.
+
+Though I used to be a major dark-mode enjoyer, recently I've actually gravitated to the light side.. 
+
+MacOS Sequoia with the Silver Aerogel terminal theme and VSCode Nord Light certainly had an impact here. 
+
+I basically wanted to emulated that setup, down to the `JetBrians Mono` font!
+
+![demo-styling-final](./imgs/style-final.png)
+
+Trippy right? I wanted it to look like my desktop.
+
+I like how the content window turned out with a simple header kind of emulating a terminal with the current working directory. :)
+
+The background image is a photo I took of Mt.Shuksan in the North Cascades.
+
+I'm still playing around with the sidebar, kind of going for a KDE inspired simple design where it's almost invisible.
+
+And the best part? NO JAVASCRIPT :D
