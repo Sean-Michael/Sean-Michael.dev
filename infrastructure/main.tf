@@ -77,6 +77,7 @@ resource "aws_instance" "app_server" {
   instance_type          = var.instance_type
   key_name               = aws_key_pair.deployer.key_name
   vpc_security_group_ids = [aws_security_group.web_sg.id]
+  iam_instance_profile   = aws_iam_instance_profile.ec2_ssm_profile.name
 
   root_block_device {
     volume_size = 20
@@ -102,4 +103,91 @@ resource "aws_eip" "app_eip" {
     Name       = "${var.project_name}-eip"
     Automation = "Terraform"
   }
+}
+
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
+
+resource "aws_iam_role" "ec2_ssm_role" {
+  name = "${var.project_name}-ec2-ssm-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      }
+    ]
+  })
+
+  tags = {
+    Name       = "${var.project_name}-ec2-ssm-role"
+    Automation = "Terraform"
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "ec2_ssm_policy" {
+  role       = aws_iam_role.ec2_ssm_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_iam_instance_profile" "ec2_ssm_profile" {
+  name = "${var.project_name}-ec2-ssm-profile"
+  role = aws_iam_role.ec2_ssm_role.name
+}
+
+resource "aws_iam_user" "github_actions_deployer" {
+  name = "${var.project_name}-github-deployer"
+
+  tags = {
+    Name       = "${var.project_name}-github-deployer"
+    Automation = "Terraform"
+  }
+}
+
+resource "aws_iam_user_policy" "github_actions_ssm_policy" {
+  name = "${var.project_name}-ssm-deploy-policy"
+  user = aws_iam_user.github_actions_deployer.name
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "SSMSendCommand"
+        Effect = "Allow"
+        Action = [
+          "ssm:SendCommand"
+        ]
+        Resource = [
+          "arn:aws:ssm:${data.aws_region.current.name}::document/AWS-RunShellScript",
+          aws_instance.app_server.arn
+        ]
+      },
+      {
+        Sid    = "SSMGetCommandStatus"
+        Effect = "Allow"
+        Action = [
+          "ssm:GetCommandInvocation",
+          "ssm:ListCommandInvocations"
+        ]
+        Resource = "*"
+      },
+      {
+        Sid    = "DescribeInstances"
+        Effect = "Allow"
+        Action = [
+          "ec2:DescribeInstances"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_access_key" "github_actions_key" {
+  user = aws_iam_user.github_actions_deployer.name
 }

@@ -2,3 +2,4 @@
 state.config
 .terraform*
 *.tfvars
+*secrets*
