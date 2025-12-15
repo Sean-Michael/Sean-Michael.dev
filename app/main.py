@@ -3,7 +3,7 @@ from pathlib import Path
 
 import frontmatter
 import markdown
-from fastapi import FastAPI, Form, Request
+from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
