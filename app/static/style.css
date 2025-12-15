@@ -222,7 +222,9 @@ body::before {
     min-height: 100vh;
     display: flex;
     justify-content: center;
-    padding: 4rem 3rem;
+    padding: 4rem clamp(1rem, 5vw, 3rem);
+    /* Offset for sidebar to visually center the content on screen */
+    padding-right: calc(clamp(1rem, 5vw, 3rem) + 200px);
 }
 
 .main-content {
@@ -258,7 +260,7 @@ body::before {
 }
 
 .window-body {
-    padding: 2rem;
+    padding: clamp(1rem, 4vw, 2rem);
 }
 
 .glass-container {
@@ -548,6 +550,7 @@ button:active {
 
     .site-layout {
         margin-left: 0;
+        padding-right: clamp(1rem, 5vw, 3rem);
     }
 
     .nav-links.mobile-only {
@@ -556,8 +559,13 @@ button:active {
 }
 
 @media (max-width: 600px) {
+    .site-layout {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+
     .main-content {
-        padding: 1rem;
+        padding: 0;
     }
 
     .glass-container {
