@@ -28,19 +28,10 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
-items = ["Rock Climbing", "Skiing"]
-
 
 @app.get("/", response_class=HTMLResponse)
-async def get_items(request: Request):
-    return templates.TemplateResponse("items.html", {"request": request, "items": items})
-
-
-@app.post("/add-item")
-def add_item(request: Request, item: str = Form(...)):
-    items.append(item)
-    return templates.TemplateResponse("partials/item.html", {"request": request, "item": item})
-
+async def home(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
 def load_blog(slug: str) -> Blog:
     with open(CONTENT_DIR / f"{slug}.md") as f:
