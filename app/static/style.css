@@ -8,7 +8,7 @@
 
 body {
     min-height: 100vh;
-    background: url('https://ljpuk.net/wp-content/uploads/2025/02/screenshot-2025-02-07-at-09.38.08.jpg');
+    background: url('images/shuksan-close.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -510,6 +510,20 @@ button:active {
 
 .about-section {
     margin-bottom: 2rem;
+}
+
+.about-photo {
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.about-photo img {
+    max-width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 .skills-list {
