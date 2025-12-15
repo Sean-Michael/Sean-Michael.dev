@@ -13,6 +13,6 @@ Broken up by category.
 ## Automation
 
 - [x] Automate build and push to Dockerhub with GitHub Actions
-- [ ] Tests and linting with github actions
+- [x] Tests and linting with github actions
 - [x] Automated deployment with terraform 
 - [x] Automated server restart with new image on build and push

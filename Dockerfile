@@ -6,10 +6,11 @@ WORKDIR /code
 
 ENV PORT=8000
 
-COPY pyproject.toml .
-RUN pip install --no-cache-dir .
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY app/ app/
+
 COPY content/ content/
 
 RUN useradd --create-home appuser
