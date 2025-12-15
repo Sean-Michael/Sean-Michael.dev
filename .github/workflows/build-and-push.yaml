@@ -1,6 +1,7 @@
 name: Build and Push to Dockerhub
 
 on:
+  workflow_dispatch:
   workflow_run:
     workflows: ["Test and Lint"]
     types:
