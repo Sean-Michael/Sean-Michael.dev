@@ -102,7 +102,7 @@ source .venv/bin/activate
 ```bash
 make dev      # Run locally with uvicorn hot reload
 make test     # Run pytest
-make lint     # Run ruff check and format check
+make lint     # Run ruff linter and auto-format
 make check    # Run lint + test
 make sync     # Sync local content to S3
 make freeze   # Update requirements.txt from pyproject.toml
