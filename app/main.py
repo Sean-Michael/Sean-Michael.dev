@@ -1,4 +1,5 @@
 from datetime import date
+from io import StringIO
 from pathlib import Path
 
 import frontmatter
@@ -9,8 +10,9 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 
+from app.content import list_blog_files, read_blog_file
+
 BASE_DIR = Path(__file__).parent.parent
-CONTENT_DIR = BASE_DIR / "content" / "blog"
 STATIC_DIR = BASE_DIR / "app" / "static"
 TEMPLATES_DIR = BASE_DIR / "app" / "templates"
 
@@ -35,8 +37,8 @@ async def home(request: Request):
 
 
 def load_blog(slug: str) -> Blog:
-    with open(CONTENT_DIR / f"{slug}.md") as f:
-        post = frontmatter.load(f)
+    content = read_blog_file(slug)
+    post = frontmatter.load(StringIO(content))
 
     return Blog.model_validate(
         {
@@ -49,8 +51,7 @@ def load_blog(slug: str) -> Blog:
 
 def load_all_blogs() -> list[Blog]:
     blogs = []
-    for md_file in CONTENT_DIR.glob("*.md"):
-        slug = md_file.stem
+    for slug in list_blog_files():
         blogs.append(load_blog(slug))
     return sorted(blogs, key=lambda b: b.date, reverse=True)
 
