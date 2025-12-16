@@ -51,3 +51,8 @@ secrets.ini
 # Application content in S3
 content/
 
+# ruff
+.ruff*
+
+# pytest
+.pytest*
