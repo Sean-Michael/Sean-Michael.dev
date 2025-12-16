@@ -43,7 +43,6 @@ def sync_to_s3(dry_run: bool = False):
         if any(part.startswith(".") for part in file_path.parts):
             continue
 
-        # S3 key mirrors local structure: content/blog/foo.md -> blog/foo.md
         s3_key = str(file_path.relative_to(CONTENT_DIR))
 
         content_type, _ = mimetypes.guess_type(str(file_path))

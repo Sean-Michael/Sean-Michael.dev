@@ -48,3 +48,6 @@ secrets.ini
 .ipynb_checkpoints
 
 
+# Application content in S3
+content/
+
