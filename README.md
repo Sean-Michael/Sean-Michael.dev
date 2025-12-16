@@ -14,7 +14,9 @@ Here's the map of everything included.
 │   ├── main.py             # Routes and blog loading logic
 │   ├── templates/          # Jinja2 templates
 │   └── static/             # CSS, images, etc.
-├── content/                # Markdown blog posts (to be moved to s3)
+├── content/                # Markdown blog posts (gitignored, lives in S3)
+├── scripts/                # Utility scripts
+│   └── sync_content.py     # Sync local content to S3
 ├── infrastructure/         # Terraform for AWS
 │   ├── main.tf             # EC2, security groups, IAM, S3
 │   ├── scripts/setup.sh    # Instance bootstrapping
@@ -40,7 +42,7 @@ Everything runs on AWS and the Terraform that defines it lives in `infrastructur
 
 - **EC2** (Ubuntu 24.04) - Single instance running Docker Compose
 - **Elastic IP** - Pointing my Squarespace domain DNS to this IP
-- **S3** - Content bucket for blog assets (WIP)
+- **S3** - Content bucket for blog posts and assets
 - **IAM** - Least privelaged roles for EC2 (SSM access) and GitHub Actions (deploy permissions)
 - **Security Groups** - SSH from my laptop only, HTTP/HTTPS from anywhere
 
@@ -59,6 +61,26 @@ Three workflows chain together automatically:
 3. **Deploy to EC2** - Triggers after build succeeds. Uses AWS SSM to run `docker compose pull && docker compose up -d` on the instance. No SSH keys or networking to manage with GitHub Action runners.
 
 So with one push to main or merged PR, our website is updated in a matter of minutes!
+
+## Content Workflow
+
+Blog posts live in S3, not in git. Edit locally and sync when ready:
+
+```bash
+# Write/edit content locally
+vim content/blog/new-post.md
+
+# Preview locally
+CONTENT_SOURCE=local uvicorn app.main:app --reload
+
+# See what would sync
+python scripts/sync_content.py --dry-run
+
+# Publish to S3
+python scripts/sync_content.py
+```
+
+No redeploy needed - sync and it's live.
 
 ## Development
 

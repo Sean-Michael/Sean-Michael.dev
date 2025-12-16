@@ -6,7 +6,7 @@ Broken up by category.
 ## App & Infra
 
 - [x] Create Dockerfile for fastAPI app.
-- [ ] Setup block storage for `content/` on s3
+- [x] Setup block storage for `content/` on s3
 
 
 
@@ -16,7 +16,7 @@ Broken up by category.
 - [x] Tests and linting with github actions
 - [x] Automated deployment with terraform 
 - [x] Automated server restart with new image on build and push
-- [ ] Automatic 'sync' from my local to S3 for content/
+- [x] Automatic 'sync' from my local to S3 for content/
 
 ## Features
 
