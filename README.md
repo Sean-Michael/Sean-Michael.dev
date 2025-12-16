@@ -95,16 +95,17 @@ uv sync --dev
 
 # Activate the virtual environment
 source .venv/bin/activate
+```
 
-# Run locally with hot reload
-uvicorn app.main:app --reload
+### Make Commands
 
-# Run tests
-pytest -v
-
-# Lint
-ruff check app/ tests/
-ruff format app/ tests/
+```bash
+make dev      # Run locally with uvicorn hot reload
+make test     # Run pytest
+make lint     # Run ruff check and format check
+make check    # Run lint + test
+make sync     # Sync local content to S3
+make freeze   # Update requirements.txt from pyproject.toml
 ```
 
 ## Styling Notes
