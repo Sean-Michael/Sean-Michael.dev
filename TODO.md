@@ -16,3 +16,10 @@ Broken up by category.
 - [x] Tests and linting with github actions
 - [x] Automated deployment with terraform 
 - [x] Automated server restart with new image on build and push
+- [ ] Automatic 'sync' from my local to S3 for content/
+
+## Features
+
+- [ ] Live dashboarding on /metrics page?
+- [ ] Projects section to showcase things like librarius and the k3s-home-lab
+ 
