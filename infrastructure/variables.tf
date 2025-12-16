@@ -30,3 +30,9 @@ variable "docker_image" {
   description = "Docker image to pull from DockerHub"
   type        = string
 }
+
+variable "content_source" {
+  description = "Content source: 'local' or 's3'"
+  type        = string
+  default     = "s3"
+}

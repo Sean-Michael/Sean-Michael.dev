@@ -21,5 +21,11 @@ output "github_secrets" {
     AWS_SECRET_ACCESS_KEY = aws_iam_access_key.github_actions_key.secret
     AWS_REGION            = data.aws_region.current.name
     EC2_INSTANCE_ID       = aws_instance.app_server.id
+    S3_CONTENT_BUCKET     = aws_s3_bucket.content.bucket
   }
+}
+
+output "s3_content_bucket" {
+  description = "S3 bucket name for blog content"
+  value       = aws_s3_bucket.content.bucket
 }

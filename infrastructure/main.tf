@@ -191,3 +191,78 @@ resource "aws_iam_user_policy" "github_actions_ssm_policy" {
 resource "aws_iam_access_key" "github_actions_key" {
   user = aws_iam_user.github_actions_deployer.name
 }
+
+# S3 Bucket for blog content
+resource "aws_s3_bucket" "content" {
+  bucket = "${var.project_name}-content"
+
+  tags = {
+    Name       = "${var.project_name}-content"
+    Automation = "Terraform"
+  }
+}
+
+resource "aws_s3_bucket_versioning" "content" {
+  bucket = aws_s3_bucket.content.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "content" {
+  bucket = aws_s3_bucket.content.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+# IAM policy for EC2 to read from S3 content bucket
+resource "aws_iam_role_policy" "ec2_s3_content_read" {
+  name = "${var.project_name}-s3-content-read"
+  role = aws_iam_role.ec2_ssm_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "S3ContentRead"
+        Effect = "Allow"
+        Action = [
+          "s3:GetObject",
+          "s3:ListBucket"
+        ]
+        Resource = [
+          aws_s3_bucket.content.arn,
+          "${aws_s3_bucket.content.arn}/*"
+        ]
+      }
+    ]
+  })
+}
+
+# IAM policy for GitHub Actions to write to S3 content bucket
+resource "aws_iam_user_policy" "github_actions_s3_sync" {
+  name = "${var.project_name}-s3-content-sync"
+  user = aws_iam_user.github_actions_deployer.name
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "S3ContentSync"
+        Effect = "Allow"
+        Action = [
+          "s3:PutObject",
+          "s3:DeleteObject",
+          "s3:ListBucket"
+        ]
+        Resource = [
+          aws_s3_bucket.content.arn,
+          "${aws_s3_bucket.content.arn}/*"
+        ]
+      }
+    ]
+  })
+}
