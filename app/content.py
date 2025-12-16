@@ -57,4 +57,3 @@ def read_blog_file(slug: str) -> str:
         s3_client = get_s3_client()
         response = s3_client.get_object(Bucket=S3_CONTENT_BUCKET, Key=key)
         return response["Body"].read().decode("utf-8")
-
