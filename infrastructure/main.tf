@@ -1,5 +1,29 @@
+# Aliased provider for creating the AppRegistry application
+provider "aws" {
+  alias  = "appregistry"
+  region = var.aws_region
+}
+
+# Service Catalog AppRegistry Application (visible in AWS myApplications)
+resource "aws_servicecatalogappregistry_application" "app" {
+  provider    = aws.appregistry
+  name        = "Sean-Michael-Dev"
+  description = "Sean-Michael.dev personal website infrastructure"
+}
+
+# Main provider with default tags for automatic resource association
 provider "aws" {
   region = var.aws_region
+
+  default_tags {
+    tags = merge(
+      aws_servicecatalogappregistry_application.app.application_tag,
+      {
+        Project    = var.project_name
+        Automation = "Terraform"
+      }
+    )
+  }
 }
 
 # Security Group
@@ -43,8 +67,7 @@ resource "aws_security_group" "web_sg" {
   }
 
   tags = {
-    Name       = "${var.project_name}-web-sg"
-    Automation = "Terraform"
+    Name = "${var.project_name}-web-sg"
   }
 }
 
@@ -89,8 +112,7 @@ resource "aws_instance" "app_server" {
   })
 
   tags = {
-    Name       = var.project_name
-    Automation = "Terraform"
+    Name = var.project_name
   }
 }
 
@@ -100,8 +122,7 @@ resource "aws_eip" "app_eip" {
   domain   = "vpc"
 
   tags = {
-    Name       = "${var.project_name}-eip"
-    Automation = "Terraform"
+    Name = "${var.project_name}-eip"
   }
 }
 
@@ -125,8 +146,7 @@ resource "aws_iam_role" "ec2_ssm_role" {
   })
 
   tags = {
-    Name       = "${var.project_name}-ec2-ssm-role"
-    Automation = "Terraform"
+    Name = "${var.project_name}-ec2-ssm-role"
   }
 }
 
@@ -144,8 +164,7 @@ resource "aws_iam_user" "github_actions_deployer" {
   name = "${var.project_name}-github-deployer"
 
   tags = {
-    Name       = "${var.project_name}-github-deployer"
-    Automation = "Terraform"
+    Name = "${var.project_name}-github-deployer"
   }
 }
 
@@ -197,8 +216,7 @@ resource "aws_s3_bucket" "content" {
   bucket = "${var.project_name}-content"
 
   tags = {
-    Name       = "${var.project_name}-content"
-    Automation = "Terraform"
+    Name = "${var.project_name}-content"
   }
 }
 

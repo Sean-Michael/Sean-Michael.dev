@@ -29,3 +29,8 @@ output "s3_content_bucket" {
   description = "S3 bucket name for blog content"
   value       = aws_s3_bucket.content.bucket
 }
+
+output "appregistry_application_arn" {
+  description = "ARN of the AppRegistry application (visible in AWS myApplications)"
+  value       = aws_servicecatalogappregistry_application.app.arn
+}
