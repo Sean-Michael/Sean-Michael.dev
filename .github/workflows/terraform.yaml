@@ -78,21 +78,47 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install tfsec
+        run: |
+          curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
+          sudo mv ./tfsec /usr/local/bin/
+
       - name: Run tfsec
-        uses: aquasecurity/tfsec-action@v1.0.3
-        with:
-          working_directory: ${{ env.TF_WORKING_DIR }}
-          soft_fail: true
+        run: |
+          tfsec ${{ env.TF_WORKING_DIR }} --format lovely > tfsec-results.txt 2>&1 || true
+          cat tfsec-results.txt
 
       - name: Run Checkov
-        id: checkov
-        uses: bridgecrewio/checkov-action@v12
+        run: |
+          pip install checkov
+          checkov -d ${{ env.TF_WORKING_DIR }} --framework terraform --output cli > checkov-results.txt 2>&1 || true
+          cat checkov-results.txt
+
+      - name: Upload scan results
+        uses: actions/upload-artifact@v4
         with:
-          directory: ${{ env.TF_WORKING_DIR }}
-          framework: terraform
-          soft_fail: true
-          output_format: cli
-          download_external_modules: true
+          name: security-scan-results
+          path: |
+            tfsec-results.txt
+            checkov-results.txt
+
+      - name: Post scan results to PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const tfsec = fs.readFileSync('tfsec-results.txt', 'utf8');
+            const checkov = fs.readFileSync('checkov-results.txt', 'utf8');
+            const max = 30000;
+            const trim = (s) => s.length > max ? s.substring(0, max) + '\n\n(truncated)' : s;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `**tfsec**\n\`\`\`\n${trim(tfsec)}\n\`\`\`\n\n**checkov**\n\`\`\`\n${trim(checkov)}\n\`\`\``
+            })
 
   plan:
     name: Plan
@@ -126,20 +152,15 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const planOutput = fs.readFileSync('${{ env.TF_WORKING_DIR }}/plan_output.txt', 'utf8');
-            const maxLength = 65000;
-            const truncated = planOutput.length > maxLength
-              ? planOutput.substring(0, maxLength) + '\n\n... (truncated)'
-              : planOutput;
-
-            const outcome = '${{ steps.plan.outcome }}';
-            const icon = outcome === 'success' ? '✅' : '❌';
+            const plan = fs.readFileSync('${{ env.TF_WORKING_DIR }}/plan_output.txt', 'utf8');
+            const max = 65000;
+            const output = plan.length > max ? plan.substring(0, max) + '\n\n(truncated)' : plan;
 
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `${icon} **Terraform Plan** - ${outcome}\n\n<details>\n<summary>Show Plan Output</summary>\n\n\`\`\`hcl\n${truncated}\n\`\`\`\n\n</details>`
+              body: `**Terraform Plan**\n\n\`\`\`\n${output}\n\`\`\``
             })
 
       - name: Fail if plan failed
