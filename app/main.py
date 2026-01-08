@@ -26,6 +26,14 @@ class Blog(BaseModel):
     tags: list[str] = []
 
 
+class Project(BaseModel):
+    title: str
+    date: date
+    content: str
+    slug: str
+    tags: list[str] = []
+
+
 app = FastAPI()
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
@@ -47,7 +55,6 @@ def load_blog(slug: str) -> Blog:
             "slug": slug,
         }
     )
-
 
 def load_all_blogs() -> list[Blog]:
     blogs = []
@@ -73,6 +80,13 @@ def get_related_posts(current: Blog, all_blogs: list[Blog], limit: int = 5) -> l
     return sorted(others, key=score)[:limit]
 
 
+def load_all_projects() -> list[Project]:
+    projects = []
+    for slug in list_project_files():
+        projects.append(load_project(slug))
+    return projects
+
+
 @app.get("/blog", response_class=HTMLResponse)
 async def get_blogs(request: Request, tag: str | None = None):
     blogs = load_all_blogs()
@@ -94,6 +108,14 @@ def get_blog(request: Request, slug: str):
         "blog_detail.html", {"request": request, "blog": blog, "related_posts": related}
     )
 
+
+@app.get("/projects", response_class=HTMLResponse)
+async def projects(request: Request):
+    projects = load_all_projects()
+    return templates.TemplateResponse(
+        "projects.html",
+        {"request": request, "projects": projects"}
+    )
 
 @app.get("/about", response_class=HTMLResponse)
 async def about(request: Request):
