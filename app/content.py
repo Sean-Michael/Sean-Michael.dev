@@ -9,13 +9,14 @@ import boto3
 
 logger = logging.getLogger(__name__)
 
-# Configuration
 CONTENT_SOURCE = os.getenv("CONTENT_SOURCE", "local")
 S3_CONTENT_BUCKET = os.getenv("S3_CONTENT_BUCKET", "smr-webdev-content")
 AWS_REGION = os.getenv("AWS_REGION", "us-west-2")
 
 BASE_DIR = Path(__file__).parent.parent
-LOCAL_CONTENT_DIR = BASE_DIR / "content" / "blog"
+LOCAL_CONTENT_DIR = BASE_DIR / "content" / "blog" / "posts"
+
+S3_POSTS_PREFIX = "blog/posts/"
 
 
 def get_s3_client():
@@ -33,9 +34,9 @@ def list_blog_files() -> list[str]:
         logger.info(f"Found {len(all_blog_files)} local blog files")
         return all_blog_files
     else:
-        logger.debug(f"Listing S3 objects in {S3_CONTENT_BUCKET}")
+        logger.debug(f"Listing S3 objects in {S3_CONTENT_BUCKET}/{S3_POSTS_PREFIX}")
         s3_client = get_s3_client()
-        response = s3_client.list_objects_v2(Bucket=S3_CONTENT_BUCKET, Prefix="blog/")
+        response = s3_client.list_objects_v2(Bucket=S3_CONTENT_BUCKET, Prefix=S3_POSTS_PREFIX)
         blog_files = [
             Path(item["Key"]).stem
             for item in response.get("Contents", [])
@@ -52,7 +53,7 @@ def read_blog_file(slug: str) -> str:
         with open(file_path, "r", encoding="utf-8") as f:
             return f.read()
     else:
-        key = f"blog/{slug}.md"
+        key = f"{S3_POSTS_PREFIX}{slug}.md"
         logger.debug(f"Reading S3 object: s3://{S3_CONTENT_BUCKET}/{key}")
         s3_client = get_s3_client()
         response = s3_client.get_object(Bucket=S3_CONTENT_BUCKET, Key=key)
