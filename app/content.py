@@ -1,8 +1,9 @@
-"""Content loader for blog posts from local filesystem or S3."""
+"""Content loader for blog posts and projects from local filesystem or S3."""
 
 import glob
 import logging
 import os
+from enum import Enum
 from pathlib import Path
 
 import boto3
@@ -14,9 +15,23 @@ S3_CONTENT_BUCKET = os.getenv("S3_CONTENT_BUCKET", "smr-webdev-content")
 AWS_REGION = os.getenv("AWS_REGION", "us-west-2")
 
 BASE_DIR = Path(__file__).parent.parent
-LOCAL_CONTENT_DIR = BASE_DIR / "content" / "blog" / "posts"
 
-S3_POSTS_PREFIX = "blog/posts/"
+
+class ContentType(Enum):
+    BLOG = "blog"
+    PROJECT = "project"
+
+
+CONTENT_CONFIG = {
+    ContentType.BLOG: {
+        "s3_prefix": "blog/posts/",
+        "local_dir": BASE_DIR / "content" / "blog" / "posts",
+    },
+    ContentType.PROJECT: {
+        "s3_prefix": "projects/published/",
+        "local_dir": BASE_DIR / "content" / "projects" / "published",
+    },
+}
 
 
 def get_s3_client():
@@ -27,34 +42,54 @@ def get_s3_client():
         raise
 
 
-def list_blog_files() -> list[str]:
+def list_content_files(content_type: ContentType) -> list[str]:
+    config = CONTENT_CONFIG[content_type]
     if CONTENT_SOURCE == "local":
-        logger.debug(f"Listing local files in {LOCAL_CONTENT_DIR}")
-        all_blog_files = [Path(f).stem for f in glob.glob(f"{LOCAL_CONTENT_DIR}/*.md")]
-        logger.info(f"Found {len(all_blog_files)} local blog files")
-        return all_blog_files
+        local_dir = config["local_dir"]
+        logger.debug(f"Listing local {content_type.value} files in {local_dir}")
+        files = [Path(f).stem for f in glob.glob(f"{local_dir}/*.md")]
+        logger.info(f"Found {len(files)} local {content_type.value} files")
+        return files
     else:
-        logger.debug(f"Listing S3 objects in {S3_CONTENT_BUCKET}/{S3_POSTS_PREFIX}")
+        s3_prefix = config["s3_prefix"]
+        logger.debug(f"Listing S3 objects in {S3_CONTENT_BUCKET}/{s3_prefix}")
         s3_client = get_s3_client()
-        response = s3_client.list_objects_v2(Bucket=S3_CONTENT_BUCKET, Prefix=S3_POSTS_PREFIX)
-        blog_files = [
+        response = s3_client.list_objects_v2(Bucket=S3_CONTENT_BUCKET, Prefix=s3_prefix)
+        files = [
             Path(item["Key"]).stem
             for item in response.get("Contents", [])
             if item["Key"].endswith(".md")
         ]
-        logger.info(f"Found {len(blog_files)} blog files in S3")
-        return blog_files
+        logger.info(f"Found {len(files)} {content_type.value} files in S3")
+        return files
 
 
-def read_blog_file(slug: str) -> str:
+def read_content_file(content_type: ContentType, slug: str) -> str:
+    config = CONTENT_CONFIG[content_type]
     if CONTENT_SOURCE == "local":
-        file_path = LOCAL_CONTENT_DIR / f"{slug}.md"
+        file_path = config["local_dir"] / f"{slug}.md"
         logger.debug(f"Reading local file: {file_path}")
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             return f.read()
     else:
-        key = f"{S3_POSTS_PREFIX}{slug}.md"
+        key = f"{config['s3_prefix']}{slug}.md"
         logger.debug(f"Reading S3 object: s3://{S3_CONTENT_BUCKET}/{key}")
         s3_client = get_s3_client()
         response = s3_client.get_object(Bucket=S3_CONTENT_BUCKET, Key=key)
         return response["Body"].read().decode("utf-8")
+
+
+def list_blog_files() -> list[str]:
+    return list_content_files(ContentType.BLOG)
+
+
+def read_blog_file(slug: str) -> str:
+    return read_content_file(ContentType.BLOG, slug)
+
+
+def list_project_files() -> list[str]:
+    return list_content_files(ContentType.PROJECT)
+
+
+def read_project_file(slug: str) -> str:
+    return read_content_file(ContentType.PROJECT, slug)
