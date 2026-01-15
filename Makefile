@@ -10,6 +10,10 @@ lint:
 	ruff check app/ tests/
 	ruff format app/ tests/
 
+lint-scripts:
+	ruff check scripts/
+	ruff format scripts/
+
 check: lint test
 
 sync:
