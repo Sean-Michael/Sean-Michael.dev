@@ -56,3 +56,6 @@ content/
 
 # pytest
 .pytest*
+
+
+*__init__.py
