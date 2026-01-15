@@ -231,9 +231,27 @@ resource "aws_s3_bucket_public_access_block" "content" {
   bucket = aws_s3_bucket.content.id
 
   block_public_acls       = true
-  block_public_policy     = true
+  block_public_policy     = false
   ignore_public_acls      = true
-  restrict_public_buckets = true
+  restrict_public_buckets = false
+}
+
+resource "aws_s3_bucket_policy" "content_images_public" {
+  bucket     = aws_s3_bucket.content.id
+  depends_on = [aws_s3_bucket_public_access_block.content]
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "PublicReadImages"
+        Effect    = "Allow"
+        Principal = "*"
+        Action    = "s3:GetObject"
+        Resource  = "${aws_s3_bucket.content.arn}/images/*"
+      }
+    ]
+  })
 }
 
 # IAM policy for EC2 to read from S3 content bucket
