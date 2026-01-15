@@ -10,7 +10,12 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 
-from app.content import list_blog_files, read_blog_file
+from app.content import (
+    list_blog_files,
+    list_project_files,
+    read_blog_file,
+    read_project_file,
+)
 
 BASE_DIR = Path(__file__).parent.parent
 STATIC_DIR = BASE_DIR / "app" / "static"
@@ -31,6 +36,11 @@ class Project(BaseModel):
     date: date
     content: str
     slug: str
+    author: str = "Sean-Michael"
+    github_url: str
+    demo_url: str | None = None
+    tech_stack: list[str] = []
+    status: str = "active"
     tags: list[str] = []
 
 
@@ -80,11 +90,24 @@ def get_related_posts(current: Blog, all_blogs: list[Blog], limit: int = 5) -> l
     return sorted(others, key=score)[:limit]
 
 
+def load_project(slug: str) -> Project:
+    content = read_project_file(slug)
+    post = frontmatter.load(StringIO(content))
+
+    return Project.model_validate(
+        {
+            **post.metadata,
+            "content": markdown.markdown(post.content),
+            "slug": slug,
+        }
+    )
+
+
 def load_all_projects() -> list[Project]:
     projects = []
     for slug in list_project_files():
         projects.append(load_project(slug))
-    return projects
+    return sorted(projects, key=lambda p: p.date, reverse=True)
 
 
 @app.get("/blog", response_class=HTMLResponse)
@@ -111,10 +134,19 @@ def get_blog(request: Request, slug: str):
 
 @app.get("/projects", response_class=HTMLResponse)
 async def projects(request: Request):
-    projects = load_all_projects()
+    all_projects = load_all_projects()
     return templates.TemplateResponse(
-        "projects.html",
-        {"request": request, "projects": projects"}
+        "projects_index.html",
+        {"request": request, "projects": all_projects},
+    )
+
+
+@app.get("/projects/{slug}", response_class=HTMLResponse)
+async def get_project(request: Request, slug: str):
+    project = load_project(slug)
+    return templates.TemplateResponse(
+        "project_detail.html",
+        {"request": request, "project": project},
     )
 
 @app.get("/about", response_class=HTMLResponse)

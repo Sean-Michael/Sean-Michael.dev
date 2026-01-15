@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Projects | Sean-Michael{% endblock %}
+
+{% block content %}
+<div class="window">
+    <div class="window-titlebar">
+        <span class="window-title">/projects</span>
+    </div>
+    <div class="window-body">
+        <h1>Projects</h1>
+
+        {% if projects %}
+        <div class="project-grid">
+            {% for project in projects %}
+            <a href="/projects/{{ project.slug }}" class="project-card">
+                <div class="project-card-header">
+                    <h3 class="project-card-title">{{ project.title }}</h3>
+                    <span class="project-status project-status-{{ project.status }}">{{ project.status }}</span>
+                </div>
+
+                {% if project.tech_stack %}
+                <div class="tech-stack">
+                    {% for tech in project.tech_stack[:4] %}
+                    <span class="tech-badge">{{ tech }}</span>
+                    {% endfor %}
+                    {% if project.tech_stack|length > 4 %}
+                    <span class="tech-badge">+{{ project.tech_stack|length - 4 }}</span>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <p class="project-card-date">{{ project.date.strftime("%b %Y") }}</p>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p>No projects yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
