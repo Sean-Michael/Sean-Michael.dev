@@ -51,7 +51,12 @@ templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    blogs = load_all_blogs()
+    all_projects = load_all_projects()
+    return templates.TemplateResponse(
+        "index.html",
+        {"request": request, "blogs": blogs[:3], "projects": all_projects},
+    )
 
 
 def load_blog(slug: str) -> Blog:

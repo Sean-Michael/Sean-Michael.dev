@@ -9,10 +9,63 @@
     </div>
     <div class="window-body">
         <h1>Sean-Michael</h1>
-        <p>I love to work with computers and play outside.</p>
+        <p class="home-intro">
+            Platform engineer based in Bellingham, WA. I've always loved playing with computers!
+        </p>
 
-        <p>This website is under active development ... more coming soon!</p>
-
+        <div class="home-links">
+            <a href="https://github.com/sean-michael">GitHub</a>
+            <a href="https://linkedin.com/in/sean-michael-riesterer">LinkedIn</a>
+        </div>
     </div>
 </div>
+
+{% if projects %}
+<div class="home-section">
+    <div class="home-section-header">
+        <h2>Projects</h2>
+        <a href="/projects" class="home-view-all">View all</a>
+    </div>
+    <div class="project-grid">
+        {% for project in projects %}
+        <a href="/projects/{{ project.slug }}" class="project-card">
+            <div class="project-card-header">
+                <h3 class="project-card-title">{{ project.title }}</h3>
+                <span class="project-status project-status-{{ project.status }}">{{ project.status }}</span>
+            </div>
+
+            {% if project.tech_stack %}
+            <div class="tech-stack">
+                {% for tech in project.tech_stack[:4] %}
+                <span class="tech-badge">{{ tech }}</span>
+                {% endfor %}
+                {% if project.tech_stack|length > 4 %}
+                <span class="tech-badge">+{{ project.tech_stack|length - 4 }}</span>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <p class="project-card-date">{{ project.date.strftime("%b %Y") }}</p>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% if blogs %}
+<div class="home-section">
+    <div class="home-section-header">
+        <h2>Recent Posts</h2>
+        <a href="/blog" class="home-view-all">View all</a>
+    </div>
+    <ul class="blog-list">
+        {% for blog in blogs %}
+        <li>
+            <a href="/blog/{{ blog.slug }}">{{ blog.title }}</a>
+            <span class="date">{{ blog.date.strftime("%b %d, %Y") }}</span>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
 {% endblock %}
