@@ -2,7 +2,13 @@
 
 [![Test and Lint](https://github.com/Sean-Michael/Sean-Michael.dev/actions/workflows/test-and-lint.yaml/badge.svg)](https://github.com/Sean-Michael/Sean-Michael.dev/actions/workflows/test-and-lint.yaml) [![Build and Push to Dockerhub](https://github.com/Sean-Michael/Sean-Michael.dev/actions/workflows/build-and-push.yaml/badge.svg)](https://github.com/Sean-Michael/Sean-Michael.dev/actions/workflows/build-and-push.yaml) [![Deploy to EC2](https://github.com/Sean-Michael/Sean-Michael.dev/actions/workflows/deploy-latest.yaml/badge.svg)](https://github.com/Sean-Michael/Sean-Michael.dev/actions/workflows/deploy-latest.yaml)
 
-This repository **is** my website. Infrastructure, application source, CI/CD pipelines, all defined as code. I make changes locally, push to main and boom. #GitOps
+This repository was my attempt to be as DevOps as possible with my personal website.
+
+The automations with GitHub actions are what really make it though, on push or merge to main, the infrastructure is provisioned, soure tested, built, pushed, and deployed to AWS.
+
+I have plans in the future to setup some more robust monitoring / telemetry but that's obviously overkill for a website that nobody sees. 
+
+I also want to mess around with hosting it 'securely' on my homelab PC.. 
 
 ## File Tree
 
@@ -27,7 +33,7 @@ Here's the map of everything included.
 
 ## The Stack
 
-Going for a 0% JS run with server-side rendering.
+I really wanted to use FastAPI and I had seen a video about HTMX which got me thinking about a no javascript site that still had some dynamism and server-side rendering. This is a hot take but I think that us deciding that we can allow arbitrary remote code execution to happen on the client with java is a major security antipattern. 
 
 - **FastAPI** - Core API functionality handles routing
 - **HTMX** - Enables dynamic content without JavaScript
@@ -38,7 +44,9 @@ Going for a 0% JS run with server-side rendering.
 
 ## Infrastructure
 
-Everything runs on AWS and the Terraform that defines it lives in `infrastructure/`. What you see is what you get with this one.
+Everything runs on AWS and the Terraform that defines it lives in `infrastructure/`.
+
+I didn't go crazy with the organization or modules of anything since the scope is so small.
 
 - **EC2** (Ubuntu 24.04) - Single instance running Docker Compose
 - **Elastic IP** - Pointing my Squarespace domain DNS to this IP
@@ -47,6 +55,8 @@ Everything runs on AWS and the Terraform that defines it lives in `infrastructur
 - **Security Groups** - SSH from my laptop only, HTTP/HTTPS from anywhere
 
 The EC2 instance bootstraps itself via user data script that installs Docker and pulls the latest image. No SSH required for deployments.
+
+If money was no object I would have preferred to deploy on something like ECS or EKS simply because those opinionated container orchestrators are so nice for not having to deal with managing VM configurations.
 
 S3 also stores the terraform state but that's hidden in `.gitignore` so please don't try and dox me.
 
