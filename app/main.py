@@ -12,11 +12,11 @@ from pydantic import BaseModel
 
 from app.content import (
     list_blog_files,
+    list_digest_files,
     list_project_files,
     read_blog_file,
-    read_project_file,
-    list_digest_files,
     read_digest_file,
+    read_project_file,
 )
 
 BASE_DIR = Path(__file__).parent.parent
@@ -25,7 +25,7 @@ TEMPLATES_DIR = BASE_DIR / "app" / "templates"
 
 """
 TODO:
-- [ ] Refactor some of these functions to be more abstract of Blog/Project/Digest 
+- [ ] Refactor some of these functions to be more abstract of Blog/Project/Digest
 """
 
 class Blog(BaseModel):
