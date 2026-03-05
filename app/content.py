@@ -20,6 +20,7 @@ BASE_DIR = Path(__file__).parent.parent
 class ContentType(Enum):
     BLOG = "blog"
     PROJECT = "project"
+    DIGEST = "digest"
 
 
 CONTENT_CONFIG = {
@@ -31,6 +32,9 @@ CONTENT_CONFIG = {
         "s3_prefix": "projects/published/",
         "local_dir": BASE_DIR / "content" / "projects" / "published",
     },
+    ContentType.DIGEST: {
+        "s3_prefix": "digests/",
+    }
 }
 
 
@@ -93,3 +97,11 @@ def list_project_files() -> list[str]:
 
 def read_project_file(slug: str) -> str:
     return read_content_file(ContentType.PROJECT, slug)
+
+
+def list_digest_files() -> list[str]:
+    return list_content_files(ContentType.DIGEST)
+
+
+def read_digest_file(slug: str) -> str:
+    return read_content_file(ContentType.DIGEST, slug)

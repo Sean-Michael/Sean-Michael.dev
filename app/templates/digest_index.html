@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Daily Digests | News Summaries written by LLM friends{% endblock %}
+
+{% block content %}
+<div class="window">
+    <div class="window-titlebar">
+        <span class="window-title">/digest</span>
+    </div>
+    <div class="window-body">
+        <h1>Daily Digests</h1>
+
+        <ul class="blog-list" id="digest-list">
+            {% for digest in digests %}
+            <li>
+                <a href="/digest/{{ digest.slug }}">{{ digest.title }}</a>
+                <span class="date">{{ digest.date.strftime("%b %d, %Y") }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+
+        {% if not digests %}
+        <p>No digests found.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

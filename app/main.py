@@ -15,12 +15,18 @@ from app.content import (
     list_project_files,
     read_blog_file,
     read_project_file,
+    list_digest_files,
+    read_digest_file,
 )
 
 BASE_DIR = Path(__file__).parent.parent
 STATIC_DIR = BASE_DIR / "app" / "static"
 TEMPLATES_DIR = BASE_DIR / "app" / "templates"
 
+"""
+TODO:
+- [ ] Refactor some of these functions to be more abstract of Blog/Project/Digest 
+"""
 
 class Blog(BaseModel):
     title: str
@@ -44,6 +50,13 @@ class Project(BaseModel):
     tags: list[str] = []
 
 
+class Digest(BaseModel):
+    title: str
+    date: date
+    content: str
+    slug: str
+
+
 app = FastAPI()
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
@@ -57,6 +70,25 @@ async def home(request: Request):
         "index.html",
         {"request": request, "blogs": blogs[:3], "projects": all_projects},
     )
+
+
+def load_digest(slug: str) -> Digest:
+    content = read_digest_file(slug)
+    post = frontmatter.load(StringIO(content))
+
+    return Digest.model_validate(
+        {
+            **post.metadata,
+            "content": markdown.markdown(post.content),
+            "slug": slug,
+        }
+    )
+
+def load_all_digests() -> list[Digest]:
+    digests = []
+    for slug in list_digest_files():
+        digests.append(load_digest(slug))
+    return sorted(digests, key=lambda d: d.date, reverse=True)
 
 
 def load_blog(slug: str) -> Blog:
@@ -113,6 +145,25 @@ def load_all_projects() -> list[Project]:
     for slug in list_project_files():
         projects.append(load_project(slug))
     return sorted(projects, key=lambda p: p.date, reverse=True)
+
+
+# TODO: can't these be made into one func with optional path?
+
+@app.get("/digest", response_class=HTMLResponse)
+async def get_digests(request: Request):
+    digests = load_all_digests()
+    return templates.TemplateResponse(
+        "digest_index.html",
+        {"request": request, "digests": digests}
+    )
+
+
+@app.get("/digest/{slug}", response_class=HTMLResponse)
+async def get_digest(request: Request, slug: str):
+    digest = load_digest(slug)
+    return templates.TemplateResponse(
+        "digest_detail.html", {"request": request, "digest": digest}
+    )
 
 
 @app.get("/blog", response_class=HTMLResponse)
