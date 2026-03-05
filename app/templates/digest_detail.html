@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}{{ digest.title }} | Sean-Michael{% endblock %}
+
+{% block content %}
+<div class="window">
+    <div class="window-titlebar">
+        <span class="window-title">/digest/{{ digest.slug }}</span>
+    </div>
+    <div class="window-body">
+        <a href="/digest" class="back-link">&larr; Back to digests</a>
+        <article>
+            <h1>{{ digest.title }}</h1>
+            <p class="meta">{{ digest.date.strftime("%B %d, %Y") }}</p>
+
+            <div class="blog-content">
+                {{ digest.content | safe }}
+            </div>
+        </article>
+    </div>
+</div>
+{% endblock %}
