@@ -223,13 +223,11 @@ body::before {
     justify-content: center;
     /* Top padding accounts for navbar (28px) + spacing */
     padding: calc(28px + 2rem) clamp(1rem, 5vw, 3rem) 4rem;
-    /* Offset for sidebar to visually center the content on screen */
-    padding-right: calc(clamp(1rem, 5vw, 3rem) + 220px);
 }
 
 .main-content {
     width: 100%;
-    max-width: 900px;
+    max-width: 1200px;
 }
 
 .window {
@@ -775,25 +773,32 @@ button:active {
 }
 
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .sidebar {
         display: none;
     }
 
     .site-layout {
         margin-left: 0;
-        padding-right: clamp(1rem, 5vw, 3rem);
+        padding-top: calc(44px + 1.5rem);
+    }
+
+    .navbar {
+        height: 44px;
     }
 
     .nav-links.mobile-only {
         display: flex;
     }
+
+    h1 {
+        font-size: 1.75rem;
+    }
 }
 
 @media (max-width: 600px) {
     .site-layout {
-        /* 44px navbar + 1rem spacing on mobile */
-        padding-top: calc(44px + 1rem);
+        padding-top: calc(44px + 0.75rem);
         padding-bottom: 2rem;
     }
 
@@ -805,25 +810,49 @@ button:active {
         padding: 1.5rem 1rem;
     }
 
-    .navbar {
-        height: 44px;
-    }
-
-    .navbar:hover {
-        height: 44px;
-    }
-
     .nav-links a {
-        padding: 0.5rem 0.75rem;
-        font-size: 0.8rem;
+        padding: 0.5rem 0.5rem;
+        font-size: 0.75rem;
     }
 
     h1 {
-        font-size: 1.6rem;
+        font-size: 1.4rem;
+    }
+
+    h2 {
+        font-size: 1.15rem;
+    }
+
+    h3 {
+        font-size: 1rem;
+    }
+
+    p, li {
+        font-size: 0.9rem;
+    }
+
+    .home-intro {
+        font-size: 0.95rem;
+    }
+
+    .project-grid {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     }
 
     .blog-list li {
         flex-direction: column;
         gap: 0.25rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .nav-links a {
+        padding: 0.5rem 0.35rem;
+        font-size: 0.7rem;
+    }
+
+    .nav-brand {
+        padding-right: 6px;
+        font-size: 12px;
     }
 }
