@@ -14,6 +14,7 @@
             <div class="nav-links mobile-only">
                 <a href="/">Home</a>
                 <a href="/blog">Blog</a>
+                <a href="/digest">Digests</a>
                 <a href="/projects">Projects</a>
                 <a href="/about">About</a>
             </div>
@@ -41,6 +42,10 @@
                 </a>
                 <div id="blog-dropdown" class="sidebar-dropdown-content"></div>
             </div>
+            <a href="/digest" class="sidebar-link{% if '/digest' in request.url.path %} active{% endif %}">
+                <span class="sidebar-icon">%</span>
+                Digests
+            </a>
             <a href="/projects" class="sidebar-link{% if '/projects' in request.url.path %} active{% endif %}">
                 <span class="sidebar-icon">#</span>
                 Projects

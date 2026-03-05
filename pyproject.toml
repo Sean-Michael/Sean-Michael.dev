@@ -12,6 +12,7 @@ dependencies = [
     "markdown>=3.10",
     "python-frontmatter>=1.1.0",
     "python-multipart>=0.0.20",
+    "ruff>=0.14.9",
     "uvicorn[standard]>=0.38.0",
 ]
 
