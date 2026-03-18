@@ -15,6 +15,9 @@ jobs:
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -22,12 +25,14 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Deploy via SSM
+      - name: Sync docker-compose and deploy via SSM
         run: |
+          COMPOSE_B64=$(base64 -w0 docker-compose.yaml)
+
           COMMAND_ID=$(aws ssm send-command \
             --instance-ids "${{ secrets.EC2_INSTANCE_ID }}" \
             --document-name "AWS-RunShellScript" \
-            --parameters 'commands=["cd /opt/app && docker compose pull && docker compose up -d --remove-orphans && docker image prune -f"]' \
+            --parameters "commands=[\"echo '${COMPOSE_B64}' | base64 -d > /opt/app/docker-compose.yaml && chown ubuntu:ubuntu /opt/app/docker-compose.yaml && grep -q DOCKER_IMAGE /opt/app/.env 2>/dev/null || echo 'DOCKER_IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/smr-website:latest' > /opt/app/.env && cd /opt/app && docker compose pull && docker compose up -d --remove-orphans && docker image prune -f\"]" \
             --query "Command.CommandId" \
             --output text)
 

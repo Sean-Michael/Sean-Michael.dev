@@ -1,4 +1,4 @@
-FROM python:3.12-slim
+FROM python:3.13.12-slim
 
 LABEL maintainer="Sean-Michael seanm.riesterer@gmail.com"
 

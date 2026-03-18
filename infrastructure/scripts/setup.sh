@@ -30,56 +30,8 @@ usermod -aG docker ubuntu
 mkdir -p /opt/app
 chown ubuntu:ubuntu /opt/app
 
-# Create docker-compose.yml
-cat > /opt/app/docker-compose.yml <<'EOF'
-services:
-  app:
-    image: ${docker_image}
-    container_name: app
-    restart: unless-stopped
-    expose:
-      - "8000"
-
-  nginx:
-    image: nginx:alpine
-    container_name: nginx
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-    depends_on:
-      - app
+# Write .env with Terraform-interpolated image value
+cat > /opt/app/.env <<EOF
+DOCKER_IMAGE=${docker_image}
 EOF
-
-# Create nginx config
-cat > /opt/app/nginx.conf <<'EOF'
-events {
-    worker_connections 1024;
-}
-
-http {
-    upstream app {
-        server app:8000;
-    }
-
-    server {
-        listen 80;
-        server_name _;
-
-        location / {
-            proxy_pass http://app;
-            proxy_set_header Host $host;
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
-        }
-    }
-}
-EOF
-
-# Start the application
-cd /opt/app
-docker compose pull
-docker compose up -d
+chown ubuntu:ubuntu /opt/app/.env
