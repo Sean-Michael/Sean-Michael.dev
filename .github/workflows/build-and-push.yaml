@@ -3,7 +3,7 @@ name: Build and Push to Dockerhub
 on:
   workflow_dispatch:
   workflow_run:
-    workflows: ["Test and Lint"]
+    workflows: ["Test and Lint", "Code Scanning"]
     types:
       - completed
     branches:
@@ -19,6 +19,30 @@ jobs:
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
 
     steps:
+      - name: Verify all prerequisite workflows passed
+        if: ${{ github.event_name != 'workflow_dispatch' }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const sha = context.payload.workflow_run.head_sha;
+            const requiredWorkflows = ['Test and Lint', 'Code Scanning'];
+
+            const runs = await github.rest.actions.listWorkflowRunsForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head_sha: sha,
+              status: 'success',
+            });
+
+            for (const name of requiredWorkflows) {
+              const passed = runs.data.workflow_runs.some(r => r.name === name);
+              if (!passed) {
+                core.info(`Workflow "${name}" has not succeeded yet for SHA ${sha}. Skipping build.`);
+                process.exit(1);
+              }
+            }
+            core.info(`All prerequisite workflows passed for SHA ${sha}.`);
+
       - name: Checkout code
         uses: actions/checkout@v4
 
