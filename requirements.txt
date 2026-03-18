@@ -73,7 +73,9 @@ typing-inspection==0.4.2
     #   fastapi
     #   pydantic
 urllib3==2.6.3
-    # via botocore
+    # via
+    #   sean-michael-dev (pyproject.toml)
+    #   botocore
 uvicorn==0.42.0
     # via sean-michael-dev (pyproject.toml)
 uvloop==0.22.1

@@ -13,6 +13,7 @@ dependencies = [
     "python-frontmatter>=1.1.0",
     "python-multipart>=0.0.22",
     "ruff>=0.14.9",
+    "urllib3>=2.6.3",
     "uvicorn[standard]>=0.38.0",
 ]
 

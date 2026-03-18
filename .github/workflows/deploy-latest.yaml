@@ -26,13 +26,26 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Sync docker-compose and deploy via SSM
+        env:
+          DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/smr-website:latest
         run: |
           COMPOSE_B64=$(base64 -w0 docker-compose.yaml)
+
+          # Build SSM parameters as a JSON file to avoid quoting issues
+          jq -n \
+            --arg compose "$COMPOSE_B64" \
+            --arg image "$DOCKER_IMAGE" \
+            '{commands: [
+              ("echo " + $compose + " | base64 -d > /opt/app/docker-compose.yaml"),
+              "chown ubuntu:ubuntu /opt/app/docker-compose.yaml",
+              ("grep -q DOCKER_IMAGE /opt/app/.env 2>/dev/null || echo DOCKER_IMAGE=" + $image + " > /opt/app/.env"),
+              "cd /opt/app && docker compose pull && docker compose up -d --remove-orphans && docker image prune -f"
+            ]}' > /tmp/ssm-params.json
 
           COMMAND_ID=$(aws ssm send-command \
             --instance-ids "${{ secrets.EC2_INSTANCE_ID }}" \
             --document-name "AWS-RunShellScript" \
-            --parameters "commands=[\"echo '${COMPOSE_B64}' | base64 -d > /opt/app/docker-compose.yaml && chown ubuntu:ubuntu /opt/app/docker-compose.yaml && grep -q DOCKER_IMAGE /opt/app/.env 2>/dev/null || echo 'DOCKER_IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/smr-website:latest' > /opt/app/.env && cd /opt/app && docker compose pull && docker compose up -d --remove-orphans && docker image prune -f\"]" \
+            --parameters file:///tmp/ssm-params.json \
             --query "Command.CommandId" \
             --output text)
 
