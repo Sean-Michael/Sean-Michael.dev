@@ -5,8 +5,6 @@ services:
     image: traefik:v3.6
     container_name: traefik
     restart: unless-stopped
-    environment:
-      - DOCKER_API_VERSION=1.44
     command:
       - "--api.dashboard=false"
       - "--providers.docker=true"
