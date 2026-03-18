@@ -2,7 +2,7 @@ name: seanmichael-dev
 
 services:
   traefik:
-    image: traefik:v3.3
+    image: traefik:v3.6
     container_name: traefik
     restart: unless-stopped
     command:
@@ -34,7 +34,7 @@ services:
       - "8000"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.app.rule=Host(`seanmichael.dev`) || Host(`www.seanmichael.dev`)"
+      - "traefik.http.routers.app.rule=Host(`sean-michael.dev`) || Host(`www.sean-michael.dev`)"
       - "traefik.http.routers.app.entrypoints=websecure"
       - "traefik.http.routers.app.tls.certresolver=letsencrypt"
       - "traefik.http.services.app.loadbalancer.server.port=8000"
