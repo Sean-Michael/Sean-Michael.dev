@@ -19,15 +19,8 @@
                     <span class="project-status project-status-{{ project.status }}">{{ project.status }}</span>
                 </div>
 
-                {% if project.tech_stack %}
-                <div class="tech-stack">
-                    {% for tech in project.tech_stack[:4] %}
-                    <span class="tech-badge">{{ tech }}</span>
-                    {% endfor %}
-                    {% if project.tech_stack|length > 4 %}
-                    <span class="tech-badge">+{{ project.tech_stack|length - 4 }}</span>
-                    {% endif %}
-                </div>
+                {% if project.description %}
+                <p class="project-card-desc">{{ project.description }}</p>
                 {% endif %}
 
                 <p class="project-card-date">{{ project.date.strftime("%b %Y") }}</p>

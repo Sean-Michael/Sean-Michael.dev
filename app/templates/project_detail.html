@@ -10,31 +10,33 @@
     <div class="window-body">
         <a href="/projects" class="back-link">&larr; Back to projects</a>
         <article>
-            <div class="project-header">
-                <h1>{{ project.title }}</h1>
-                <span class="project-status project-status-{{ project.status }}">{{ project.status }}</span>
-            </div>
+            <div class="project-hero">
+                <div class="project-header">
+                    <h1>{{ project.title }}</h1>
+                    <span class="project-status project-status-{{ project.status }}">{{ project.status }}</span>
+                </div>
 
-            <p class="meta">{{ project.date.strftime("%B %Y") }}</p>
+                <p class="meta">{{ project.date.strftime("%B %Y") }}</p>
 
-            <div class="project-links">
-                <a href="{{ project.github_url }}" class="project-link" target="_blank" rel="noopener">
-                    GitHub &rarr;
-                </a>
-                {% if project.demo_url %}
-                <a href="{{ project.demo_url }}" class="project-link" target="_blank" rel="noopener">
-                    Live Demo &rarr;
-                </a>
+                {% if project.tech_stack %}
+                <div class="tech-stack">
+                    {% for tech in project.tech_stack %}
+                    <span class="tech-badge">{{ tech }}</span>
+                    {% endfor %}
+                </div>
                 {% endif %}
-            </div>
 
-            {% if project.tech_stack %}
-            <div class="tech-stack">
-                {% for tech in project.tech_stack %}
-                <span class="tech-badge">{{ tech }}</span>
-                {% endfor %}
+                <div class="project-links">
+                    <a href="{{ project.github_url }}" class="project-link" target="_blank" rel="noopener">
+                        GitHub &rarr;
+                    </a>
+                    {% if project.demo_url %}
+                    <a href="{{ project.demo_url }}" class="project-link" target="_blank" rel="noopener">
+                        Live Demo &rarr;
+                    </a>
+                    {% endif %}
+                </div>
             </div>
-            {% endif %}
 
             {% if project.tags %}
             <div class="tags">
