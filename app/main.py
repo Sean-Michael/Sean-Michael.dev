@@ -8,6 +8,7 @@ from pathlib import Path
 import frontmatter
 import markdown
 from fastapi import FastAPI, Request
+from fastapi.exceptions import HTTPException
 from fastapi.responses import HTMLResponse, PlainTextResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -76,6 +77,11 @@ class Digest(DigestSummary):
 app = FastAPI()
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
+
+
+@app.exception_handler(404)
+async def not_found(request: Request, exc: HTTPException):
+    return templates.TemplateResponse(request, "404.html", status_code=404)
 
 
 @app.get("/", response_class=HTMLResponse)

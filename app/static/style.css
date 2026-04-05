@@ -967,3 +967,28 @@ button:active {
         font-size: 12px;
     }
 }
+
+/* 404 */
+.not-found {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    text-align: center;
+}
+
+.not-found-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(8rem, 20vw, 18rem);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--accent);
+    opacity: 0.85;
+}
+
+.not-found-msg {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    margin: 1rem 0 2rem;
+}
