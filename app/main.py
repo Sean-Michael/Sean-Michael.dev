@@ -70,8 +70,9 @@ async def home(request: Request):
     blogs = load_all_blogs()
     all_projects = load_all_projects()
     return templates.TemplateResponse(
+        request,
         "index.html",
-        {"request": request, "blogs": blogs[:3], "projects": all_projects},
+        {"blogs": blogs[:3], "projects": all_projects},
     )
 
 
@@ -172,13 +173,13 @@ def load_all_projects() -> list[Project]:
 @app.get("/digest", response_class=HTMLResponse)
 async def get_digests(request: Request):
     digests = load_all_digests()
-    return templates.TemplateResponse("digest_index.html", {"request": request, "digests": digests})
+    return templates.TemplateResponse(request, "digest_index.html", {"digests": digests})
 
 
 @app.get("/digest/{slug}", response_class=HTMLResponse)
 async def get_digest(request: Request, slug: str):
     digest = load_digest(slug)
-    return templates.TemplateResponse("digest_detail.html", {"request": request, "digest": digest})
+    return templates.TemplateResponse(request, "digest_detail.html", {"digest": digest})
 
 
 @app.get("/blog", response_class=HTMLResponse)
@@ -188,8 +189,9 @@ async def get_blogs(request: Request, tag: str | None = None):
     if tag:
         blogs = [b for b in blogs if tag in b.tags]
     return templates.TemplateResponse(
+        request,
         "blog_index.html",
-        {"request": request, "blogs": blogs, "all_tags": all_tags, "active_tag": tag},
+        {"blogs": blogs, "all_tags": all_tags, "active_tag": tag},
     )
 
 
@@ -199,7 +201,7 @@ def get_blog(request: Request, slug: str):
     all_blogs = load_all_blogs()
     related = get_related_posts(blog, all_blogs)
     return templates.TemplateResponse(
-        "blog_detail.html", {"request": request, "blog": blog, "related_posts": related}
+        request, "blog_detail.html", {"blog": blog, "related_posts": related}
     )
 
 
@@ -207,8 +209,9 @@ def get_blog(request: Request, slug: str):
 async def projects(request: Request):
     all_projects = load_all_projects()
     return templates.TemplateResponse(
+        request,
         "projects_index.html",
-        {"request": request, "projects": all_projects},
+        {"projects": all_projects},
     )
 
 
@@ -216,19 +219,18 @@ async def projects(request: Request):
 async def get_project(request: Request, slug: str):
     project = load_project(slug)
     return templates.TemplateResponse(
+        request,
         "project_detail.html",
-        {"request": request, "project": project},
+        {"project": project},
     )
 
 
 @app.get("/about", response_class=HTMLResponse)
 async def about(request: Request):
-    return templates.TemplateResponse("about.html", {"request": request})
+    return templates.TemplateResponse(request, "about.html")
 
 
 @app.get("/partials/sidebar-blogs", response_class=HTMLResponse)
 async def sidebar_blogs(request: Request):
     blogs = load_all_blogs()
-    return templates.TemplateResponse(
-        "partials/sidebar_blogs.html", {"request": request, "blogs": blogs}
-    )
+    return templates.TemplateResponse(request, "partials/sidebar_blogs.html", {"blogs": blogs})
