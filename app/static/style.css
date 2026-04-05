@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
 
 * {
     margin: 0;
@@ -16,7 +16,7 @@ body {
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 body::before {
@@ -30,6 +30,25 @@ body::before {
     backdrop-filter: blur(12px) saturate(120%);
     -webkit-backdrop-filter: blur(12px) saturate(120%);
     z-index: 0;
+}
+
+/* Monospace for code, nav, terminal-themed elements */
+.navbar,
+.nav-brand,
+.nav-links a,
+.window-titlebar,
+.window-title,
+.sidebar-icon,
+.sidebar-sublink,
+code, pre,
+.tag, .tech-badge, .skill,
+.project-status,
+.back-link,
+.blog-list .date,
+.meta,
+.project-card-date,
+.home-view-all {
+    font-family: 'JetBrains Mono', monospace;
 }
 
 .navbar {
@@ -100,8 +119,10 @@ body::before {
     top: 28px;
     bottom: 0;
     width: 220px;
-    background: transparent;
-    border-right: none;
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    border-right: 1px solid rgba(255, 255, 255, 0.4);
     z-index: 50;
     padding: 1.25rem 0;
 }
@@ -115,33 +136,38 @@ body::before {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.7rem 1.5rem;
-    color: rgba(0, 0, 0, 0.75);
+    padding: 0.6rem 1.25rem;
+    color: rgba(0, 0, 0, 0.7);
     text-decoration: none;
-    font-size: 15px;
-    font-weight: 400;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
     border: none;
     border-left: 3px solid transparent;
+    border-radius: 0 6px 6px 0;
+    margin-right: 8px;
     transition: all 0.15s ease;
 }
 
 .sidebar-link:hover {
-    background: rgba(0, 0, 0, 0.04);
+    background: rgba(0, 0, 0, 0.06);
     color: rgba(0, 0, 0, 0.9);
     border: none;
     border-left: 3px solid transparent;
+    border-radius: 0 6px 6px 0;
 }
 
 .sidebar-link.active {
-    background: rgba(0, 0, 0, 0.06);
+    background: rgba(60, 80, 100, 0.1);
     color: rgba(0, 0, 0, 0.95);
-    border-left: 3px solid rgba(60, 80, 100, 0.6);
+    border-left: 3px solid rgba(60, 80, 100, 0.5);
+    border-radius: 0 6px 6px 0;
 }
 
 .sidebar-icon {
-    font-size: 14px;
-    opacity: 0.5;
-    width: 1.25rem;
+    font-size: 12px;
+    opacity: 0.4;
+    width: 1rem;
     text-align: center;
 }
 
@@ -194,12 +220,14 @@ body::before {
 
 .sidebar-sublink {
     display: block;
-    padding: 0.5rem 1.5rem 0.5rem 2.75rem;
-    color: rgba(0, 0, 0, 0.6);
+    padding: 0.4rem 1.25rem 0.4rem 2.5rem;
+    color: rgba(0, 0, 0, 0.55);
     text-decoration: none;
-    font-size: 14px;
+    font-size: 12px;
     border: none;
     border-left: 3px solid transparent;
+    border-radius: 0 4px 4px 0;
+    margin-right: 8px;
     transition: all 0.15s ease;
     white-space: nowrap;
     overflow: hidden;
@@ -211,11 +239,13 @@ body::before {
     color: rgba(0, 0, 0, 0.85);
     border: none;
     border-left: 3px solid transparent;
+    border-radius: 0 4px 4px 0;
 }
 
 .sidebar-sublink.active {
     color: rgba(0, 0, 0, 0.9);
     border-left: 3px solid rgba(60, 80, 100, 0.4);
+    border-radius: 0 4px 4px 0;
 }
 
 .site-layout {
@@ -285,29 +315,31 @@ body::before {
 h1 {
     color: #1a2a35;
     font-size: 2rem;
-    font-weight: 300;
-    letter-spacing: 0.05em;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
     margin-bottom: 1rem;
 }
 
 h2 {
     color: #2a3a45;
     font-size: 1.3rem;
-    font-weight: 400;
+    font-weight: 600;
+    letter-spacing: -0.01em;
     margin: 1.5rem 0 0.75rem 0;
 }
 
 h3 {
     color: #2a3a45;
     font-size: 1.1rem;
-    font-weight: 500;
+    font-weight: 600;
     margin: 1rem 0 0.5rem 0;
 }
 
 p {
     font-size: 1rem;
     color: #2a3a45;
-    line-height: 1.7;
+    line-height: 1.75;
     margin-bottom: 0.75rem;
 }
 
@@ -461,6 +493,7 @@ button:active {
 
 .blog-content {
     margin-top: 1.5rem;
+    max-width: 68ch;
 }
 
 .blog-content h1,
@@ -493,12 +526,15 @@ button:active {
 .blog-content p code {
     background: rgba(0, 0, 0, 0.05);
     padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.85em;
 }
 
 .blog-content ul,
 .blog-content ol {
     margin: 1rem 0;
     padding-left: 1.5rem;
+    max-width: 68ch;
 }
 
 .blog-content ul {
@@ -557,26 +593,48 @@ button:active {
 .project-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1rem;
+    gap: 1.25rem;
     margin-top: 1.5rem;
 }
 
 .project-card {
     display: flex;
     flex-direction: column;
-    padding: 1.25rem;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    border-bottom: 2px solid rgba(0, 0, 0, 0.12);
+    padding: 1.25rem 1.25rem 1rem;
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-top: 3px solid rgba(60, 80, 100, 0.3);
     border-radius: 8px;
     text-decoration: none;
-    transition: all 0.15s ease;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
 .project-card:hover {
-    background: rgba(255, 255, 255, 0.25);
-    border-color: rgba(0, 0, 0, 0.15);
-    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(0, 0, 0, 0.1);
+    border-top-color: rgba(60, 80, 100, 0.5);
+    transform: translateY(-3px);
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.08),
+        0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+/* Status-colored top borders on cards */
+.project-card:has(.project-status-active) {
+    border-top-color: rgba(34, 139, 34, 0.4);
+}
+.project-card:has(.project-status-active):hover {
+    border-top-color: rgba(34, 139, 34, 0.6);
+}
+.project-card:has(.project-status-wip) {
+    border-top-color: rgba(218, 165, 32, 0.4);
+}
+.project-card:has(.project-status-wip):hover {
+    border-top-color: rgba(218, 165, 32, 0.65);
+}
+.project-card:has(.project-status-archived) {
+    border-top-color: rgba(128, 128, 128, 0.3);
 }
 
 .project-card-header {
@@ -594,10 +652,31 @@ button:active {
     margin: 0;
 }
 
+.project-card-desc {
+    font-size: 0.85rem;
+    color: rgba(42, 58, 69, 0.75);
+    line-height: 1.5;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
 .project-card-date {
-    font-size: 0.8rem;
-    color: rgba(42, 58, 69, 0.6);
+    font-size: 0.75rem;
+    color: rgba(42, 58, 69, 0.5);
     margin: auto 0 0 0;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.project-hero {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
 }
 
 .project-header {
@@ -638,21 +717,25 @@ button:active {
 
 .project-links {
     display: flex;
-    gap: 1rem;
-    margin: 1rem 0;
+    gap: 0.75rem;
+    margin: 1.25rem 0 0.5rem;
 }
 
 .project-link {
-    font-size: 0.9rem;
-    padding: 0.4rem 0.8rem;
-    background: rgba(60, 80, 90, 0.1);
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+    background: rgba(60, 80, 90, 0.15);
     border: 1px solid rgba(60, 80, 90, 0.2);
-    border-bottom: 2px solid rgba(60, 80, 90, 0.25);
-    border-radius: 4px;
+    border-bottom: 2px solid rgba(60, 80, 90, 0.3);
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.15s ease;
 }
 
 .project-link:hover {
-    background: rgba(60, 80, 90, 0.2);
+    background: rgba(60, 80, 90, 0.25);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .tech-stack {
@@ -664,15 +747,17 @@ button:active {
 
 .tech-badge {
     font-size: 0.7rem;
-    padding: 0.15rem 0.5rem;
-    background: rgba(60, 80, 100, 0.1);
-    border: 1px solid rgba(60, 80, 100, 0.2);
-    border-radius: 3px;
-    color: #3a4a55;
+    padding: 0.2rem 0.5rem;
+    background: rgba(60, 80, 100, 0.12);
+    border: 1px solid rgba(60, 80, 100, 0.15);
+    border-radius: 4px;
+    color: #2a3a45;
+    letter-spacing: 0.01em;
 }
 
 .project-content {
     margin-top: 1.5rem;
+    max-width: 68ch;
 }
 
 .project-content h1,
@@ -705,12 +790,15 @@ button:active {
 .project-content p code {
     background: rgba(0, 0, 0, 0.05);
     padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.85em;
 }
 
 .project-content ul,
 .project-content ol {
     margin: 1rem 0;
     padding-left: 1.5rem;
+    max-width: 68ch;
 }
 
 .project-content ul {

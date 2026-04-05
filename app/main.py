@@ -48,6 +48,7 @@ class Project(BaseModel):
     tech_stack: list[str] = []
     status: str = "active"
     tags: list[str] = []
+    description: str = ""
 
 
 class Digest(BaseModel):
@@ -127,15 +128,26 @@ def get_related_posts(current: Blog, all_blogs: list[Blog], limit: int = 5) -> l
     return sorted(others, key=score)[:limit]
 
 
+def extract_first_paragraph(text: str) -> str:
+    for line in text.strip().splitlines():
+        line = line.strip()
+        if line and not line.startswith("#") and not line.startswith("-") and not line.startswith("```"):
+            return line
+    return ""
+
+
 def load_project(slug: str) -> Project:
     content = read_project_file(slug)
     post = frontmatter.load(StringIO(content))
+
+    description = post.metadata.get("description", "") or extract_first_paragraph(post.content)
 
     return Project.model_validate(
         {
             **post.metadata,
             "content": markdown.markdown(post.content),
             "slug": slug,
+            "description": description,
         }
     )
 
