@@ -1,5 +1,7 @@
 import re
+import time
 from datetime import date
+from functools import lru_cache
 from io import StringIO
 from pathlib import Path
 
@@ -19,6 +21,14 @@ from app.content import (
     read_digest_file,
     read_project_file,
 )
+
+CACHE_TTL = 300  # 5 minutes
+
+
+def _ttl_bucket(ttl: int = CACHE_TTL) -> int:
+    """Return a value that changes every `ttl` seconds, for lru_cache expiry."""
+    return int(time.monotonic() // ttl)
+
 
 BASE_DIR = Path(__file__).parent.parent
 STATIC_DIR = BASE_DIR / "app" / "static"
@@ -70,8 +80,9 @@ templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
-    blogs = load_all_blogs()
-    all_projects = load_all_projects()
+    ttl = _ttl_bucket()
+    blogs = load_all_blogs(ttl)
+    all_projects = load_all_projects(ttl)
     return templates.TemplateResponse(
         request,
         "index.html",
@@ -79,7 +90,8 @@ async def home(request: Request):
     )
 
 
-def load_digest(slug: str) -> Digest:
+@lru_cache(maxsize=128)
+def load_digest(slug: str, _ttl: int = 0) -> Digest:
     content = read_digest_file(slug)
     post = frontmatter.load(StringIO(content))
 
@@ -105,12 +117,14 @@ def parse_digest_slug(slug: str) -> DigestSummary:
     return DigestSummary(title=title, date=d, slug=slug)
 
 
-def list_all_digests() -> list[DigestSummary]:
+@lru_cache(maxsize=1)
+def list_all_digests(_ttl: int = 0) -> list[DigestSummary]:
     summaries = [parse_digest_slug(slug) for slug in list_digest_files()]
     return sorted(summaries, key=lambda d: d.date, reverse=True)
 
 
-def load_blog(slug: str) -> Blog:
+@lru_cache(maxsize=128)
+def load_blog(slug: str, _ttl: int = 0) -> Blog:
     content = read_blog_file(slug)
     post = frontmatter.load(StringIO(content))
 
@@ -123,10 +137,11 @@ def load_blog(slug: str) -> Blog:
     )
 
 
-def load_all_blogs() -> list[Blog]:
+@lru_cache(maxsize=1)
+def load_all_blogs(_ttl: int = 0) -> list[Blog]:
     blogs = []
     for slug in list_blog_files():
-        blogs.append(load_blog(slug))
+        blogs.append(load_blog(slug, _ttl))
     return sorted(blogs, key=lambda b: b.date, reverse=True)
 
 
@@ -155,7 +170,8 @@ def extract_first_paragraph(text: str) -> str:
     return ""
 
 
-def load_project(slug: str) -> Project:
+@lru_cache(maxsize=64)
+def load_project(slug: str, _ttl: int = 0) -> Project:
     content = read_project_file(slug)
     post = frontmatter.load(StringIO(content))
 
@@ -171,10 +187,11 @@ def load_project(slug: str) -> Project:
     )
 
 
-def load_all_projects() -> list[Project]:
+@lru_cache(maxsize=1)
+def load_all_projects(_ttl: int = 0) -> list[Project]:
     projects = []
     for slug in list_project_files():
-        projects.append(load_project(slug))
+        projects.append(load_project(slug, _ttl))
     return sorted(projects, key=lambda p: p.date, reverse=True)
 
 
@@ -183,19 +200,19 @@ def load_all_projects() -> list[Project]:
 
 @app.get("/digest", response_class=HTMLResponse)
 async def get_digests(request: Request):
-    digests = list_all_digests()
+    digests = list_all_digests(_ttl_bucket())
     return templates.TemplateResponse(request, "digest_index.html", {"digests": digests})
 
 
 @app.get("/digest/{slug}", response_class=HTMLResponse)
 async def get_digest(request: Request, slug: str):
-    digest = load_digest(slug)
+    digest = load_digest(slug, _ttl_bucket())
     return templates.TemplateResponse(request, "digest_detail.html", {"digest": digest})
 
 
 @app.get("/blog", response_class=HTMLResponse)
 async def get_blogs(request: Request, tag: str | None = None):
-    blogs = load_all_blogs()
+    blogs = load_all_blogs(_ttl_bucket())
     all_tags = get_all_tags(blogs)
     if tag:
         blogs = [b for b in blogs if tag in b.tags]
@@ -208,8 +225,9 @@ async def get_blogs(request: Request, tag: str | None = None):
 
 @app.get("/blog/{slug}", response_class=HTMLResponse)
 def get_blog(request: Request, slug: str):
-    blog = load_blog(slug)
-    all_blogs = load_all_blogs()
+    ttl = _ttl_bucket()
+    blog = load_blog(slug, ttl)
+    all_blogs = load_all_blogs(ttl)
     related = get_related_posts(blog, all_blogs)
     return templates.TemplateResponse(
         request, "blog_detail.html", {"blog": blog, "related_posts": related}
@@ -218,7 +236,7 @@ def get_blog(request: Request, slug: str):
 
 @app.get("/projects", response_class=HTMLResponse)
 async def projects(request: Request):
-    all_projects = load_all_projects()
+    all_projects = load_all_projects(_ttl_bucket())
     return templates.TemplateResponse(
         request,
         "projects_index.html",
@@ -228,7 +246,7 @@ async def projects(request: Request):
 
 @app.get("/projects/{slug}", response_class=HTMLResponse)
 async def get_project(request: Request, slug: str):
-    project = load_project(slug)
+    project = load_project(slug, _ttl_bucket())
     return templates.TemplateResponse(
         request,
         "project_detail.html",
@@ -243,7 +261,7 @@ async def about(request: Request):
 
 @app.get("/partials/sidebar-blogs", response_class=HTMLResponse)
 async def sidebar_blogs(request: Request):
-    blogs = load_all_blogs()
+    blogs = load_all_blogs(_ttl_bucket())
     return templates.TemplateResponse(request, "partials/sidebar_blogs.html", {"blogs": blogs})
 
 
