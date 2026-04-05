@@ -35,7 +35,7 @@ CONTENT_CONFIG = {
     ContentType.DIGEST: {
         "s3_prefix": "digests/",
         "local_dir": BASE_DIR / "content" / "digests",
-    }
+    },
 }
 
 

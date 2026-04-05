@@ -29,6 +29,7 @@ TODO:
 - [ ] Refactor some of these functions to be more abstract of Blog/Project/Digest
 """
 
+
 class Blog(BaseModel):
     title: str
     date: date
@@ -89,6 +90,7 @@ def load_digest(slug: str) -> Digest:
         }
     )
 
+
 def load_all_digests() -> list[Digest]:
     digests = []
     for slug in list_digest_files():
@@ -107,6 +109,7 @@ def load_blog(slug: str) -> Blog:
             "slug": slug,
         }
     )
+
 
 def load_all_blogs() -> list[Blog]:
     blogs = []
@@ -135,7 +138,7 @@ def get_related_posts(current: Blog, all_blogs: list[Blog], limit: int = 5) -> l
 def extract_first_paragraph(text: str) -> str:
     for line in text.strip().splitlines():
         line = line.strip()
-        if line and not line.startswith("#") and not line.startswith("-") and not line.startswith("```"):
+        if line and not line.startswith(("#", "-", "```")):
             return line
     return ""
 
@@ -165,21 +168,17 @@ def load_all_projects() -> list[Project]:
 
 # TODO: can't these be made into one func with optional path?
 
+
 @app.get("/digest", response_class=HTMLResponse)
 async def get_digests(request: Request):
     digests = load_all_digests()
-    return templates.TemplateResponse(
-        "digest_index.html",
-        {"request": request, "digests": digests}
-    )
+    return templates.TemplateResponse("digest_index.html", {"request": request, "digests": digests})
 
 
 @app.get("/digest/{slug}", response_class=HTMLResponse)
 async def get_digest(request: Request, slug: str):
     digest = load_digest(slug)
-    return templates.TemplateResponse(
-        "digest_detail.html", {"request": request, "digest": digest}
-    )
+    return templates.TemplateResponse("digest_detail.html", {"request": request, "digest": digest})
 
 
 @app.get("/blog", response_class=HTMLResponse)
@@ -220,6 +219,7 @@ async def get_project(request: Request, slug: str):
         "project_detail.html",
         {"request": request, "project": project},
     )
+
 
 @app.get("/about", response_class=HTMLResponse)
 async def about(request: Request):
