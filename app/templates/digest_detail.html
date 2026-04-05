@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
 {% block title %}{{ digest.title }} | Sean-Michael{% endblock %}
+{% block description %}{{ digest.title }} — AI and infrastructure news digest.{% endblock %}
+{% block og_type %}article{% endblock %}
 
 {% block content %}
 <div class="window">

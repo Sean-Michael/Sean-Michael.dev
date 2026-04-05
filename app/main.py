@@ -6,7 +6,7 @@ from pathlib import Path
 import frontmatter
 import markdown
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, PlainTextResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
@@ -53,11 +53,14 @@ class Project(BaseModel):
     description: str = ""
 
 
-class Digest(BaseModel):
+class DigestSummary(BaseModel):
     title: str
     date: date
-    content: str
     slug: str
+
+
+class Digest(DigestSummary):
+    content: str
 
 
 app = FastAPI()
@@ -92,11 +95,19 @@ def load_digest(slug: str) -> Digest:
     )
 
 
-def load_all_digests() -> list[Digest]:
-    digests = []
-    for slug in list_digest_files():
-        digests.append(load_digest(slug))
-    return sorted(digests, key=lambda d: d.date, reverse=True)
+def parse_digest_slug(slug: str) -> DigestSummary:
+    """Derive title and date from slug like 'topic-words-2026-04-04'."""
+    # Last 3 segments are YYYY-MM-DD
+    parts = slug.rsplit("-", 3)
+    d = date(int(parts[1]), int(parts[2]), int(parts[3]))
+    title_part = parts[0].replace("-", " ").title()
+    title = f"{title_part} | {d.isoformat()}"
+    return DigestSummary(title=title, date=d, slug=slug)
+
+
+def list_all_digests() -> list[DigestSummary]:
+    summaries = [parse_digest_slug(slug) for slug in list_digest_files()]
+    return sorted(summaries, key=lambda d: d.date, reverse=True)
 
 
 def load_blog(slug: str) -> Blog:
@@ -172,7 +183,7 @@ def load_all_projects() -> list[Project]:
 
 @app.get("/digest", response_class=HTMLResponse)
 async def get_digests(request: Request):
-    digests = load_all_digests()
+    digests = list_all_digests()
     return templates.TemplateResponse(request, "digest_index.html", {"digests": digests})
 
 
@@ -234,3 +245,32 @@ async def about(request: Request):
 async def sidebar_blogs(request: Request):
     blogs = load_all_blogs()
     return templates.TemplateResponse(request, "partials/sidebar_blogs.html", {"blogs": blogs})
+
+
+SITE = "https://sean-michael.dev"
+
+
+@app.get("/robots.txt", response_class=PlainTextResponse)
+async def robots_txt():
+    return f"User-agent: *\nAllow: /\nSitemap: {SITE}/sitemap.xml\n"
+
+
+@app.get("/sitemap.xml")
+async def sitemap_xml():
+    urls = [
+        SITE,
+        f"{SITE}/blog",
+        f"{SITE}/digest",
+        f"{SITE}/projects",
+        f"{SITE}/about",
+    ]
+    for slug in list_blog_files():
+        urls.append(f"{SITE}/blog/{slug}")
+    for slug in list_digest_files():
+        urls.append(f"{SITE}/digest/{slug}")
+    for slug in list_project_files():
+        urls.append(f"{SITE}/projects/{slug}")
+
+    entries = "\n".join(f"  <url><loc>{u}</loc></url>" for u in urls)
+    xml = f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{entries}\n</urlset>'
+    return Response(content=xml, media_type="application/xml")
