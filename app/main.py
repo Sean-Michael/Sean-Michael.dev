@@ -1,3 +1,4 @@
+import re
 from datetime import date
 from io import StringIO
 from pathlib import Path
@@ -77,10 +78,13 @@ def load_digest(slug: str) -> Digest:
     content = read_digest_file(slug)
     post = frontmatter.load(StringIO(content))
 
+    # Strip leading H1 from markdown body since the template renders the title separately
+    body = re.sub(r"^#\s+.+\n*", "", post.content, count=1)
+
     return Digest.model_validate(
         {
             **post.metadata,
-            "content": markdown.markdown(post.content),
+            "content": markdown.markdown(body),
             "slug": slug,
         }
     )
