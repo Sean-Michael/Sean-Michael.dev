@@ -17,6 +17,10 @@ AWS_REGION = os.getenv("AWS_REGION", "us-west-2")
 BASE_DIR = Path(__file__).parent.parent
 
 
+class ContentNotFoundError(Exception):
+    pass
+
+
 class ContentType(Enum):
     BLOG = "blog"
     PROJECT = "project"
@@ -74,13 +78,19 @@ def read_content_file(content_type: ContentType, slug: str) -> str:
     if CONTENT_SOURCE == "local":
         file_path = config["local_dir"] / f"{slug}.md"
         logger.debug(f"Reading local file: {file_path}")
-        with open(file_path, encoding="utf-8") as f:
-            return f.read()
+        try:
+            with open(file_path, encoding="utf-8") as f:
+                return f.read()
+        except FileNotFoundError:
+            raise ContentNotFoundError(f"{content_type.value}/{slug}")
     else:
         key = f"{config['s3_prefix']}{slug}.md"
         logger.debug(f"Reading S3 object: s3://{S3_CONTENT_BUCKET}/{key}")
         s3_client = get_s3_client()
-        response = s3_client.get_object(Bucket=S3_CONTENT_BUCKET, Key=key)
+        try:
+            response = s3_client.get_object(Bucket=S3_CONTENT_BUCKET, Key=key)
+        except s3_client.exceptions.NoSuchKey:
+            raise ContentNotFoundError(f"{content_type.value}/{slug}")
         return response["Body"].read().decode("utf-8")
 
 

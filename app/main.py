@@ -15,6 +15,7 @@ from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 
 from app.content import (
+    ContentNotFoundError,
     list_blog_files,
     list_digest_files,
     list_project_files,
@@ -81,6 +82,11 @@ templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 @app.exception_handler(404)
 async def not_found(request: Request, exc: HTTPException):
+    return templates.TemplateResponse(request, "404.html", status_code=404)
+
+
+@app.exception_handler(ContentNotFoundError)
+async def content_not_found(request: Request, exc: ContentNotFoundError):
     return templates.TemplateResponse(request, "404.html", status_code=404)
 
 
