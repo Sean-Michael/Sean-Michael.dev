@@ -1,10 +1,8 @@
 """HTTP route tests — every endpoint, status codes, and key response content."""
 
-import pytest
 from fastapi.testclient import TestClient
 
-from app.main import load_all_blogs, load_all_projects, list_all_digests, _ttl_bucket
-
+from app.main import _ttl_bucket, list_all_digests, load_all_blogs, load_all_projects
 
 # ---------------------------------------------------------------------------
 # Static / meta routes

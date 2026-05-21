@@ -6,21 +6,20 @@ import pytest
 
 from app.main import (
     Blog,
-    Project,
     DigestSummary,
+    Project,
+    _ttl_bucket,
     extract_first_paragraph,
     get_all_tags,
     get_related_posts,
+    list_all_digests,
     load_all_blogs,
     load_all_projects,
     load_blog,
     load_digest,
     load_project,
-    list_all_digests,
     parse_digest_slug,
-    _ttl_bucket,
 )
-
 
 # ---------------------------------------------------------------------------
 # parse_digest_slug
