@@ -49,6 +49,8 @@ class Blog(BaseModel):
     content: str
     slug: str
     tags: list[str] = []
+    read_time: int = 0
+    toc: list[dict] = []
 
 
 class Project(BaseModel):
@@ -143,16 +145,32 @@ def list_all_digests(_ttl: int = 0) -> list[DigestSummary]:
     return sorted(summaries, key=lambda d: d.date, reverse=True)
 
 
+def _flatten_toc(tokens: list, max_level: int = 3) -> list[dict]:
+    result = []
+    for t in tokens:
+        if t["level"] <= max_level:
+            result.append({"id": t["id"], "title": t["name"], "level": t["level"]})
+        result.extend(_flatten_toc(t.get("children", []), max_level))
+    return result
+
+
 @lru_cache(maxsize=128)
 def load_blog(slug: str, _ttl: int = 0) -> Blog:
     content = read_blog_file(slug)
     post = frontmatter.load(StringIO(content))
 
+    md = markdown.Markdown(extensions=["toc"])
+    html_content = md.convert(post.content)
+    toc = _flatten_toc(md.toc_tokens)
+    read_time = max(1, round(len(post.content.split()) / 200))
+
     return Blog.model_validate(
         {
             **post.metadata,
-            "content": markdown.markdown(post.content),
+            "content": html_content,
             "slug": slug,
+            "read_time": read_time,
+            "toc": toc,
         }
     )
 

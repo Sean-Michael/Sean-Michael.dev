@@ -16,6 +16,8 @@
     <span class="pg-article-date">{{ blog.date.strftime("%B %d, %Y") }}</span>
     <span class="pg-article-dot">·</span>
     <span class="pg-article-author">by {{ blog.author }}</span>
+    <span class="pg-article-dot">·</span>
+    <span class="pg-article-read">{{ blog.read_time }} min read</span>
   </div>
   <h1 class="pg-article-title">{{ blog.title }}</h1>
   <div class="pg-article-tags">
@@ -31,6 +33,21 @@
   </article>
 
   <aside class="pg-article-rail">
+    {% if blog.toc %}
+    <div class="hw-widget pg-rail-widget">
+      <div class="hw-w-head">
+        <span class="hw-w-label">CONTENTS</span>
+      </div>
+      <ul class="pg-toc">
+        {% for item in blog.toc %}
+        <li>
+          <a href="#{{ item.id }}" {% if item.level == 3 %}style="padding-left:20px;"{% endif %}>{{ item.title }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
     <div class="hw-widget pg-rail-widget">
       <div class="hw-w-head">
         <span class="hw-w-label">SHARE</span>

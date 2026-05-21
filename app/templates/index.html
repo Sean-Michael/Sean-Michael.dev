@@ -24,6 +24,15 @@
 
   <!-- Widget carousel -->
   <div class="hcr-slot">
+    <!-- Tabs -->
+    <div class="hcr-tabs">
+      <button class="hcr-tab active" data-idx="0"><span class="hcr-tab-dot"></span>building</button>
+      <button class="hcr-tab" data-idx="1"><span class="hcr-tab-dot"></span>climbing</button>
+      <button class="hcr-tab" data-idx="2"><span class="hcr-tab-dot"></span>tides</button>
+      <button class="hcr-tab" data-idx="3"><span class="hcr-tab-dot"></span>github</button>
+      <button class="hcr-tab" data-idx="4"><span class="hcr-tab-dot"></span>reading</button>
+    </div>
+
     <div class="hcr-content">
 
       <!-- Widget: Building -->
@@ -174,24 +183,15 @@
       </div>
 
     </div><!-- /.hcr-content -->
-
-    <!-- Tabs -->
-    <div class="hcr-tabs">
-      <button class="hcr-tab active" data-idx="0"><span class="hcr-tab-dot"></span>building</button>
-      <button class="hcr-tab" data-idx="1"><span class="hcr-tab-dot"></span>climbing</button>
-      <button class="hcr-tab" data-idx="2"><span class="hcr-tab-dot"></span>tides</button>
-      <button class="hcr-tab" data-idx="3"><span class="hcr-tab-dot"></span>github</button>
-      <button class="hcr-tab" data-idx="4"><span class="hcr-tab-dot"></span>reading</button>
-    </div>
   </div><!-- /.hcr-slot -->
 </div><!-- /.hw-hero-row -->
 
 <!-- Main slab -->
 <div class="gs-slab">
-  <div class="gs-cols">
+  <div class="gs-slab-grid">
 
-    <!-- Selected work -->
-    <div class="gs-col">
+    <!-- Selected work (left, 1.5fr) -->
+    <div>
       <div class="gs-col-head">
         <span class="gs-col-num">01</span>
         <h2 class="gs-col-title">Selected work</h2>
@@ -212,55 +212,60 @@
       </div>
     </div>
 
-    <!-- Writing -->
-    <div class="gs-col">
-      <div class="gs-col-head">
-        <span class="gs-col-num">02</span>
-        <h2 class="gs-col-title">Writing</h2>
-        <a href="/blog" class="gs-col-more">all →</a>
-      </div>
-      <div class="gs-post-list">
-        {% for blog in blogs %}
-        <a href="/blog/{{ blog.slug }}" class="gs-post">
-          <div class="gs-post-date">{{ blog.date.strftime("%b %d") }}</div>
-          <div class="gs-post-title">{{ blog.title }}</div>
-          <div class="gs-post-tags">
-            {% for tag in blog.tags[:2] %}{{ tag }}{% if not loop.last %} · {% endif %}{% endfor %}
-          </div>
-        </a>
-        {% endfor %}
-      </div>
-    </div>
+    <!-- Right column: Writing + Currently (1fr) -->
+    <div style="display:flex;flex-direction:column;gap:32px;">
 
-    <!-- Currently -->
-    <div class="gs-col">
-      <div class="gs-col-head">
-        <span class="gs-col-num">03</span>
-        <h2 class="gs-col-title">Currently</h2>
-      </div>
-      <div class="gs-now">
-        <div class="gs-now-row">
-          <span class="gs-now-k">building</span>
-          <span class="gs-now-v">{% if wip %}{{ wip.title }}{% else %}Cluster Agent (k8s MCP server){% endif %}</span>
+      <!-- Writing -->
+      <div>
+        <div class="gs-col-head">
+          <span class="gs-col-num">02</span>
+          <h2 class="gs-col-title">Writing</h2>
+          <a href="/blog" class="gs-col-more">all →</a>
         </div>
-        <div class="gs-now-row">
-          <span class="gs-now-k">reading</span>
-          <span class="gs-now-v">Designing Data-Intensive Applications</span>
-        </div>
-        <div class="gs-now-row">
-          <span class="gs-now-k">listening</span>
-          <span class="gs-now-v">Latent Space podcast</span>
-        </div>
-        <div class="gs-now-row">
-          <span class="gs-now-k">climbing</span>
-          <span class="gs-now-v">planning a Baker attempt this season</span>
-        </div>
-        <div class="gs-now-row">
-          <span class="gs-now-k">location</span>
-          <span class="gs-now-v">Bellingham, WA · 48.7°N</span>
+        <div class="gs-post-list">
+          {% for blog in blogs %}
+          <a href="/blog/{{ blog.slug }}" class="gs-post">
+            <div class="gs-post-date">{{ blog.date.strftime("%b %d") }}</div>
+            <div class="gs-post-title">{{ blog.title }}</div>
+            <div class="gs-post-tags">
+              {% for tag in blog.tags[:2] %}{{ tag }}{% if not loop.last %} · {% endif %}{% endfor %}
+            </div>
+          </a>
+          {% endfor %}
         </div>
       </div>
-    </div>
+
+      <!-- Currently -->
+      <div>
+        <div class="gs-col-head">
+          <span class="gs-col-num">03</span>
+          <h2 class="gs-col-title">Currently</h2>
+        </div>
+        <div class="gs-now">
+          <div class="gs-now-row">
+            <span class="gs-now-k">building</span>
+            <span class="gs-now-v">{% if wip %}{{ wip.title }}{% else %}Cluster Agent (k8s MCP server){% endif %}</span>
+          </div>
+          <div class="gs-now-row">
+            <span class="gs-now-k">reading</span>
+            <span class="gs-now-v">Designing Data-Intensive Applications</span>
+          </div>
+          <div class="gs-now-row">
+            <span class="gs-now-k">listening</span>
+            <span class="gs-now-v">Latent Space podcast</span>
+          </div>
+          <div class="gs-now-row">
+            <span class="gs-now-k">climbing</span>
+            <span class="gs-now-v">planning a Baker attempt this season</span>
+          </div>
+          <div class="gs-now-row">
+            <span class="gs-now-k">location</span>
+            <span class="gs-now-v">Bellingham, WA · 48.7°N</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /.right column -->
 
   </div>
 </div>

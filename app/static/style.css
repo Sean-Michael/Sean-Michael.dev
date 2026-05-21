@@ -314,9 +314,16 @@ a { color: inherit; text-decoration: none; }
 .hcr-tab.active { background: rgba(120, 170, 220, 0.22); color: var(--ice-50); }
 .hcr-tab-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(240, 248, 255, 0.3); flex-shrink: 0; }
 .hcr-tab.active .hcr-tab-dot { background: var(--ice-300); box-shadow: 0 0 5px var(--ice-300); }
-.hcr-content { display: flex; flex-direction: column; gap: 12px; min-height: 240px; }
-.carousel-widget { display: none; flex-direction: column; gap: 12px; }
-.carousel-widget.active { display: flex; animation: hcr-fade 0.25s ease; }
+.hcr-content { display: grid; min-height: 240px; }
+.carousel-widget {
+  grid-row: 1; grid-column: 1;
+  display: flex; flex-direction: column; gap: 12px;
+  visibility: hidden; opacity: 0; pointer-events: none;
+}
+.carousel-widget.active {
+  visibility: visible; opacity: 1; pointer-events: auto;
+  animation: hcr-fade 0.25s ease;
+}
 @keyframes hcr-fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 
 /* ===== SLAB ===== */

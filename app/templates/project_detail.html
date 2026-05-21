@@ -20,9 +20,9 @@
     </div>
     <h1 class="pg-article-title">{{ project.title }}</h1>
     <div class="pg-proj-actions">
-      <a href="{{ project.github_url }}" target="_blank" rel="noopener" class="pg-proj-action">GitHub ↗</a>
+      <a href="{{ project.github_url }}" target="_blank" rel="noopener" class="pg-btn pg-btn-primary">GitHub <span class="pg-btn-arrow">↗</span></a>
       {% if project.demo_url %}
-      <a href="{{ project.demo_url }}" target="_blank" rel="noopener" class="pg-proj-action">Live demo ↗</a>
+      <a href="{{ project.demo_url }}" target="_blank" rel="noopener" class="pg-btn pg-btn-ghost">Live demo <span class="pg-btn-arrow">↗</span></a>
       {% endif %}
     </div>
   </div>
