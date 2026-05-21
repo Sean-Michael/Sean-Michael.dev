@@ -1,3 +1,4 @@
+import os
 import re
 import time
 from datetime import date
@@ -77,6 +78,11 @@ class Digest(DigestSummary):
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
+_JS_DIST = BASE_DIR / "frontend" / "dist"
+if _JS_DIST.is_dir():
+    app.mount("/js", StaticFiles(directory=str(_JS_DIST)), name="js")
+
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 
@@ -120,12 +126,15 @@ def load_digest(slug: str, _ttl: int = 0) -> Digest:
 
 
 def parse_digest_slug(slug: str) -> DigestSummary:
-    """Derive title and date from slug like 'topic-words-2026-04-04'."""
-    # Last 3 segments are YYYY-MM-DD
+    """Derive title and date from slug. Handles 'YYYY-MM-DD' or 'topic-words-YYYY-MM-DD'."""
     parts = slug.rsplit("-", 3)
-    d = date(int(parts[1]), int(parts[2]), int(parts[3]))
-    title_part = parts[0].replace("-", " ").title()
-    title = f"{title_part} | {d.isoformat()}"
+    if len(parts) == 3:
+        d = date(int(parts[0]), int(parts[1]), int(parts[2]))
+        title = f"Digest · {d.strftime('%B %d, %Y')}"
+    else:
+        d = date(int(parts[1]), int(parts[2]), int(parts[3]))
+        title_part = parts[0].replace("-", " ").title()
+        title = f"{title_part} · {d.strftime('%B %d, %Y')}"
     return DigestSummary(title=title, date=d, slug=slug)
 
 

@@ -1,64 +1,268 @@
 {% extends "base.html" %}
 
-{% block title %}Sean-Michael{% endblock %}
+{% block title %}Sean-Michael — Platform Engineer{% endblock %}
 
 {% block content %}
-<div class="window">
-    <div class="window-titlebar">
-        <span class="window-title">~/sean-michael</span>
-    </div>
-    <div class="window-body">
-        <h1>Sean-Michael</h1>
-        <p class="home-intro">
-            Platform engineer based in Bellingham, WA. I've always loved playing with computers!
-        </p>
+{% set wip = projects | selectattr("status", "equalto", "wip") | list | first %}
 
-        <div class="home-links">
-            <a href="https://github.com/sean-michael">GitHub</a>
-            <a href="https://linkedin.com/in/sean-michael-riesterer">LinkedIn</a>
+<!-- Hero row -->
+<div class="hw-hero-row">
+  <div class="hw-hero-text">
+    <div class="gs-hero-label">~/SEAN-MICHAEL</div>
+    <h1 class="gs-hero-name">Platform engineer<br>based in Bellingham, WA.</h1>
+    <p class="gs-hero-blurb">
+      I build infrastructure, backend systems, and AI applications.
+      Passionate about automation, developer experience, and letting
+      people get their work done and have fun doing it.
+    </p>
+    <div class="gs-hero-meta">
+      <a href="https://github.com/sean-michael" target="_blank" rel="noopener" class="gs-link-arrow">GitHub <span>↗</span></a>
+      <a href="https://linkedin.com/in/sean-michael-riesterer" target="_blank" rel="noopener" class="gs-link-arrow">LinkedIn <span>↗</span></a>
+      <a href="/about" class="gs-link-arrow">About me <span>→</span></a>
+    </div>
+  </div>
+
+  <!-- Widget carousel -->
+  <div class="hcr-slot">
+    <div class="hcr-content">
+
+      <!-- Widget: Building -->
+      <div class="hw-widget carousel-widget active" data-key="building">
+        <div class="hw-w-head">
+          <span class="hw-w-label">NOW BUILDING</span>
+          <span class="hw-w-status"><span class="hw-w-dot hw-dot-wip"></span>wip</span>
         </div>
-    </div>
-</div>
+        {% if wip %}
+        <h3 class="hw-w-title">{{ wip.title }}</h3>
+        <p class="hw-w-desc">{{ wip.description }}</p>
+        <div class="hw-w-chips">
+          {% for tech in wip.tech_stack[:4] %}
+          <span class="hw-w-chip">{{ tech }}</span>
+          {% endfor %}
+        </div>
+        <div class="hw-w-foot">
+          <span class="hw-w-meta">{{ wip.date.strftime("%b %Y") }}</span>
+          <a class="hw-w-link" href="/projects/{{ wip.slug }}">read more →</a>
+        </div>
+        {% else %}
+        <h3 class="hw-w-title">Cluster Agent</h3>
+        <p class="hw-w-desc">
+          A Model Context Protocol server for Kubernetes cluster administration.
+          Letting LLMs run kubectl, safely.
+        </p>
+        <div class="hw-w-chips">
+          <span class="hw-w-chip">Python</span>
+          <span class="hw-w-chip">MCP</span>
+          <span class="hw-w-chip">k8s</span>
+        </div>
+        <div class="hw-w-foot">
+          <span class="hw-w-meta">started Oct 2025</span>
+          <a class="hw-w-link" href="/projects">read more →</a>
+        </div>
+        {% endif %}
+      </div>
 
-{% if projects %}
-<div class="home-section">
-    <div class="home-section-header">
-        <h2>Projects</h2>
-        <a href="/projects" class="home-view-all">View all</a>
-    </div>
-    <div class="project-grid">
-        {% for project in projects %}
-        <a href="/projects/{{ project.slug }}" class="project-card">
-            <div class="project-card-header">
-                <h3 class="project-card-title">{{ project.title }}</h3>
-                <span class="project-status project-status-{{ project.status }}">{{ project.status }}</span>
+      <!-- Widget: Climbing conditions -->
+      <div class="hw-widget carousel-widget" data-key="climbing">
+        <div class="hw-w-head">
+          <span class="hw-w-label">MT. BAKER</span>
+          <span class="hw-w-meta-sm">10,781 ft</span>
+        </div>
+        <div class="hw-climb-row">
+          <div class="hw-climb-icon">▲</div>
+          <div class="hw-climb-info">
+            <div class="hw-climb-temp">28°<span class="hw-climb-feels">/ feels 18°</span></div>
+            <div class="hw-climb-cond">Clear · wind 12 mph NW</div>
+          </div>
+        </div>
+        <div class="hw-climb-divider"></div>
+        <div class="hw-climb-rows">
+          <div class="hw-climb-stat"><span class="hw-climb-k">snowpack</span><span class="hw-climb-v">142" / above avg</span></div>
+          <div class="hw-climb-stat"><span class="hw-climb-k">avi risk</span><span class="hw-climb-v hw-good">low</span></div>
+          <div class="hw-climb-stat"><span class="hw-climb-k">freezing</span><span class="hw-climb-v">6,400 ft</span></div>
+          <div class="hw-climb-stat"><span class="hw-climb-k">route</span><span class="hw-climb-v">Coleman-Deming, go</span></div>
+        </div>
+      </div>
+
+      <!-- Widget: Tides (Bellingham Bay) -->
+      <div class="hw-widget carousel-widget" data-key="tides">
+        <div class="hw-w-head">
+          <span class="hw-w-label">BELLINGHAM BAY · TIDES</span>
+          <span class="hw-w-meta-sm">10:08</span>
+        </div>
+        <div class="hw-tides-now">
+          <div class="hw-tides-current">
+            <span class="hw-tides-h">7.2</span>
+            <span class="hw-tides-unit">ft</span>
+          </div>
+          <div class="hw-tides-trend">
+            <span class="hw-tides-arrow">↗</span>
+            <span class="hw-tides-state">rising</span>
+            <span class="hw-tides-next">high 11.4ft @ 13:42</span>
+          </div>
+        </div>
+        <svg class="hw-tides-chart" viewBox="0 0 280 80" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="tideFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="oklch(0.78 0.08 220)" stop-opacity="0.35"/>
+              <stop offset="1" stop-color="oklch(0.78 0.08 220)" stop-opacity="0.02"/>
+            </linearGradient>
+          </defs>
+          <polyline points="0,80 0,40 18,47 36,61 54,72 72,74 90,67 108,53 126,40 144,29 162,22 180,20 198,25 216,37 234,51 252,62 270,68 280,68 280,80" fill="url(#tideFill)" stroke="none"/>
+          <polyline points="0,40 18,47 36,61 54,72 72,74 90,67 108,53 126,40 144,29 162,22 180,20 198,25 216,37 234,51 252,62 270,68 280,68" fill="none" stroke="oklch(0.78 0.08 220)" stroke-width="1.5"/>
+          <line x1="117.6" y1="0" x2="117.6" y2="80" stroke="rgba(255,255,255,0.18)" stroke-dasharray="2 3"/>
+          <circle cx="117.6" cy="40" r="3.5" fill="oklch(0.95 0.02 220)" stroke="oklch(0.78 0.08 220)" stroke-width="1.5"/>
+        </svg>
+        <div class="hw-tides-axis">
+          <span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span>
+        </div>
+      </div>
+
+      <!-- Widget: GitHub contributions -->
+      <div class="hw-widget carousel-widget" data-key="github">
+        <div class="hw-w-head">
+          <span class="hw-w-label">CONTRIBUTIONS · 13 WEEKS</span>
+          <span class="hw-w-meta-sm">347 total</span>
+        </div>
+        <div class="hw-gh-grid">
+          {% set intensity = [0,0,1,2,0,1,3,2,0,1,1,0,0,2,1,3,4,2,1,0,0,0,2,1,1,0,2,3,4,4,3,2,1,0,0,1,2,3,4,4,4,3,0,1,1,2,3,4,4,2,1,0,0,2,3,1,2,1,0,0,0,1,1,2,2,3,2,1,1,2,3,4,2,1,0,1,1,2,1,0,0,1,2,3,3,2,1,0,1,2,2] %}
+          {% for level in intensity %}
+          <div class="hw-gh-cell hw-gh-l{{ level }}" title="{{ level }} contributions"></div>
+          {% endfor %}
+        </div>
+        <div class="hw-gh-scale">
+          <span class="hw-gh-scale-label">less</span>
+          <span class="hw-gh-cell hw-gh-l0"></span>
+          <span class="hw-gh-cell hw-gh-l1"></span>
+          <span class="hw-gh-cell hw-gh-l2"></span>
+          <span class="hw-gh-cell hw-gh-l3"></span>
+          <span class="hw-gh-cell hw-gh-l4"></span>
+          <span class="hw-gh-scale-label">more</span>
+        </div>
+        <div class="hw-w-foot">
+          <span class="hw-w-meta">longest streak: 14 days</span>
+          <a class="hw-w-link" href="https://github.com/sean-michael" target="_blank" rel="noopener">profile →</a>
+        </div>
+      </div>
+
+      <!-- Widget: Reading -->
+      <div class="hw-widget carousel-widget" data-key="reading">
+        <div class="hw-w-head">
+          <span class="hw-w-label">CURRENTLY READING</span>
+          <span class="hw-w-meta-sm">ch. 7</span>
+        </div>
+        <div class="hw-read-row">
+          <div class="hw-read-cover">
+            <span class="hw-read-cover-text">DDIA</span>
+          </div>
+          <div class="hw-read-info">
+            <div class="hw-read-title">Designing Data-Intensive Applications</div>
+            <div class="hw-read-author">Martin Kleppmann</div>
+            <div class="hw-read-progress">
+              <div class="hw-read-bar"><div class="hw-read-bar-fill" style="width:58%"></div></div>
+              <div class="hw-read-pct">58% · p. 342 of 590</div>
             </div>
+          </div>
+        </div>
+        <div class="hw-read-quote">
+          "The big idea behind <em>encoded data</em> is forward and backward compatibility."
+        </div>
+        <div class="hw-w-foot">
+          <span class="hw-w-meta">started apr 2026</span>
+          <a class="hw-w-link" href="/blog">notes →</a>
+        </div>
+      </div>
 
-            {% if project.description %}
-            <p class="project-card-desc">{{ project.description }}</p>
-            {% endif %}
+    </div><!-- /.hcr-content -->
 
-            <p class="project-card-date">{{ project.date.strftime("%b %Y") }}</p>
+    <!-- Tabs -->
+    <div class="hcr-tabs">
+      <button class="hcr-tab active" data-idx="0"><span class="hcr-tab-dot"></span>building</button>
+      <button class="hcr-tab" data-idx="1"><span class="hcr-tab-dot"></span>climbing</button>
+      <button class="hcr-tab" data-idx="2"><span class="hcr-tab-dot"></span>tides</button>
+      <button class="hcr-tab" data-idx="3"><span class="hcr-tab-dot"></span>github</button>
+      <button class="hcr-tab" data-idx="4"><span class="hcr-tab-dot"></span>reading</button>
+    </div>
+  </div><!-- /.hcr-slot -->
+</div><!-- /.hw-hero-row -->
+
+<!-- Main slab -->
+<div class="gs-slab">
+  <div class="gs-cols">
+
+    <!-- Selected work -->
+    <div class="gs-col">
+      <div class="gs-col-head">
+        <span class="gs-col-num">01</span>
+        <h2 class="gs-col-title">Selected work</h2>
+        <a href="/projects" class="gs-col-more">all →</a>
+      </div>
+      <div class="gs-proj-list">
+        {% for project in projects[:4] %}
+        <a href="/projects/{{ project.slug }}" class="gs-proj gs-status-{{ project.status }}">
+          <div class="gs-proj-top">
+            <span class="gs-proj-title">{{ project.title }}</span>
+            <span class="gs-proj-status"><span class="gs-proj-dot"></span>{{ project.status }}</span>
+          </div>
+          <div class="gs-proj-desc">
+            {% for tech in project.tech_stack[:3] %}{{ tech }}{% if not loop.last %} · {% endif %}{% endfor %}
+          </div>
         </a>
         {% endfor %}
+      </div>
     </div>
-</div>
-{% endif %}
 
-{% if blogs %}
-<div class="home-section">
-    <div class="home-section-header">
-        <h2>Recent Posts</h2>
-        <a href="/blog" class="home-view-all">View all</a>
-    </div>
-    <ul class="blog-list">
+    <!-- Writing -->
+    <div class="gs-col">
+      <div class="gs-col-head">
+        <span class="gs-col-num">02</span>
+        <h2 class="gs-col-title">Writing</h2>
+        <a href="/blog" class="gs-col-more">all →</a>
+      </div>
+      <div class="gs-post-list">
         {% for blog in blogs %}
-        <li>
-            <a href="/blog/{{ blog.slug }}">{{ blog.title }}</a>
-            <span class="date">{{ blog.date.strftime("%b %d, %Y") }}</span>
-        </li>
+        <a href="/blog/{{ blog.slug }}" class="gs-post">
+          <div class="gs-post-date">{{ blog.date.strftime("%b %d") }}</div>
+          <div class="gs-post-title">{{ blog.title }}</div>
+          <div class="gs-post-tags">
+            {% for tag in blog.tags[:2] %}{{ tag }}{% if not loop.last %} · {% endif %}{% endfor %}
+          </div>
+        </a>
         {% endfor %}
-    </ul>
+      </div>
+    </div>
+
+    <!-- Currently -->
+    <div class="gs-col">
+      <div class="gs-col-head">
+        <span class="gs-col-num">03</span>
+        <h2 class="gs-col-title">Currently</h2>
+      </div>
+      <div class="gs-now">
+        <div class="gs-now-row">
+          <span class="gs-now-k">building</span>
+          <span class="gs-now-v">{% if wip %}{{ wip.title }}{% else %}Cluster Agent (k8s MCP server){% endif %}</span>
+        </div>
+        <div class="gs-now-row">
+          <span class="gs-now-k">reading</span>
+          <span class="gs-now-v">Designing Data-Intensive Applications</span>
+        </div>
+        <div class="gs-now-row">
+          <span class="gs-now-k">listening</span>
+          <span class="gs-now-v">Latent Space podcast</span>
+        </div>
+        <div class="gs-now-row">
+          <span class="gs-now-k">climbing</span>
+          <span class="gs-now-v">planning a Baker attempt this season</span>
+        </div>
+        <div class="gs-now-row">
+          <span class="gs-now-k">location</span>
+          <span class="gs-now-v">Bellingham, WA · 48.7°N</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
-{% endif %}
+
 {% endblock %}

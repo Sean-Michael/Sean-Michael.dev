@@ -1,7 +1,7 @@
-<div class="sidebar-dropdown-items">
-    {% for blog in blogs %}
-    <a href="/blog/{{ blog.slug }}" class="sidebar-sublink{% if request.url.path == '/blog/' + blog.slug %} active{% endif %}">
-        {{ blog.title }}
-    </a>
-    {% endfor %}
-</div>
+<div class="gs-sb-section" style="margin-top: 4px;">RECENT</div>
+{% for blog in blogs[:5] %}
+<a href="/blog/{{ blog.slug }}" class="gs-sb-link gs-sb-link-sm{% if request.url.path == '/blog/' + blog.slug %} active{% endif %}">
+  <span class="gs-sb-glyph" style="font-size: 9px;">–</span>
+  <span class="gs-sb-name" style="font-size: 11px; opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ blog.title }}</span>
+</a>
+{% endfor %}

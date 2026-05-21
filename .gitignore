@@ -51,6 +51,10 @@ secrets.ini
 # Application content in S3
 content/
 
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
 # ruff
 .ruff*
 

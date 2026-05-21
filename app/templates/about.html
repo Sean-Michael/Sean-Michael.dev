@@ -1,79 +1,127 @@
 {% extends "base.html" %}
 
-{% block title %}About | Sean-Michael{% endblock %}
+{% block title %}About — Sean-Michael{% endblock %}
+{% block description %}Platform engineer based in Bellingham, WA. I build infrastructure, backend systems, and AI applications.{% endblock %}
 
 {% block content %}
-<div class="window">
-    <div class="window-titlebar">
-        <span class="window-title">@sean-michael</span>
+<header class="pg-header">
+  <div class="pg-header-left">
+    <div class="gs-hero-label">~/ABOUT</div>
+    <h1 class="pg-title">About me</h1>
+  </div>
+</header>
+
+<div class="pg-about-layout">
+  <!-- Portrait + contact rail -->
+  <aside class="pg-about-portrait">
+    <div class="pg-portrait-frame">
+      <img src="/static/images/smr-shuksan.JPG" alt="Sean-Michael in front of Mt Shuksan">
+      <div class="pg-portrait-overlay">
+        <div class="pg-portrait-cap">In front of Mt. Shuksan</div>
+        <div class="pg-portrait-sub">North Cascades, WA</div>
+      </div>
     </div>
-    <div class="window-body">
-        <h1>About Me</h1>
 
-        <div class="about-section about-intro">
-            <div class="about-photo">
-                <img src="/static/images/smr-shuksan.JPG" alt="Sean-Michael skiing in front of Mt Shuksan">
-            </div>
-            <p>
-                I'm Sean-Michael, an engineer who enjoys building things and exploring the outdoors.
-                Happily based in beautiful Bellingham, Washington.
-            </p>
-        </div>
-
-        <div class="about-section">
-            <h2>What I Do</h2>
-            <p>
-                I work on infrastructure, and backend systems. 
-                I'm passionate about automation as a driver for teamwork, and enabling people to get their work done and have fun doing it.
-                
-                Lately I've been interested in AI.
-            </p>
-        </div>
-
-        <div class="about-section">
-            <h2>Skills</h2>
-            <div class="skills-list">
-                <span class="skill">Python</span>
-                <span class="skill">Kubernetes</span>
-                <span class="skill">Docker</span>
-                <span class="skill">Terraform</span>
-                <span class="skill">Linux</span>
-            </div>
-        </div>
-
-        <div class="about-section">
-            <h2>Outside Work</h2>
-            <p>
-                I love sitting and building things, playing with new technologies, and reading books on the O'Reilly platform, but when I need a break I like to be active.
-            </p>
-            <p>
-                <ul>
-                    <li>Rock Climbing - outdoors preferabbly!</li>
-                    <li>Cycling - cruising around town, long gravel rides, or MTB at Galbraith!</li>
-                    <li>Skiing - I live for this come winter time</li>
-                    <li>Strength Training - I bench 225 btw</li>
-                    <li>Yoga - So FUN! Lots of ways to enjoy, hot flow, yin</li>
-                </ul>
-            </p>
-            <p>
-                Sometimes though, I do things that don't involve work or learning new technologies and aren't outdoor sports. :)
-                I've enjoyed taking the time to hone creative and artistic skills which give me an awesome outlet for exploring myself and the world.
-
-                <ul>
-                    <li>Guitar - My favorite and longest praticed, I love to play while my wife sings</li>
-                    <li>Photography - As a teen I enjoyed digital photography but have since taken a keen interest in the 34mm film variety</li>
-                    <li>Drawing - My wife has been teaching me to draw and I've really enjoyed practicing and trying to improve this skill</li>
-                </ul>
-            </p>
-        </div>
-
-        <div class="about-section">
-            <h2>Contact</h2>
-            <p>
-                <a href="https://github.com/sean-michael">GitHub</a> |
-                <a href="https://linkedin.com/in/sean-michael-riesterer">LinkedIn</a>
-            </p>
-        </div>
+    <div class="hw-widget pg-rail-widget pg-where">
+      <div class="hw-w-head">
+        <span class="hw-w-label">WHERE</span>
+      </div>
+      <div class="pg-where-place">Bellingham, WA</div>
+      <div class="pg-where-coord">48.7°N · 122.5°W</div>
     </div>
+
+    <div class="hw-widget pg-rail-widget">
+      <div class="hw-w-head">
+        <span class="hw-w-label">SAY HI</span>
+      </div>
+      <div class="pg-share">
+        <a href="https://github.com/sean-michael" target="_blank" rel="noopener" class="pg-share-link">GitHub ↗</a>
+        <a href="https://linkedin.com/in/sean-michael-riesterer" target="_blank" rel="noopener" class="pg-share-link">LinkedIn ↗</a>
+        <a href="mailto:hello@sean-michael.dev" class="pg-share-link">hello@sean-michael.dev</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Narrative slab -->
+  <section class="gs-slab pg-about-slab">
+
+    <div class="pg-about-section">
+      <div class="gs-col-head">
+        <span class="gs-col-num">01</span>
+        <h2 class="gs-col-title">Hi, I'm Sean-Michael</h2>
+      </div>
+      <p class="pg-about-p pg-about-lead">
+        I'm an engineer who enjoys building things and exploring the outdoors.
+        Happily based in beautiful Bellingham, Washington.
+      </p>
+      <p class="pg-about-p">
+        I work on infrastructure and backend systems. I'm passionate about
+        automation as a driver for teamwork, and enabling people to get their
+        work done and have fun doing it. Lately I've been interested in AI.
+      </p>
+    </div>
+
+    <div class="pg-about-section">
+      <div class="gs-col-head">
+        <span class="gs-col-num">02</span>
+        <h2 class="gs-col-title">Outside work</h2>
+      </div>
+      <p class="pg-about-p">
+        I love sitting and building things, playing with new technologies, and
+        reading books on the O'Reilly platform, but when I need a break I like
+        to be active.
+      </p>
+      <div class="pg-hobby-list">
+        <div class="pg-hobby">
+          <div class="pg-hobby-k">climbing</div>
+          <div class="pg-hobby-v">outdoors preferably</div>
+        </div>
+        <div class="pg-hobby">
+          <div class="pg-hobby-k">cycling</div>
+          <div class="pg-hobby-v">cruising around town, long gravel rides, or MTB at Galbraith</div>
+        </div>
+        <div class="pg-hobby">
+          <div class="pg-hobby-k">skiing</div>
+          <div class="pg-hobby-v">I live for this come winter time</div>
+        </div>
+        <div class="pg-hobby">
+          <div class="pg-hobby-k">strength</div>
+          <div class="pg-hobby-v">I bench 225 btw</div>
+        </div>
+        <div class="pg-hobby">
+          <div class="pg-hobby-k">yoga</div>
+          <div class="pg-hobby-v">so fun — lots of ways to enjoy. hot flow, yin</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pg-about-section">
+      <div class="gs-col-head">
+        <span class="gs-col-num">03</span>
+        <h2 class="gs-col-title">Quiet things</h2>
+      </div>
+      <p class="pg-about-p">
+        Sometimes I do things that don't involve work or learning new technologies
+        and aren't outdoor sports. I've enjoyed taking the time to hone creative
+        and artistic skills which give me an awesome outlet for exploring myself
+        and the world.
+      </p>
+      <div class="pg-hobby-list">
+        <div class="pg-hobby">
+          <div class="pg-hobby-k">guitar</div>
+          <div class="pg-hobby-v">my favorite and longest practiced — I love to play while my wife sings</div>
+        </div>
+        <div class="pg-hobby">
+          <div class="pg-hobby-k">photography</div>
+          <div class="pg-hobby-v">as a teen I enjoyed digital, but have since taken a keen interest in the 35mm film variety</div>
+        </div>
+        <div class="pg-hobby">
+          <div class="pg-hobby-k">drawing</div>
+          <div class="pg-hobby-v">my wife has been teaching me — really enjoying the practice</div>
+        </div>
+      </div>
+    </div>
+
+  </section>
 </div>
 {% endblock %}

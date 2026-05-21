@@ -9,7 +9,9 @@ on:
       - 'Dockerfile'
       - 'app/**'
       - 'tests/**'
+      - 'frontend/**'
       - 'pyproject.toml'
+      - 'uv.lock'
   pull_request:
     branches:
       - main
@@ -17,26 +19,35 @@ on:
 jobs:
   test-and-lint:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v5
         with:
-          python-version: '3.12'
-          cache: 'pip'
+          enable-cache: true
 
       - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install .[dev]
+        run: uv sync --frozen
 
-      - name: Lint with Ruff
+      - name: Lint
         run: |
-          ruff check app/ tests/
-          ruff format --check app/ tests/ || echo "::warning::Code formatting issues detected"
+          uv run ruff check app/ tests/
+          uv run ruff format --check app/ tests/ || echo "::warning::Code formatting issues detected"
 
-      - name: Run tests
-        run: pytest -v
+      - name: Test
+        run: uv run pytest -v
+
+  build-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Install frontend deps
+        working-directory: frontend
+        run: bun install --frozen-lockfile
+
+      - name: Type-check and build
+        working-directory: frontend
+        run: bun run build

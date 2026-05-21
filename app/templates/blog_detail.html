@@ -1,48 +1,61 @@
 {% extends "base.html" %}
 
-{% block title %}{{ blog.title }} | Sean-Michael{% endblock %}
-{% block description %}{{ blog.title }} by {{ blog.author }}{% endblock %}
+{% block title %}{{ blog.title }} — Sean-Michael{% endblock %}
+{% block description %}{{ blog.content | striptags | truncate(160) }}{% endblock %}
 {% block og_type %}article{% endblock %}
 
 {% block content %}
-<div class="window">
-    <div class="window-titlebar">
-        <span class="window-title">/blog/{{ blog.slug }}</span>
+<nav class="pg-crumb">
+  <a href="/blog" class="pg-crumb-back">← blog</a>
+  <span class="pg-crumb-sep">/</span>
+  <span class="pg-crumb-current">{{ blog.slug }}</span>
+</nav>
+
+<header class="pg-article-head">
+  <div class="pg-article-meta">
+    <span class="pg-article-date">{{ blog.date.strftime("%B %d, %Y") }}</span>
+    <span class="pg-article-dot">·</span>
+    <span class="pg-article-author">by {{ blog.author }}</span>
+  </div>
+  <h1 class="pg-article-title">{{ blog.title }}</h1>
+  <div class="pg-article-tags">
+    {% for tag in blog.tags %}
+    <a href="/blog?tag={{ tag }}" class="pg-tag-chip">{{ tag }}</a>
+    {% endfor %}
+  </div>
+</header>
+
+<div class="pg-article-layout">
+  <article class="gs-slab pg-article prose-content">
+    {{ blog.content | safe }}
+  </article>
+
+  <aside class="pg-article-rail">
+    <div class="hw-widget pg-rail-widget">
+      <div class="hw-w-head">
+        <span class="hw-w-label">SHARE</span>
+      </div>
+      <div class="pg-share">
+        <a href="https://news.ycombinator.com/submitlink?u=https://sean-michael.dev/blog/{{ blog.slug }}&t={{ blog.title | urlencode }}" target="_blank" rel="noopener" class="pg-share-link">HN ↗</a>
+        <button class="pg-share-link" onclick="navigator.clipboard.writeText(window.location.href); this.textContent='Copied!'">Copy link</button>
+      </div>
     </div>
-    <div class="window-body">
-        <a href="/blog" class="back-link">&larr; Back to posts</a>
-        <article>
-            <h1>{{ blog.title }}</h1>
-            <p class="meta">By {{ blog.author }} on {{ blog.date.strftime("%B %d, %Y") }}</p>
 
-            {% if blog.tags %}
-            <div class="tags">
-                {% for tag in blog.tags %}
-                <a href="/blog?tag={{ tag }}" class="tag">{{ tag }}</a>
-                {% endfor %}
-            </div>
-            {% endif %}
-
-            <div class="blog-content">
-                {{ blog.content | safe }}
-            </div>
-        </article>
-    </div>
-</div>
-{% endblock %}
-
-{% block sidebar %}
-{% if related_posts %}
-<aside class="sidebar">
-    <div class="sidebar-content">
-        <h3>Related Posts</h3>
-        {% for post in related_posts %}
-        <a href="/blog/{{ post.slug }}" class="sidebar-item">
-            {{ post.title }}
-            <span class="date">{{ post.date.strftime("%b %d, %Y") }}</span>
+    {% if related_posts %}
+    <div class="hw-widget pg-rail-widget">
+      <div class="hw-w-head">
+        <span class="hw-w-label">RELATED</span>
+      </div>
+      <div class="pg-related">
+        {% for post in related_posts[:3] %}
+        <a href="/blog/{{ post.slug }}" class="pg-related-item">
+          <div class="pg-related-date">{{ post.date.strftime("%b %d, %Y") }}</div>
+          <div class="pg-related-title">{{ post.title }}</div>
         </a>
         {% endfor %}
+      </div>
     </div>
-</aside>
-{% endif %}
+    {% endif %}
+  </aside>
+</div>
 {% endblock %}

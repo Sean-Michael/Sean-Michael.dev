@@ -1,43 +1,55 @@
 {% extends "base.html" %}
 
-{% block title %}Blog | Sean-Michael{% endblock %}
+{% block title %}Blog — Sean-Michael{% endblock %}
+{% block description %}Notes on platform engineering, AI applications, infrastructure, and the occasional climbing trip report.{% endblock %}
 
 {% block content %}
-<div class="window">
-    <div class="window-titlebar">
-        <span class="window-title">/blog{% if active_tag %} [{{ active_tag }}]{% endif %}</span>
+<header class="pg-header">
+  <div class="pg-header-left">
+    <div class="gs-hero-label">~/BLOG</div>
+    <h1 class="pg-title">Notes from the field</h1>
+    <p class="pg-subtitle">
+      Long-form notes on platform engineering, AI applications, infrastructure,
+      and the occasional climbing trip report.
+    </p>
+  </div>
+  <div class="pg-header-right">
+    <div class="pg-stat">
+      <span class="pg-stat-v">{{ blogs | length }}</span>
+      <span class="pg-stat-k">posts</span>
     </div>
-    <div class="window-body">
-        <h1>Blog</h1>
+    <div class="pg-stat">
+      <span class="pg-stat-v">{{ all_tags | length }}</span>
+      <span class="pg-stat-k">tags</span>
+    </div>
+  </div>
+</header>
 
-        {% if all_tags %}
-        <div class="tag-filter">
-            <span class="tag-filter-label">Filter by tag</span>
-            <div class="tags">
-                <a href="/blog" class="tag {% if not active_tag %}active{% endif %}">all</a>
-                {% for tag in all_tags %}
-                <a href="/blog?tag={{ tag }}" class="tag {% if active_tag == tag %}active{% endif %}">{{ tag }}</a>
-                {% endfor %}
-            </div>
+<section class="pg-filters">
+  <span class="pg-filter-label">FILTER BY</span>
+  <a href="/blog" class="pg-tag-pill{% if not active_tag %} active{% endif %}">all</a>
+  {% for tag in all_tags %}
+  <a href="/blog?tag={{ tag }}" class="pg-tag-pill{% if active_tag == tag %} active{% endif %}">{{ tag }}</a>
+  {% endfor %}
+</section>
+
+<section class="gs-slab">
+  <div class="pg-post-grid">
+    {% for post in blogs %}
+    <a href="/blog/{{ post.slug }}" class="pg-post-card">
+      <div class="pg-post-card-num">{{ "%02d" | format(loop.index) }}</div>
+      <div class="pg-post-card-body">
+        <div class="pg-post-card-date">{{ post.date.strftime("%b %d, %Y") }}</div>
+        <h3 class="pg-post-card-title">{{ post.title }}</h3>
+        <div class="pg-post-card-tags">
+          {% for tag in post.tags %}<span class="pg-post-card-tag">{{ tag }}</span>{% endfor %}
         </div>
-        {% endif %}
-
-        {% if active_tag %}
-        <p>Showing posts tagged "{{ active_tag }}"</p>
-        {% endif %}
-
-        <ul class="blog-list" id="blog_post-list">
-            {% for blog in blogs %}
-            <li>
-                <a href="/blog/{{ blog.slug }}">{{ blog.title }}</a>
-                <span class="date">{{ blog.date.strftime("%b %d, %Y") }}</span>
-            </li>
-            {% endfor %}
-        </ul>
-
-        {% if not blogs %}
-        <p>No posts found.</p>
-        {% endif %}
-    </div>
-</div>
+      </div>
+      <div class="pg-post-card-arrow">→</div>
+    </a>
+    {% else %}
+    <p style="color: var(--ice-300); padding: 24px 0;">No posts found.</p>
+    {% endfor %}
+  </div>
+</section>
 {% endblock %}

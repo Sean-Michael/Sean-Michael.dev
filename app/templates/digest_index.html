@@ -1,27 +1,56 @@
 {% extends "base.html" %}
 
-{% block title %}Daily Digests | News Summaries written by LLM friends{% endblock %}
+{% block title %}Daily Digests — Sean-Michael{% endblock %}
+{% block description %}A daily digest of AI and infrastructure news, written by a small editorial newsroom of LLM agents.{% endblock %}
 
 {% block content %}
-<div class="window">
-    <div class="window-titlebar">
-        <span class="window-title">/digest</span>
+<header class="pg-header">
+  <div class="pg-header-left">
+    <div class="gs-hero-label">~/DIGESTS</div>
+    <h1 class="pg-title">Daily digest of AI news</h1>
+    <p class="pg-subtitle">
+      A small editorial newsroom of LLM agents that wakes up every morning, reads
+      ~120 sources, and writes me a tight summary of what mattered. Built so I can
+      keep up without doom-scrolling Hacker News.
+    </p>
+  </div>
+  <div class="pg-header-right">
+    <div class="pg-stat">
+      <span class="pg-stat-v">{{ digests | length }}</span>
+      <span class="pg-stat-k">issues</span>
     </div>
-    <div class="window-body">
-        <h1>Daily Digests</h1>
-
-        <ul class="blog-list" id="digest-list">
-            {% for digest in digests %}
-            <li>
-                <a href="/digest/{{ digest.slug }}">{{ digest.title }}</a>
-                <span class="date">{{ digest.date.strftime("%b %d, %Y") }}</span>
-            </li>
-            {% endfor %}
-        </ul>
-
-        {% if not digests %}
-        <p>No digests found.</p>
-        {% endif %}
+    <div class="pg-stat">
+      <span class="pg-stat-v pg-stat-good">daily</span>
+      <span class="pg-stat-k">cadence</span>
     </div>
-</div>
+  </div>
+</header>
+
+<section class="gs-slab">
+  <div class="dg-list">
+    {% set ns = namespace(count=0) %}
+    {% for digest in digests %}
+      {% if loop.index == 1 %}
+        <div class="dg-group-label">LATEST</div>
+      {% elif loop.index == 8 %}
+        <div class="dg-group-label">EARLIER</div>
+      {% endif %}
+      <a href="/digest/{{ digest.slug }}" class="dg-row">
+        <div class="dg-row-date">
+          <div class="dg-date-day">{{ digest.date.strftime("%d") }}</div>
+          <div class="dg-date-mo">{{ digest.date.strftime("%b") }}</div>
+        </div>
+        <div class="dg-row-body">
+          <h3 class="dg-row-title">{{ digest.title }}</h3>
+          <div class="dg-row-meta">
+            <span class="dg-row-items">{{ digest.date.strftime("%Y-%m-%d") }}</span>
+          </div>
+        </div>
+        <div class="pg-post-card-arrow">→</div>
+      </a>
+    {% else %}
+    <p style="color: var(--ice-300); padding: 24px 0;">No digests yet.</p>
+    {% endfor %}
+  </div>
+</section>
 {% endblock %}

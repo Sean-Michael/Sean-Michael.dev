@@ -1,56 +1,74 @@
 {% extends "base.html" %}
 
-{% block title %}{{ project.title }} | Sean-Michael{% endblock %}
+{% block title %}{{ project.title }} — Sean-Michael{% endblock %}
 {% block description %}{{ project.description }}{% endblock %}
 
 {% block content %}
-<div class="window">
-    <div class="window-titlebar">
-        <span class="window-title">/projects/{{ project.slug }}</span>
+<nav class="pg-crumb">
+  <a href="/projects" class="pg-crumb-back">← projects</a>
+  <span class="pg-crumb-sep">/</span>
+  <span class="pg-crumb-current">{{ project.slug }}</span>
+</nav>
+
+<div class="pg-proj-head-row">
+  <div class="pg-proj-head-glyph{% if project.status == 'wip' %} pg-proj-head-glyph-wip{% endif %}">#</div>
+  <div class="pg-proj-head-text">
+    <div class="pg-article-meta">
+      <span class="pg-article-date">{{ project.date.strftime("%B %Y") }}</span>
+      <span class="pg-article-dot">·</span>
+      <span class="gs-proj-status gs-status-{{ project.status }}">{{ project.status }}</span>
     </div>
-    <div class="window-body">
-        <a href="/projects" class="back-link">&larr; Back to projects</a>
-        <article>
-            <div class="project-hero">
-                <div class="project-header">
-                    <h1>{{ project.title }}</h1>
-                    <span class="project-status project-status-{{ project.status }}">{{ project.status }}</span>
-                </div>
-
-                <p class="meta">{{ project.date.strftime("%B %Y") }}</p>
-
-                {% if project.tech_stack %}
-                <div class="tech-stack">
-                    {% for tech in project.tech_stack %}
-                    <span class="tech-badge">{{ tech }}</span>
-                    {% endfor %}
-                </div>
-                {% endif %}
-
-                <div class="project-links">
-                    <a href="{{ project.github_url }}" class="project-link" target="_blank" rel="noopener">
-                        GitHub &rarr;
-                    </a>
-                    {% if project.demo_url %}
-                    <a href="{{ project.demo_url }}" class="project-link" target="_blank" rel="noopener">
-                        Live Demo &rarr;
-                    </a>
-                    {% endif %}
-                </div>
-            </div>
-
-            {% if project.tags %}
-            <div class="tags">
-                {% for tag in project.tags %}
-                <span class="tag">{{ tag }}</span>
-                {% endfor %}
-            </div>
-            {% endif %}
-
-            <div class="project-content">
-                {{ project.content | safe }}
-            </div>
-        </article>
+    <h1 class="pg-article-title">{{ project.title }}</h1>
+    <div class="pg-proj-actions">
+      <a href="{{ project.github_url }}" target="_blank" rel="noopener" class="pg-proj-action">GitHub ↗</a>
+      {% if project.demo_url %}
+      <a href="{{ project.demo_url }}" target="_blank" rel="noopener" class="pg-proj-action">Live demo ↗</a>
+      {% endif %}
     </div>
+  </div>
+</div>
+
+<div class="pg-article-layout">
+  <article class="gs-slab pg-article prose-content">
+    {{ project.content | safe }}
+  </article>
+
+  <aside class="pg-article-rail">
+    <div class="hw-widget pg-rail-widget">
+      <div class="hw-w-head">
+        <span class="hw-w-label">TECH STACK</span>
+      </div>
+      <div class="pg-sys">
+        {% for tech in project.tech_stack %}
+        <div class="pg-sys-row"><span>{{ loop.index }}</span><span>{{ tech }}</span></div>
+        {% endfor %}
+      </div>
+    </div>
+
+    {% if project.tags %}
+    <div class="hw-widget pg-rail-widget">
+      <div class="hw-w-head">
+        <span class="hw-w-label">TAGS</span>
+      </div>
+      <div class="pg-article-tags" style="padding: 8px 0 0;">
+        {% for tag in project.tags %}
+        <span class="pg-tag-chip">{{ tag }}</span>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="hw-widget pg-rail-widget">
+      <div class="hw-w-head">
+        <span class="hw-w-label">LINKS</span>
+      </div>
+      <div class="pg-share">
+        <a href="{{ project.github_url }}" target="_blank" rel="noopener" class="pg-share-link">GitHub ↗</a>
+        {% if project.demo_url %}
+        <a href="{{ project.demo_url }}" target="_blank" rel="noopener" class="pg-share-link">Live demo ↗</a>
+        {% endif %}
+      </div>
+    </div>
+  </aside>
 </div>
 {% endblock %}

@@ -1,17 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}404 | Sean-Michael{% endblock %}
+{% block title %}404 — Sean-Michael{% endblock %}
 {% block description %}Page not found.{% endblock %}
 
 {% block content %}
-<div class="window">
-    <div class="window-titlebar">
-        <span class="window-title">404</span>
-    </div>
-    <div class="window-body not-found">
-        <div class="not-found-code">404</div>
-        <p class="not-found-msg">Nothing here.</p>
-        <a href="/" class="back-link">&larr; Back to home</a>
-    </div>
+<div class="gs-slab" style="margin-top: 80px; text-align: center;">
+  <div style="font-family: var(--mono); font-size: 96px; font-weight: 700; color: var(--ice-700); line-height: 1; margin-bottom: 16px;">404</div>
+  <div style="font-family: var(--mono); font-size: 13px; color: var(--ice-300); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 32px;">nothing here</div>
+  <a href="/" class="gs-hero-link">← back to home</a>
 </div>
 {% endblock %}
