@@ -298,6 +298,38 @@ async def get_blogs(request: Request, tag: str | None = None):
     )
 
 
+@app.get("/blog/feed.xml")
+async def blog_rss():
+    blogs = load_all_blogs(_ttl_bucket())
+    items = []
+    for blog in blogs:
+        pub = blog.date.strftime("%a, %d %b %Y 00:00:00 +0000")
+        tags = "".join(f"<category>{t}</category>" for t in blog.tags)
+        items.append(
+            f"<item>"
+            f"<title>{blog.title}</title>"
+            f"<link>{SITE}/blog/{blog.slug}</link>"
+            f"<guid>{SITE}/blog/{blog.slug}</guid>"
+            f"<pubDate>{pub}</pubDate>"
+            f"<author>{blog.author}</author>"
+            f"{tags}"
+            f"<description><![CDATA[{blog.content}]]></description>"
+            f"</item>"
+        )
+    feed = (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">'
+        "<channel>"
+        f"<title>Sean-Michael — Notes from the field</title>"
+        f"<link>{SITE}/blog</link>"
+        f"<description>Notes on platform engineering, AI applications, and infrastructure.</description>"
+        f'<atom:link href="{SITE}/blog/feed.xml" rel="self" type="application/rss+xml"/>'
+        + "".join(items)
+        + "</channel></rss>"
+    )
+    return Response(content=feed, media_type="application/rss+xml")
+
+
 @app.get("/blog/{slug}", response_class=HTMLResponse)
 def get_blog(request: Request, slug: str):
     ttl = _ttl_bucket()

@@ -117,13 +117,7 @@ a { color: inherit; text-decoration: none; }
   font-family: var(--mono); font-size: 10px;
   color: oklch(0.82 0.12 165); letter-spacing: 0.04em;
 }
-.gs-sb-pulse {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: oklch(0.82 0.12 165);
-  box-shadow: 0 0 6px oklch(0.82 0.12 165);
-  animation: gs-pulse 2s infinite;
-}
-@keyframes gs-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+.gs-sb-pulse { display: none; }
 
 /* ===== MAIN LAYOUT ===== */
 .gs-main {
@@ -198,8 +192,8 @@ a { color: inherit; text-decoration: none; }
 .hw-w-link:hover { color: var(--ice-50); }
 .hw-w-status { display: inline-flex; align-items: center; gap: 5px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.04em; color: rgba(240, 248, 255, 0.7); }
 .hw-w-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--st-archive); }
-.hw-dot-active { background: var(--st-active); box-shadow: 0 0 6px var(--st-active); }
-.hw-dot-wip { background: var(--st-wip); box-shadow: 0 0 6px var(--st-wip); }
+.hw-dot-active { background: var(--st-active); }
+.hw-dot-wip { background: var(--st-wip); }
 .hw-w-title { font-size: 22px; font-weight: 500; letter-spacing: -0.01em; color: var(--ice-50); }
 .hw-w-desc { font-size: 13px; line-height: 1.55; color: rgba(240, 248, 255, 0.75); font-weight: 300; }
 .hw-w-chips { display: flex; gap: 5px; flex-wrap: wrap; }
@@ -313,7 +307,7 @@ a { color: inherit; text-decoration: none; }
 .hcr-tab:hover { background: rgba(120, 170, 220, 0.10); color: var(--ice-100); }
 .hcr-tab.active { background: rgba(120, 170, 220, 0.22); color: var(--ice-50); }
 .hcr-tab-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(240, 248, 255, 0.3); flex-shrink: 0; }
-.hcr-tab.active .hcr-tab-dot { background: var(--ice-300); box-shadow: 0 0 5px var(--ice-300); }
+.hcr-tab.active .hcr-tab-dot { background: var(--ice-300); }
 .hcr-content { display: grid; min-height: 240px; }
 .carousel-widget {
   grid-row: 1; grid-column: 1;
@@ -358,8 +352,8 @@ a { color: inherit; text-decoration: none; }
 .gs-proj-title { font-size: 17px; font-weight: 500; color: var(--ice-50); letter-spacing: -0.01em; flex: 1; }
 .gs-proj-status { display: flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: 0.04em; color: rgba(240, 248, 255, 0.65); }
 .gs-proj-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--st-archive); }
-.gs-status-active .gs-proj-dot { background: var(--st-active); box-shadow: 0 0 6px var(--st-active); }
-.gs-status-wip .gs-proj-dot { background: var(--st-wip); box-shadow: 0 0 6px var(--st-wip); }
+.gs-status-active .gs-proj-dot { background: var(--st-active); }
+.gs-status-wip .gs-proj-dot { background: var(--st-wip); }
 .gs-proj-desc { font-size: 14px; line-height: 1.55; color: rgba(240, 248, 255, 0.78); font-weight: 300; margin-bottom: 10px; }
 .gs-proj-foot { display: flex; gap: 16px; font-family: var(--mono); font-size: 11px; color: rgba(240, 248, 255, 0.5); }
 .gs-post-list { display: flex; flex-direction: column; }
@@ -435,8 +429,7 @@ a { color: inherit; text-decoration: none; }
 /* Article layout */
 .pg-article-layout { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 28px; align-items: start; }
 .pg-article { padding: 36px 44px; }
-.pg-lead { font-size: 17px; line-height: 1.65; color: var(--ice-100); font-weight: 400; margin-bottom: 20px; }
-.pg-article p { font-size: 15px; line-height: 1.75; color: rgba(240, 248, 255, 0.85); margin-bottom: 16px; font-weight: 300; }
+.pg-lead { font-size: 18px; line-height: 1.65; color: var(--ice-100); font-weight: 400; margin-bottom: 20px; }
 .pg-article a { color: var(--ice-300); border-bottom: 1px solid rgba(120, 170, 220, 0.35); padding-bottom: 1px; }
 .pg-article a:hover { color: var(--ice-50); border-bottom-color: var(--ice-300); }
 .pg-h2 { font-size: 22px; font-weight: 500; color: var(--ice-50); letter-spacing: -0.01em; margin-top: 28px; margin-bottom: 12px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.10); }
@@ -447,7 +440,7 @@ a { color: inherit; text-decoration: none; }
 .pg-toc a:hover { color: var(--ice-50); background: rgba(120, 170, 220, 0.08); }
 .pg-toc a.active { color: var(--ice-50); border-left-color: var(--ice-300); background: rgba(120, 170, 220, 0.12); font-weight: 600; }
 .pg-share { display: flex; flex-direction: column; gap: 4px; }
-.pg-share-link { font-family: var(--mono); font-size: 12px; color: rgba(240, 248, 255, 0.75); padding: 5px 8px; border-radius: 4px; transition: all 0.15s; }
+.pg-share-link { font-family: var(--mono); font-size: 12px; color: rgba(240, 248, 255, 0.75); padding: 5px 8px; border-radius: 4px; transition: all 0.15s; background: none; border: none; cursor: pointer; display: block; text-align: left; width: 100%; }
 .pg-share-link:hover { background: rgba(120, 170, 220, 0.10); color: var(--ice-50); }
 .pg-related { display: flex; flex-direction: column; gap: 2px; }
 .pg-related-item { display: block; padding: 8px 10px; border-left: 2px solid transparent; border-radius: 0 4px 4px 0; transition: all 0.15s; }
@@ -569,10 +562,10 @@ a { color: inherit; text-decoration: none; }
 .prose-content h2 { font-size: 22px; font-weight: 500; letter-spacing: -0.01em; }
 .prose-content h3 { font-size: 18px; font-weight: 500; }
 .prose-content h4 { font-size: 15px; font-weight: 600; }
-.prose-content p { font-size: 15px; line-height: 1.75; color: rgba(240, 248, 255, 0.85); margin-bottom: 16px; font-weight: 300; max-width: 65ch; }
+.prose-content p { font-size: 16px; line-height: 1.8; color: rgba(240, 248, 255, 0.85); margin-bottom: 18px; font-weight: 300; }
 .prose-content a { color: var(--ice-300); border-bottom: 1px solid rgba(120, 170, 220, 0.35); padding-bottom: 1px; }
 .prose-content a:hover { color: var(--ice-50); border-bottom-color: var(--ice-300); }
-.prose-content ul, .prose-content ol { margin: 12px 0; padding-left: 24px; max-width: 62ch; }
+.prose-content ul, .prose-content ol { margin: 12px 0; padding-left: 24px; }
 .prose-content ul { list-style: disc; }
 .prose-content ol { list-style: decimal; }
 .prose-content li { color: rgba(240, 248, 255, 0.85); font-size: 15px; line-height: 1.65; font-weight: 300; border-bottom: none; padding: 3px 0; }
