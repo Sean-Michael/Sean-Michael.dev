@@ -97,8 +97,10 @@ s3transfer==0.16.0
     # via boto3
 six==1.17.0
     # via python-dateutil
-starlette==0.52.1
-    # via fastapi
+starlette==1.1.0
+    # via
+    #   sean-michael-dev (pyproject.toml)
+    #   fastapi
 typing-extensions==4.15.0
     # via
     #   anyio

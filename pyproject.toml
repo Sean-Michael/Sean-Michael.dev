@@ -16,6 +16,8 @@ dependencies = [
     "python-frontmatter>=1.1.0",
     "python-multipart>=0.0.27",
     "ruff>=0.14.9",
+    # Pin above PYSEC-2026-161 (fixed in starlette 1.0.1); pulls fastapi 0.136+.
+    "starlette>=1.0.1",
     "urllib3>=2.7.0",
     "uvicorn[standard]>=0.38.0",
 ]
