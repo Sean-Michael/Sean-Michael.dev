@@ -1,7 +1,8 @@
-import { useMemo, useRef, useState } from 'react'
+import { useMemo } from 'react'
 import type { Bootstrap, StationData, SunMoon } from '../types'
 import { fmtTime, heightAt, RANGES, rateAt, stationSnapshot } from '../tides'
-import { BigChart, type SunMarks, TideDial } from './Charts'
+import { type SunMarks, TideDial } from './Charts'
+import { InteractiveChart } from './InteractiveChart'
 
 const MIN = 60 * 1000
 
@@ -145,20 +146,6 @@ export function FocusPanel({
   const to = now + mins * 0.6 * MIN
   const trendGlyph = snap.trend === 'rising' ? '↗' : snap.trend === 'falling' ? '↘' : '→'
 
-  const [hoverT, setHoverT] = useState<number | null>(null)
-  const chartRef = useRef<HTMLDivElement>(null)
-  const onMove = (e: React.MouseEvent) => {
-    const r = chartRef.current!.getBoundingClientRect()
-    const x = e.clientX - r.left
-    const ratio = (x - 38) / (r.width - 38 - 14)
-    if (ratio < 0 || ratio > 1) {
-      setHoverT(null)
-      return
-    }
-    setHoverT(from + ratio * (to - from))
-  }
-  const hoverH = hoverT != null ? heightAt(stn.extrema, hoverT) : null
-
   return (
     <section className="tt-focus">
       <header className="tt-focus-hd">
@@ -188,17 +175,8 @@ export function FocusPanel({
         </div>
       </header>
 
-      <div className="tt-focus-chart" ref={chartRef} onMouseMove={onMove} onMouseLeave={() => setHoverT(null)}>
-        <BigChart series={[stn]} from={from} to={to} now={now} showGrid={showGrid} showSun={showSun} sun={sun} style={chartStyle} hoverT={hoverT} h={300} w={920} />
-        {hoverT != null && hoverH != null && (
-          <div className="tt-focus-hover">
-            <span className="tt-fh-t">{fmtTime(hoverT)}</span>
-            <span className="tt-fh-h">
-              {hoverH.toFixed(2)}
-              <i>ft</i>
-            </span>
-          </div>
-        )}
+      <div className="tt-focus-chart">
+        <InteractiveChart series={[stn]} from={from} to={to} now={now} resetKey={`${stn.id}:${range}`} showGrid={showGrid} showSun={showSun} sun={sun} style={chartStyle} height={300} />
       </div>
 
       <div className="tt-focus-grid">

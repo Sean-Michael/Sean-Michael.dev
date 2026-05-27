@@ -13,7 +13,8 @@ import {
   RANGES,
   stationSnapshot,
 } from '../tides'
-import { BigChart, Spark, TideDial, type SunMarks } from '../components/Charts'
+import { Spark, TideDial, type SunMarks } from '../components/Charts'
+import { InteractiveChart } from '../components/InteractiveChart'
 
 const MIN = 60 * 1000
 
@@ -316,7 +317,7 @@ function DrillScreen({ data, stn, now, range, setRange, sun, showSun, showGrid, 
       <RangePills value={range} onChange={setRange} />
 
       <div className="tm-drill-chart">
-        <BigChart series={series} from={from} to={to} now={now} showGrid={showGrid} showSun={showSun && showMoon} sun={sun} style={compare ? 'line' : 'area'} showEvents={!compare} h={210} w={368} />
+        <InteractiveChart series={series} from={from} to={to} now={now} resetKey={`${stn.id}:${range}:${compare}`} showGrid={showGrid} showSun={showSun && showMoon} sun={sun} style={compare ? 'line' : 'area'} showEvents={!compare} height={210} />
       </div>
 
       <div className="tm-sec-hd">

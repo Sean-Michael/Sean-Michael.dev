@@ -855,3 +855,48 @@
 .bto-splash-title { font-family: var(--sans); font-weight: 200; font-size: 24px; letter-spacing: -0.02em; }
 .bto-splash-sub { font-size: 11px; color: rgba(220, 232, 245, 0.55); letter-spacing: 0.06em; }
 .bto-splash-err { font-size: 11px; color: oklch(0.78 0.12 30); letter-spacing: 0.04em; max-width: 60ch; text-align: center; }
+
+/* ============================================================
+   INTERACTIVE CHART — hover readout + drag-to-zoom
+   ============================================================ */
+.tic-wrap { display: flex; flex-direction: column; gap: 6px; }
+.tic-plot { position: relative; cursor: crosshair; user-select: none; -webkit-user-select: none; }
+.tic-band {
+  position: absolute;
+  background: rgba(150, 195, 235, 0.16);
+  border-left: 1px solid rgba(150, 195, 235, 0.55);
+  border-right: 1px solid rgba(150, 195, 235, 0.55);
+  pointer-events: none;
+}
+.tic-readout {
+  position: absolute;
+  top: 6px;
+  display: flex; flex-direction: column; align-items: flex-start;
+  background: rgba(8, 16, 30, 0.9);
+  border: 1px solid rgba(150, 195, 235, 0.40);
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-family: var(--mono);
+  pointer-events: none;
+  white-space: nowrap;
+}
+.tic-readout-t { font-size: 10px; color: var(--tt-fg-mute, rgba(220, 232, 245, 0.62)); }
+.tic-readout-h { font-size: 13px; font-weight: 500; color: var(--tt-fg, #eaf0f7); font-variant-numeric: tabular-nums; }
+.tic-readout-h i { font-style: normal; font-size: 9px; color: var(--tt-stroke, oklch(0.78 0.08 220)); margin-left: 2px; }
+.tic-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: var(--mono); font-size: 10px;
+  color: var(--tt-fg-faint, rgba(220, 232, 245, 0.38));
+  letter-spacing: 0.04em;
+}
+.tic-reset {
+  appearance: none;
+  background: rgba(8, 16, 30, 0.6);
+  border: 1px solid rgba(150, 195, 235, 0.35);
+  color: var(--tt-fg, #eaf0f7);
+  border-radius: 4px;
+  padding: 3px 9px;
+  font-family: var(--mono); font-size: 10px;
+  cursor: pointer;
+}
+.tic-reset:hover { border-color: rgba(150, 195, 235, 0.6); }
