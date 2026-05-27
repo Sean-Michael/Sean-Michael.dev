@@ -28,37 +28,61 @@ class Extremum:
     kind: str  # "H" | "L"
 
 
-_CACHE: dict[tuple[str, str, str], tuple[float, list[Extremum]]] = {}
+# Keyed by station id (the begin/end window is always ~now±20d, so the last
+# successful fetch stays usable). Holds the last-known-good extrema indefinitely
+# so we can serve stale data when NOAA is flaky (predictions change very slowly).
+_CACHE: dict[str, tuple[float, list[Extremum]]] = {}
+
+_RETRIES = 2  # extra attempts on transient NOAA failures
 
 
 def _fetch_blocking(station_id: str, begin: str, end: str) -> list[Extremum]:
-    station = CoopsStation(id=station_id)
-    df = station.get_data(
-        begin_date=begin,
-        end_date=end,
-        product="predictions",
-        datum="MLLW",
-        units="english",
-        time_zone="lst_ldt",
-        interval="hilo",
-    )
-    out: list[Extremum] = []
-    for ts, row in df.iterrows():
-        out.append(Extremum(t=ts.to_pydatetime(), height=float(row["v"]), kind=str(row["type"])))
-    return out
+    last_err: Exception | None = None
+    for attempt in range(_RETRIES + 1):
+        try:
+            station = CoopsStation(id=station_id)
+            df = station.get_data(
+                begin_date=begin,
+                end_date=end,
+                product="predictions",
+                datum="MLLW",
+                units="english",
+                time_zone="lst_ldt",
+                interval="hilo",
+            )
+            out: list[Extremum] = []
+            for ts, row in df.iterrows():
+                out.append(
+                    Extremum(t=ts.to_pydatetime(), height=float(row["v"]), kind=str(row["type"]))
+                )
+            return out
+        except Exception as err:  # noqa: BLE001 — retry any upstream hiccup
+            last_err = err
+            if attempt < _RETRIES:
+                time.sleep(0.6 * (attempt + 1))
+    assert last_err is not None
+    raise last_err
 
 
 async def fetch_extrema(station_id: str, begin: str, end: str) -> list[Extremum]:
-    """Return real NOAA hi/lo predictions for ``[begin, end]`` (YYYYMMDD)."""
-    key = (station_id, begin, end)
+    """Return real NOAA hi/lo predictions for ``[begin, end]`` (YYYYMMDD).
+
+    Serves fresh data within the TTL, refetches after, and falls back to the
+    last-known-good extrema if NOAA is unavailable (stale-if-error).
+    """
     now = time.monotonic()
-    cached = _CACHE.get(key)
+    cached = _CACHE.get(station_id)
     if cached is not None and now - cached[0] < CACHE_TTL:
         return cached[1]
 
-    extrema = await asyncio.to_thread(_fetch_blocking, station_id, begin, end)
-    _CACHE[key] = (now, extrema)
-    return extrema
+    try:
+        extrema = await asyncio.to_thread(_fetch_blocking, station_id, begin, end)
+        _CACHE[station_id] = (now, extrema)
+        return extrema
+    except Exception:
+        if cached is not None:
+            return cached[1]  # stale-if-error
+        raise
 
 
 def clear_cache() -> None:

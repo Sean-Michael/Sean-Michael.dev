@@ -900,3 +900,18 @@
   cursor: pointer;
 }
 .tic-reset:hover { border-color: rgba(150, 195, 235, 0.6); }
+
+.bto-splash-retry {
+  margin-top: 16px;
+  appearance: none;
+  background: rgba(8, 16, 30, 0.6);
+  border: 1px solid rgba(150, 195, 235, 0.4);
+  color: var(--ice-100, #eaf4ff);
+  border-radius: 6px;
+  padding: 8px 18px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+.bto-splash-retry:hover { border-color: rgba(150, 195, 235, 0.7); }

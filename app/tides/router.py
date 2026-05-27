@@ -62,34 +62,39 @@ async def _station_payload(s: stations.Station, begin: str, end: str) -> dict[st
 @router.get("/bootstrap")
 async def bootstrap() -> dict[str, Any]:
     """Everything the dashboard loads on startup, in one round trip."""
-    try:
-        now = datetime.now(_TZ)
-        begin, end = _date_range(now)
-        payloads = await asyncio.gather(
-            *(_station_payload(s, begin, end) for s in stations.STATIONS)
-        )
-        sm = astro.sun_moon(now.date())
-        return {
-            "now": _epoch_ms(now),
-            "tz": "America/Los_Angeles",
-            "datum": "MLLW",
-            "units": "english",
-            "date": {
-                "iso": now.strftime("%Y-%m-%d"),
-                "pretty": now.strftime("%a · %b %-d, %Y"),
-            },
-            "sun_moon": {
-                "sunrise": sm.sunrise,
-                "sunset": sm.sunset,
-                "noon": sm.noon,
-                "moon_phase": sm.moon_phase,
-                "moon_illum": sm.moon_illum,
-                "moon_glyph": sm.moon_glyph,
-            },
-            "stations": list(payloads),
-        }
-    except Exception as exc:  # noqa: BLE001 — surface upstream NOAA failures cleanly
-        raise HTTPException(status_code=502, detail=f"NOAA upstream error: {exc}") from exc
+    now = datetime.now(_TZ)
+    begin, end = _date_range(now)
+    # Don't let one flaky station sink the whole dashboard — gather, then drop
+    # any that failed (each station already falls back to last-known-good data).
+    results = await asyncio.gather(
+        *(_station_payload(s, begin, end) for s in stations.STATIONS),
+        return_exceptions=True,
+    )
+    good = [r for r in results if not isinstance(r, BaseException)]
+    if not good:
+        first = next((r for r in results if isinstance(r, BaseException)), None)
+        raise HTTPException(status_code=502, detail=f"NOAA upstream error: {first}")
+
+    sm = astro.sun_moon(now.date())
+    return {
+        "now": _epoch_ms(now),
+        "tz": "America/Los_Angeles",
+        "datum": "MLLW",
+        "units": "english",
+        "date": {
+            "iso": now.strftime("%Y-%m-%d"),
+            "pretty": now.strftime("%a · %b %-d, %Y"),
+        },
+        "sun_moon": {
+            "sunrise": sm.sunrise,
+            "sunset": sm.sunset,
+            "noon": sm.noon,
+            "moon_phase": sm.moon_phase,
+            "moon_illum": sm.moon_illum,
+            "moon_glyph": sm.moon_glyph,
+        },
+        "stations": good,
+    }
 
 
 @router.get("/widget")

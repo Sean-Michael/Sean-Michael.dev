@@ -47,6 +47,34 @@ def test_widget_payload(client: TestClient, fake_noaa: None) -> None:
     assert {"t", "v"} <= body["samples"][0].keys()
 
 
+def test_fetch_extrema_serves_stale_on_error(monkeypatch: pytest.MonkeyPatch) -> None:
+    import asyncio
+
+    from app.tides import noaa as noaa_mod
+
+    noaa_mod.clear_cache()
+    calls = {"n": 0}
+    good = [noaa.Extremum(t=datetime(2026, 5, 27, 1, 0), height=8.0, kind="H")]
+
+    def fake_blocking(station_id: str, begin: str, end: str) -> list[noaa.Extremum]:
+        calls["n"] += 1
+        if calls["n"] == 1:
+            return good
+        raise RuntimeError("NOAA down")
+
+    monkeypatch.setattr(noaa_mod, "_fetch_blocking", fake_blocking)
+    monkeypatch.setattr(noaa_mod, "CACHE_TTL", 0)  # force a refetch on the 2nd call
+
+    async def run() -> tuple[list[noaa.Extremum], list[noaa.Extremum]]:
+        first = await noaa_mod.fetch_extrema("9449211", "20260501", "20260601")
+        second = await noaa_mod.fetch_extrema("9449211", "20260501", "20260601")
+        return first, second
+
+    first, second = asyncio.run(run())
+    assert first == good
+    assert second == good  # stale-if-error: returns last-known-good despite failure
+
+
 def test_bootstrap_shape(client: TestClient, fake_noaa: None) -> None:
     res = client.get("/api/tides/bootstrap")
     assert res.status_code == 200
