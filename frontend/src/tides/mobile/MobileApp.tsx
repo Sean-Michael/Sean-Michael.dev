@@ -62,10 +62,11 @@ function RangePills({ value, onChange }: { value: string; onChange: (r: string) 
 }
 
 // ── Hero card ────────────────────────────────────────────────────────────────
-function Hero({ stn, now, onTap }: { stn: StationData; now: number; onTap: () => void }) {
+function Hero({ stn, now, range, onTap }: { stn: StationData; now: number; range: string; onTap: () => void }) {
   const snap = useMemo(() => stationSnapshot(stn, now), [stn, now])
-  const from = now - 6 * 60 * MIN
-  const to = now + 12 * 60 * MIN
+  const mins = RANGES[range].mins
+  const from = now - mins * 0.6 * MIN
+  const to = now + mins * 0.4 * MIN
   return (
     <div className="tm-hero" onClick={onTap}>
       <div className="tm-hero-top">
@@ -239,7 +240,7 @@ function StationsScreen({ data, now, range, setRange, sortBy, groupBy, focusId, 
 
   return (
     <div className="tm-screen">
-      <Hero stn={focusStn} now={now} onTap={() => onTapStation(focusStn.id)} />
+      <Hero stn={focusStn} now={now} range={range} onTap={() => onTapStation(focusStn.id)} />
       <RangePills value={range} onChange={setRange} />
       <div className="tm-sec-hd">
         <span className="tm-sec-lbl">KPI · ALL STATIONS</span>

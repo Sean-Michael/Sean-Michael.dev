@@ -140,6 +140,9 @@ export function BigChart({
   const xOf = (t: number) => padL + ((t - from) / (to - from)) * innerW
   const yOf = (v: number) => padT + (1 - (v - lo) / spanV) * innerH
   const yTicks = niceTicks(lo, hi, 5)
+  // Sub-foot steps need a decimal, else labels collapse to duplicates (2,2,1,1).
+  const yStep = yTicks.length > 1 ? Math.abs(yTicks[1] - yTicks[0]) : 1
+  const yPrec = yStep < 1 ? 1 : 0
   const meanV = (lo + hi) / 2
 
   const colorFor = (i: number) => {
@@ -247,7 +250,7 @@ export function BigChart({
 
       {yTicks.map((v, i) => (
         <text key={`yt${i}`} x={padL - 6} y={yOf(v) + 3} textAnchor="end" fill={AXIS_LABEL} fontFamily="var(--mono)" fontSize="9">
-          {v.toFixed(0)}ft
+          {v.toFixed(yPrec)}ft
         </text>
       ))}
       {xTicks.map((t, i) => {

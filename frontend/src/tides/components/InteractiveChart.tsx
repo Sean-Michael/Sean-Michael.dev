@@ -38,7 +38,9 @@ export function InteractiveChart({
   showEvents?: boolean
 }) {
   const ref = useRef<HTMLDivElement>(null)
-  const [width, setWidth] = useState(640)
+  // null until measured — we don't render the chart at a guessed width (which
+  // would briefly render tiny/letterboxed before correcting).
+  const [width, setWidth] = useState<number | null>(null)
   // null = follow the live [from, to] window; otherwise a pinned absolute window.
   const [zoom, setZoom] = useState<{ from: number; to: number } | null>(null)
   const [cursorPx, setCursorPx] = useState<number | null>(null)
@@ -63,7 +65,7 @@ export function InteractiveChart({
 
   const winFrom = zoom ? zoom.from : from
   const winTo = zoom ? zoom.to : to
-  const plotW = Math.max(1, width - PAD_L - PAD_R)
+  const plotW = Math.max(1, (width ?? 600) - PAD_L - PAD_R)
   const single = series.length === 1
   const zoomed = zoom != null
 
@@ -120,7 +122,7 @@ export function InteractiveChart({
   // Readout box position, kept inside the plot.
   const readoutLeft = useMemo(() => {
     if (cursorPx == null) return 0
-    return Math.max(PAD_L, Math.min(width - 96, cursorPx + 8))
+    return Math.max(PAD_L, Math.min((width ?? 0) - 96, cursorPx + 8))
   }, [cursorPx, width])
 
   return (
@@ -128,27 +130,29 @@ export function InteractiveChart({
       <div
         className="tic-plot"
         ref={ref}
-        style={{ touchAction: 'none' }}
+        style={{ touchAction: 'none', minHeight: height }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
         onPointerLeave={onLeave}
       >
-        <BigChart
-          series={series}
-          from={winFrom}
-          to={winTo}
-          now={now}
-          w={width}
-          h={height}
-          showGrid={showGrid}
-          showSun={showSun}
-          sun={sun}
-          style={style}
-          showEvents={showEvents}
-          hoverT={cursorClamped}
-        />
+        {width != null && (
+          <BigChart
+            series={series}
+            from={winFrom}
+            to={winTo}
+            now={now}
+            w={width}
+            h={height}
+            showGrid={showGrid}
+            showSun={showSun}
+            sun={sun}
+            style={style}
+            showEvents={showEvents}
+            hoverT={cursorClamped}
+          />
+        )}
         {dragging && bandWidth > 1 && (
           <div className="tic-band" style={{ left: bandLeft, width: bandWidth, top: 0, bottom: 0 }} />
         )}
