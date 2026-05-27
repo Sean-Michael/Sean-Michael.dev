@@ -388,6 +388,18 @@ async def tides_dashboard(request: Request):
     return templates.TemplateResponse(request, "tides.html")
 
 
+# Standalone support page for the Arete iOS app (App Store "Support URL").
+# Intentionally not in the nav, sitemap, or robots — reachable only by direct link.
+@app.get("/arete/support", response_class=HTMLResponse)
+async def arete_support(request: Request):
+    return templates.TemplateResponse(request, "arete_support.html")
+
+
+@app.get("/arete/privacy", response_class=HTMLResponse)
+async def arete_privacy(request: Request):
+    return templates.TemplateResponse(request, "arete_privacy.html")
+
+
 @app.get("/partials/sidebar-blogs", response_class=HTMLResponse)
 async def sidebar_blogs(request: Request):
     blogs = load_all_blogs(_ttl_bucket())
