@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import type { Density } from '../lib/tweaks'
+import type { Density } from '../tweaks'
 import type { StationData } from '../types'
 import { fmtTime, RANGES, stationSnapshot } from '../tides'
 import { RangeBar, Spark } from './Charts'

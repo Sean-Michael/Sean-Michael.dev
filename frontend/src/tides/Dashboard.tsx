@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { Bootstrap, StationData } from './types'
-import { ACCENTS, type Tweaks, useTweaks } from './lib/tweaks'
+import { ACCENTS, type Tweaks, useTweaks } from './tweaks'
 import { fmtClock, pacificWallMs, RANGE_KEYS, stationSnapshot } from './tides'
 import type { SunMarks } from './components/Charts'
 import { Sidebar, type SavedView } from './components/Sidebar'

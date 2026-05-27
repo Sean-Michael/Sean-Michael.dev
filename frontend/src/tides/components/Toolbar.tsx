@@ -1,4 +1,4 @@
-import type { SetTweak, Tweaks } from '../lib/tweaks'
+import type { SetTweak, Tweaks } from '../tweaks'
 import type { Bootstrap } from '../types'
 import { RANGE_KEYS } from '../tides'
 

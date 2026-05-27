@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ACCENTS, type Accent, type SetTweak, type Tweaks } from '../lib/tweaks'
+import { ACCENTS, type Accent, type SetTweak, type Tweaks } from '../tweaks'
 import { RANGE_KEYS } from '../tides'
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
