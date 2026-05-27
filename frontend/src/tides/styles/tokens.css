@@ -1,0 +1,39 @@
+/* ============================================================
+   GLOBAL TOKENS — Nordic ice / glacier (from the design system)
+   ============================================================ */
+:root {
+  /* Ice palette (low-chroma blues) */
+  --ice-50: oklch(0.98 0.01 230);
+  --ice-100: oklch(0.95 0.015 225);
+  --ice-200: oklch(0.88 0.025 225);
+  --ice-300: oklch(0.78 0.04 220); /* accent ice cyan */
+  --ice-400: oklch(0.65 0.06 220);
+  --ice-500: oklch(0.5 0.06 235);
+  --ice-700: oklch(0.32 0.05 240);
+  --ice-900: oklch(0.18 0.04 240); /* deep crevasse */
+  --ice-950: oklch(0.11 0.03 245);
+
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --sans: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  background: #060b14;
+  font-family: var(--sans);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+button {
+  font: inherit;
+}

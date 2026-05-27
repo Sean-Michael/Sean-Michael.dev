@@ -8,12 +8,20 @@ anyio==4.12.1
     # via
     #   starlette
     #   watchfiles
+astral==3.2
+    # via sean-michael-dev (pyproject.toml)
+attrs==26.1.0
+    # via zeep
 boto3==1.42.70
     # via sean-michael-dev (pyproject.toml)
 botocore==1.42.70
     # via
     #   boto3
     #   s3transfer
+certifi==2026.5.20
+    # via requests
+charset-normalizer==3.4.7
+    # via requests
 click==8.3.1
     # via
     #   sean-michael-dev (pyproject.toml)
@@ -28,32 +36,61 @@ idna==3.15
     # via
     #   sean-michael-dev (pyproject.toml)
     #   anyio
+    #   requests
+isodate==0.7.2
+    # via zeep
 jinja2==3.1.6
     # via sean-michael-dev (pyproject.toml)
 jmespath==1.1.0
     # via
     #   boto3
     #   botocore
+lxml==6.1.1
+    # via zeep
 markdown==3.10.2
     # via sean-michael-dev (pyproject.toml)
 markupsafe==3.0.3
     # via jinja2
+noaa-coops==0.4.0
+    # via sean-michael-dev (pyproject.toml)
+numpy==2.4.6
+    # via pandas
+pandas==2.3.3
+    # via noaa-coops
+platformdirs==4.9.6
+    # via zeep
 pydantic==2.12.5
     # via fastapi
 pydantic-core==2.41.5
     # via pydantic
 python-dateutil==2.9.0.post0
-    # via botocore
+    # via
+    #   botocore
+    #   pandas
 python-dotenv==1.2.2
     # via uvicorn
 python-frontmatter==1.1.0
     # via sean-michael-dev (pyproject.toml)
 python-multipart==0.0.29
     # via sean-michael-dev (pyproject.toml)
+pytz==2026.2
+    # via
+    #   pandas
+    #   zeep
 pyyaml==6.0.3
     # via
     #   python-frontmatter
     #   uvicorn
+requests==2.34.2
+    # via
+    #   noaa-coops
+    #   requests-file
+    #   requests-toolbelt
+    #   zeep
+requests-file==3.0.1
+    # via zeep
+requests-toolbelt==1.0.0
+    # via zeep
 ruff==0.15.6
     # via sean-michael-dev (pyproject.toml)
 s3transfer==0.16.0
@@ -74,10 +111,13 @@ typing-inspection==0.4.2
     # via
     #   fastapi
     #   pydantic
+tzdata==2026.2
+    # via pandas
 urllib3==2.7.0
     # via
     #   sean-michael-dev (pyproject.toml)
     #   botocore
+    #   requests
 uvicorn==0.42.0
     # via sean-michael-dev (pyproject.toml)
 uvloop==0.22.1
@@ -86,3 +126,5 @@ watchfiles==1.1.1
     # via uvicorn
 websockets==16.0
     # via uvicorn
+zeep==4.3.2
+    # via noaa-coops

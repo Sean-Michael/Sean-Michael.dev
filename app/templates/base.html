@@ -44,6 +44,9 @@
     <a href="/projects" class="gs-sb-link{% if '/projects' in request.url.path %} active{% endif %}">
       <span class="gs-sb-glyph">#</span>
     </a>
+    <a href="/tides" class="gs-sb-link{% if request.url.path == '/tides' %} active{% endif %}">
+      <span class="gs-sb-glyph">≈</span>
+    </a>
     <a href="/about" class="gs-sb-link{% if request.url.path == '/about' %} active{% endif %}">
       <span class="gs-sb-glyph">@</span>
     </a>
@@ -80,6 +83,11 @@
       <span class="gs-sb-glyph">#</span>
       <span class="gs-sb-name">Projects</span>
       {% if '/projects' in request.url.path %}<span class="gs-sb-caret">←</span>{% endif %}
+    </a>
+    <a href="/tides" class="gs-sb-link{% if request.url.path == '/tides' %} active{% endif %}">
+      <span class="gs-sb-glyph">≈</span>
+      <span class="gs-sb-name">Tides</span>
+      {% if request.url.path == '/tides' %}<span class="gs-sb-caret">←</span>{% endif %}
     </a>
     <a href="/about" class="gs-sb-link{% if request.url.path == '/about' %} active{% endif %}">
       <span class="gs-sb-glyph">@</span>

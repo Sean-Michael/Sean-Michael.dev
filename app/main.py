@@ -24,6 +24,7 @@ from app.content import (
     read_digest_file,
     read_project_file,
 )
+from app.tides.router import router as tides_router
 
 CACHE_TTL = 300  # 5 minutes
 
@@ -87,6 +88,8 @@ if _JS_DIST.is_dir():
     app.mount("/js", StaticFiles(directory=str(_JS_DIST)), name="js")
 
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
+
+app.include_router(tides_router)
 
 
 @app.exception_handler(404)
@@ -366,6 +369,12 @@ async def about(request: Request):
     return templates.TemplateResponse(request, "about.html")
 
 
+@app.get("/tides", response_class=HTMLResponse)
+async def tides_dashboard(request: Request):
+    # Full-screen React dashboard; data is fetched client-side from /api/tides.
+    return templates.TemplateResponse(request, "tides.html")
+
+
 @app.get("/partials/sidebar-blogs", response_class=HTMLResponse)
 async def sidebar_blogs(request: Request):
     blogs = load_all_blogs(_ttl_bucket())
@@ -388,6 +397,7 @@ async def sitemap_xml():
         f"{SITE}/digest",
         f"{SITE}/projects",
         f"{SITE}/about",
+        f"{SITE}/tides",
     ]
     for slug in list_blog_files():
         urls.append(f"{SITE}/blog/{slug}")
