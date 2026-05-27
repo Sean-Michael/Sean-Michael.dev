@@ -221,21 +221,31 @@ export function BigChart({
         )
       })}
 
-      {showEvents &&
-        single &&
-        eventsIn(series[0].extrema, from, to).map((e, i) => {
+      {/* Annotate hi/lo only when there are few enough to stay legible. Beyond
+          that (multi-day ranges) the labels overlap into noise, so just dot the
+          peaks; past an even higher count, show nothing and let the curve speak. */}
+      {(() => {
+        if (!showEvents || !single) return null
+        const events = eventsIn(series[0].extrema, from, to)
+        const labeled = events.length <= 14
+        const dotted = events.length <= 60
+        if (!dotted) return null
+        return events.map((e, i) => {
           const x = xOf(e.t)
           const y = yOf(e.height)
           const yOff = e.kind === 'H' ? -8 : 14
           return (
             <g key={`ev${i}`}>
               <circle cx={x} cy={y} r="2.4" fill={STROKE} />
-              <text x={x} y={y + yOff} textAnchor="middle" fill="rgba(220, 232, 245, 0.85)" fontFamily="var(--mono)" fontSize="9">
-                {e.kind === 'H' ? '▲' : '▼'} {e.height.toFixed(1)}ft · {fmtTime(e.t)}
-              </text>
+              {labeled && (
+                <text x={x} y={y + yOff} textAnchor="middle" fill="rgba(220, 232, 245, 0.85)" fontFamily="var(--mono)" fontSize="9">
+                  {e.kind === 'H' ? '▲' : '▼'} {e.height.toFixed(1)}ft · {fmtTime(e.t)}
+                </text>
+              )}
             </g>
           )
-        })}
+        })
+      })()}
 
       {showCurrent && single && now >= from && now <= to && (
         <g>

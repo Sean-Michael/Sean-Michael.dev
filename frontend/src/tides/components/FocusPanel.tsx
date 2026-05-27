@@ -157,7 +157,7 @@ export function FocusPanel({
           </div>
         </div>
         <div className="tt-focus-now">
-          <TideDial rate={snap.rate} trend={snap.trend} />
+          <TideDial rate={snap.rate} trend={snap.trend} size={82} />
           <div className="tt-focus-now-text">
             <div className="tt-focus-h">
               <span>{snap.height.toFixed(2)}</span>

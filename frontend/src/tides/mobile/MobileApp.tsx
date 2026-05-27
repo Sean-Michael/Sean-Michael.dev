@@ -80,7 +80,7 @@ function Hero({ stn, now, range, onTap }: { stn: StationData; now: number; range
         </span>
       </div>
       <div className="tm-hero-figrow">
-        <TideDial rate={snap.rate} trend={snap.trend} size={88} />
+        <TideDial rate={snap.rate} trend={snap.trend} size={60} />
         <div className="tm-hero-figs">
           <div className="tm-hero-h">
             <span>{snap.height.toFixed(1)}</span>
@@ -299,7 +299,7 @@ function DrillScreen({ data, stn, now, range, setRange, sun, showSun, showGrid, 
         <div className="tm-drill-name">{stn.name}</div>
         <div className="tm-drill-loc">{stn.lat}, {stn.lon} · {stn.area}</div>
         <div className="tm-drill-figrow">
-          <TideDial rate={snap.rate} trend={snap.trend} size={92} />
+          <TideDial rate={snap.rate} trend={snap.trend} size={58} />
           <div>
             <div className="tm-drill-h">
               <span>{snap.height.toFixed(2)}</span>
@@ -318,7 +318,7 @@ function DrillScreen({ data, stn, now, range, setRange, sun, showSun, showGrid, 
       <RangePills value={range} onChange={setRange} />
 
       <div className="tm-drill-chart">
-        <InteractiveChart series={series} from={from} to={to} now={now} resetKey={`${stn.id}:${range}:${compare}`} showGrid={showGrid} showSun={showSun && showMoon} sun={sun} style={compare ? 'line' : 'area'} showEvents={!compare} height={210} />
+        <InteractiveChart series={series} from={from} to={to} now={now} resetKey={`${stn.id}:${range}:${compare}`} showGrid={showGrid} showSun={showSun && showMoon} sun={sun} style={compare ? 'line' : 'area'} showEvents={!compare} height={300} />
       </div>
 
       <div className="tm-sec-hd">

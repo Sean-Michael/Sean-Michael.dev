@@ -173,7 +173,7 @@
   display: flex; align-items: baseline; gap: 4px;
   font-family: var(--sans);
   font-weight: 200;
-  font-size: 56px;
+  font-size: 40px;
   line-height: 0.95;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.03em;
@@ -375,19 +375,19 @@
 .tm-back-pick { color: rgba(220, 232, 245, 0.55); }
 
 .tm-drill-hd {
-  display: flex; flex-direction: column; gap: 4px;
-  padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 3px;
+  padding: 11px 14px;
   background: linear-gradient(180deg, rgba(20, 45, 80, 0.58), rgba(15, 30, 55, 0.45));
   border: 1px solid rgba(150, 195, 235, 0.30);
   border-radius: 10px;
 }
 .tm-drill-code { font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: 0.14em; color: oklch(0.78 0.08 220); }
-.tm-drill-name { font-family: var(--sans); font-weight: 300; font-size: 24px; letter-spacing: -0.02em; }
+.tm-drill-name { font-family: var(--sans); font-weight: 300; font-size: 20px; letter-spacing: -0.02em; }
 .tm-drill-loc  { font-family: var(--mono); font-size: 10px; color: rgba(220, 232, 245, 0.45); letter-spacing: 0.02em; }
-.tm-drill-figrow { display: flex; align-items: center; gap: 14px; margin-top: 8px; padding-top: 10px; border-top: 1px solid rgba(140, 180, 220, 0.18); }
+.tm-drill-figrow { display: flex; align-items: center; gap: 14px; margin-top: 6px; padding-top: 8px; border-top: 1px solid rgba(140, 180, 220, 0.18); }
 .tm-drill-h {
   display: flex; align-items: baseline; gap: 4px;
-  font-family: var(--sans); font-weight: 200; font-size: 48px; line-height: 0.95;
+  font-family: var(--sans); font-weight: 200; font-size: 32px; line-height: 0.95;
   font-variant-numeric: tabular-nums; letter-spacing: -0.03em;
 }
 .tm-drill-h i { font-style: normal; font-family: var(--mono); font-size: 12px; color: oklch(0.78 0.08 220); }
