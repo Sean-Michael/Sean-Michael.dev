@@ -30,6 +30,12 @@ def test_tides_page_renders(client: TestClient) -> None:
     assert 'id="tides-root"' in res.text
 
 
+def test_js_bundles_revalidate(client: TestClient) -> None:
+    # Unhashed bundles must carry no-cache so deploys aren't masked by caching.
+    res = client.get("/js/tides.js")
+    assert res.headers.get("cache-control") == "no-cache"
+
+
 def test_widget_payload(client: TestClient, fake_noaa: None) -> None:
     res = client.get("/api/tides/widget")
     assert res.status_code == 200

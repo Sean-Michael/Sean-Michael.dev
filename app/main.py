@@ -87,6 +87,19 @@ _JS_DIST = BASE_DIR / "frontend" / "dist"
 if _JS_DIST.is_dir():
     app.mount("/js", StaticFiles(directory=str(_JS_DIST)), name="js")
 
+
+@app.middleware("http")
+async def revalidate_bundles(request: Request, call_next):
+    # The Vite bundles have stable, unhashed names (/js/main.js, /js/tides.js),
+    # so without this browsers heuristically cache them and miss new deploys.
+    # `no-cache` keeps the cached copy but forces an ETag revalidation each load
+    # (cheap 304 when unchanged, fresh 200 right after a deploy).
+    response = await call_next(request)
+    if request.url.path.startswith("/js/"):
+        response.headers["Cache-Control"] = "no-cache"
+    return response
+
+
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 app.include_router(tides_router)
