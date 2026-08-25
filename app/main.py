@@ -303,9 +303,9 @@ async def blog_rss():
         '<?xml version="1.0" encoding="UTF-8"?>'
         '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">'
         "<channel>"
-        f"<title>Sean-Michael — Notes from the field</title>"
+        f"<title>Sean-Michael — Blog</title>"
         f"<link>{SITE}/blog</link>"
-        "<description>Notes on platform engineering, AI, and infrastructure.</description>"
+        "<description>Writing about infrastructure, AI, and the outdoors.</description>"
         f'<atom:link href="{SITE}/blog/feed.xml" rel="self" type="application/rss+xml"/>'
         + "".join(items)
         + "</channel></rss>"
