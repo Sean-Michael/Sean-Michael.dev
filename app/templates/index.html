@@ -21,11 +21,17 @@
     </div>
   </div>
 
-  <!-- Live widgets: tides + github, both hydrated client-side -->
-  <div class="hw-hero-widgets">
+  <!-- Live widgets: tides + github, both hydrated client-side, sliding carousel -->
+  <div class="hcr-slot">
+    <div class="hcr-tabs">
+      <button class="hcr-tab active" data-idx="0"><span class="hcr-tab-dot"></span>tides</button>
+      <button class="hcr-tab" data-idx="1"><span class="hcr-tab-dot"></span>github</button>
+    </div>
+
+    <div class="hcr-content">
 
       <!-- Widget: Tides (Bellingham Bay) — hydrated from /api/tides/widget by tidesWidget() -->
-      <div class="hw-widget" data-tides-widget>
+      <div class="hw-widget carousel-widget active" data-key="tides" data-tides-widget>
         <div class="hw-w-head">
           <span class="hw-w-label">BELLINGHAM BAY · TIDES</span>
           <span class="hw-w-meta-sm" data-tides-time>—:—</span>
@@ -63,9 +69,9 @@
       </div>
 
       <!-- Widget: GitHub contributions — hydrated from the public contributions API by githubWidget() -->
-      <div class="hw-widget" data-gh-widget hidden>
+      <div class="hw-widget carousel-widget" data-key="github" data-gh-widget hidden>
         <div class="hw-w-head">
-          <span class="hw-w-label">GITHUB · LAST 13 WEEKS</span>
+          <span class="hw-w-label">GITHUB · LAST YEAR</span>
           <span class="hw-w-meta-sm" data-gh-total></span>
         </div>
         <div class="hw-gh-grid" data-gh-grid></div>
@@ -84,7 +90,8 @@
         </div>
       </div>
 
-  </div><!-- /.hw-hero-widgets -->
+    </div><!-- /.hcr-content -->
+  </div><!-- /.hcr-slot -->
 </div><!-- /.hw-hero-row -->
 
 <!-- Main slab -->

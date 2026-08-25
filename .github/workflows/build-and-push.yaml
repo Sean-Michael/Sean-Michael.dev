@@ -13,6 +13,10 @@ env:
   REGISTRY: docker.io
   IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/smr-website
 
+permissions:
+  contents: read
+  actions: write  # lets the gate step cancel its own run
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -37,8 +41,18 @@ jobs:
             for (const name of requiredWorkflows) {
               const passed = runs.data.workflow_runs.some(r => r.name === name);
               if (!passed) {
-                core.info(`Workflow "${name}" has not succeeded yet for SHA ${sha}. Skipping build.`);
-                process.exit(1);
+                // This run fired before every prerequisite finished; the run
+                // triggered by the last prerequisite will do the build. Cancel
+                // ourselves (neutral) instead of exiting 1 (red X on every push).
+                core.info(`Workflow "${name}" has not succeeded yet for SHA ${sha}. Cancelling this run.`);
+                await github.rest.actions.cancelWorkflowRun({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  run_id: context.runId,
+                });
+                // Wait for the cancellation to take effect so no later step starts.
+                await new Promise((resolve) => setTimeout(resolve, 60000));
+                return;
               }
             }
             core.info(`All prerequisite workflows passed for SHA ${sha}.`);

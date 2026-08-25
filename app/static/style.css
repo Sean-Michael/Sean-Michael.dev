@@ -133,7 +133,8 @@ a { color: inherit; text-decoration: none; }
   letter-spacing: 0.18em; color: var(--ice-300); margin-bottom: 18px;
 }
 .gs-hero-name {
-  font-size: 60px; font-weight: 300;
+  /* Fluid so the no-wrap "Sean-Michael." never clips in a narrow hero column */
+  font-size: clamp(34px, 4.5vw, 60px); font-weight: 300;
   letter-spacing: -0.035em; line-height: 0.98;
   color: var(--ice-50); margin-bottom: 18px;
   text-shadow: 0 4px 32px rgba(0,0,0,0.3);
@@ -192,8 +193,37 @@ a { color: inherit; text-decoration: none; }
 .hw-w-link:hover { color: var(--ice-50); }
 .hw-w-chip { font-family: var(--mono); font-size: 10px; padding: 2px 8px; background: rgba(120, 170, 220, 0.15); border: 1px solid rgba(120, 170, 220, 0.22); color: var(--ice-200); border-radius: 4px; }
 
-/* Hero widget stack: tides + github */
-.hw-hero-widgets { display: flex; flex-direction: column; gap: 16px; justify-content: center; padding-top: 12px; }
+/* ===== CAROUSEL UI ===== */
+.hcr-slot { padding-top: 12px; }
+.hcr-tabs {
+  display: flex; gap: 2px;
+  padding-bottom: 12px; margin-bottom: 6px;
+  border-bottom: 1px solid rgba(255,255,255,0.10);
+  overflow-x: auto; scrollbar-width: none;
+}
+.hcr-tabs::-webkit-scrollbar { display: none; }
+.hcr-tab {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 9px; background: transparent; border: none;
+  color: rgba(240, 248, 255, 0.55); font-family: var(--mono);
+  font-size: 10px; letter-spacing: 0.04em; cursor: pointer;
+  border-radius: 5px; transition: all 0.15s; white-space: nowrap; flex-shrink: 0;
+}
+.hcr-tab:hover { background: rgba(120, 170, 220, 0.10); color: var(--ice-100); }
+.hcr-tab.active { background: rgba(120, 170, 220, 0.22); color: var(--ice-50); }
+.hcr-tab-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(240, 248, 255, 0.3); flex-shrink: 0; }
+.hcr-tab.active .hcr-tab-dot { background: var(--ice-300); }
+.hcr-content { display: grid; }
+.carousel-widget {
+  grid-row: 1; grid-column: 1;
+  display: flex; flex-direction: column; gap: 12px;
+  visibility: hidden; opacity: 0; pointer-events: none;
+}
+.carousel-widget.active {
+  visibility: visible; opacity: 1; pointer-events: auto;
+  animation: hcr-fade 0.25s ease;
+}
+@keyframes hcr-fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 
 /* Widget: Tides */
 .hw-tides-now { display: flex; align-items: center; justify-content: space-between; padding: 4px 0 8px; }
@@ -208,8 +238,15 @@ a { color: inherit; text-decoration: none; }
 .hw-tides-axis { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 9px; color: rgba(240, 248, 255, 0.4); letter-spacing: 0.04em; }
 
 /* Widget: GitHub */
-.hw-gh-grid { display: grid; grid-template-columns: repeat(13, 1fr); gap: 2px; padding: 4px 0; }
-.hw-gh-cell { border-radius: 2px; height: 10px; }
+.hw-gh-grid {
+  display: grid;
+  grid-template-rows: repeat(7, 6px);
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 2px;
+  padding: 4px 0;
+}
+.hw-gh-cell { border-radius: 1px; box-sizing: border-box; }
 .hw-gh-l0 { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); }
 .hw-gh-l1 { background: oklch(0.55 0.10 165 / 0.45); }
 .hw-gh-l2 { background: oklch(0.62 0.12 165 / 0.65); }

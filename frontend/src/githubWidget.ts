@@ -3,8 +3,6 @@
 // the widget stays hidden unless real data actually loads.
 
 const USERNAME = "sean-michael";
-const WEEKS = 13;
-const DAYS = WEEKS * 7;
 
 interface Contribution {
   date: string;
@@ -24,25 +22,29 @@ export async function initGithubWidget(): Promise<void> {
     const res = await fetch(`https://github-contributions-api.jogruber.de/v4/${USERNAME}?y=last`);
     if (!res.ok) return;
     const data = (await res.json()) as ApiResponse;
-    days = data.contributions.slice(-DAYS);
+    days = data.contributions;
   } catch {
     return;
   }
-  if (days.length < DAYS) return;
+  if (days.length === 0) return;
 
   const grid = root.querySelector<HTMLElement>("[data-gh-grid]");
   if (!grid) return;
 
-  // CSS grid is 13 columns wide and fills row-major, so lay out GitHub-style:
-  // column = week, row = day-of-week.
-  for (let row = 0; row < 7; row++) {
-    for (let week = 0; week < WEEKS; week++) {
-      const day = days[week * 7 + row];
-      const cell = document.createElement("div");
-      cell.className = `hw-gh-cell hw-gh-l${day.level}`;
-      cell.title = `${day.count} contributions on ${day.date}`;
-      grid.appendChild(cell);
-    }
+  // The grid auto-flows down each column (a week), like GitHub's profile graph.
+  // Pad the first column so day-of-week rows line up (row 0 = Sunday).
+  const offset = new Date(`${days[0].date}T00:00:00`).getDay();
+  for (let i = 0; i < offset; i++) {
+    const pad = document.createElement("div");
+    pad.className = "hw-gh-cell";
+    pad.style.visibility = "hidden";
+    grid.appendChild(pad);
+  }
+  for (const day of days) {
+    const cell = document.createElement("div");
+    cell.className = `hw-gh-cell hw-gh-l${day.level}`;
+    cell.title = `${day.count} contributions on ${day.date}`;
+    grid.appendChild(cell);
   }
 
   const total = days.reduce((sum, d) => sum + d.count, 0);
