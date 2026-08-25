@@ -9,6 +9,12 @@ on:
     branches:
       - main
 
+# Deploys run docker compose on the instance via SSM; two at once race on
+# container removal. Queue them instead.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest

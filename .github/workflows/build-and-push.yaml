@@ -9,6 +9,11 @@ on:
     branches:
       - main
 
+# Serialize builds so rapid pushes don't interleave their :latest pushes.
+concurrency:
+  group: build-and-push
+  cancel-in-progress: false
+
 env:
   REGISTRY: docker.io
   IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/smr-website
