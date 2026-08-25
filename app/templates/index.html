@@ -21,69 +21,11 @@
     </div>
   </div>
 
-  <!-- Widget carousel -->
-  <div class="hcr-slot">
-    <!-- Tabs -->
-    <div class="hcr-tabs">
-      <button class="hcr-tab active" data-idx="0"><span class="hcr-tab-dot"></span>building</button>
-      <button class="hcr-tab" data-idx="1"><span class="hcr-tab-dot"></span>climbing</button>
-      <button class="hcr-tab" data-idx="2"><span class="hcr-tab-dot"></span>tides</button>
-      <button class="hcr-tab" data-idx="3"><span class="hcr-tab-dot"></span>github</button>
-      <button class="hcr-tab" data-idx="4"><span class="hcr-tab-dot"></span>reading</button>
-    </div>
-
-    <div class="hcr-content">
-
-      <!-- Widget: Building -->
-      <div class="hw-widget carousel-widget active" data-key="building">
-        <div class="hw-w-head">
-          <span class="hw-w-label">NOW BUILDING</span>
-          <span class="hw-w-status"><span class="hw-w-dot hw-dot-wip"></span>wip</span>
-        </div>
-        {% if featured %}
-        <h3 class="hw-w-title">{{ featured.title }}</h3>
-        <p class="hw-w-desc">{{ featured.description }}</p>
-        <div class="hw-w-chips">
-          {% for tech in featured.tech_stack[:4] %}
-          <span class="hw-w-chip">{{ tech }}</span>
-          {% endfor %}
-        </div>
-        <div class="hw-w-foot">
-          <span class="hw-w-meta">{{ featured.date.strftime("%b %Y") }}</span>
-          <a class="hw-w-link" href="/projects/{{ featured.slug }}">read more →</a>
-        </div>
-        {% else %}
-        <p class="hw-w-desc" style="color:var(--ice-300);">No featured project set.</p>
-        <div class="hw-w-foot">
-          <a class="hw-w-link" href="/projects">all projects →</a>
-        </div>
-        {% endif %}
-      </div>
-
-      <!-- Widget: Climbing conditions -->
-      <div class="hw-widget carousel-widget" data-key="climbing">
-        <div class="hw-w-head">
-          <span class="hw-w-label">MT. BAKER</span>
-          <span class="hw-w-meta-sm">10,781 ft</span>
-        </div>
-        <div class="hw-climb-row">
-          <div class="hw-climb-icon">▲</div>
-          <div class="hw-climb-info">
-            <div class="hw-climb-temp">28°<span class="hw-climb-feels">/ feels 18°</span></div>
-            <div class="hw-climb-cond">Clear · wind 12 mph NW</div>
-          </div>
-        </div>
-        <div class="hw-climb-divider"></div>
-        <div class="hw-climb-rows">
-          <div class="hw-climb-stat"><span class="hw-climb-k">snowpack</span><span class="hw-climb-v">142" / above avg</span></div>
-          <div class="hw-climb-stat"><span class="hw-climb-k">avi risk</span><span class="hw-climb-v hw-good">low</span></div>
-          <div class="hw-climb-stat"><span class="hw-climb-k">freezing</span><span class="hw-climb-v">6,400 ft</span></div>
-          <div class="hw-climb-stat"><span class="hw-climb-k">route</span><span class="hw-climb-v">Coleman-Deming, go</span></div>
-        </div>
-      </div>
+  <!-- Live widgets: tides + github, both hydrated client-side -->
+  <div class="hw-hero-widgets">
 
       <!-- Widget: Tides (Bellingham Bay) — hydrated from /api/tides/widget by tidesWidget() -->
-      <div class="hw-widget carousel-widget" data-key="tides" data-tides-widget>
+      <div class="hw-widget" data-tides-widget>
         <div class="hw-w-head">
           <span class="hw-w-label">BELLINGHAM BAY · TIDES</span>
           <span class="hw-w-meta-sm" data-tides-time>—:—</span>
@@ -120,18 +62,13 @@
         </div>
       </div>
 
-      <!-- Widget: GitHub contributions -->
-      <div class="hw-widget carousel-widget" data-key="github">
+      <!-- Widget: GitHub contributions — hydrated from the public contributions API by githubWidget() -->
+      <div class="hw-widget" data-gh-widget hidden>
         <div class="hw-w-head">
-          <span class="hw-w-label">CONTRIBUTIONS · 13 WEEKS</span>
-          <span class="hw-w-meta-sm">347 total</span>
+          <span class="hw-w-label">GITHUB · LAST 13 WEEKS</span>
+          <span class="hw-w-meta-sm" data-gh-total></span>
         </div>
-        <div class="hw-gh-grid">
-          {% set intensity = [0,0,1,2,0,1,3,2,0,1,1,0,0,2,1,3,4,2,1,0,0,0,2,1,1,0,2,3,4,4,3,2,1,0,0,1,2,3,4,4,4,3,0,1,1,2,3,4,4,2,1,0,0,2,3,1,2,1,0,0,0,1,1,2,2,3,2,1,1,2,3,4,2,1,0,1,1,2,1,0,0,1,2,3,3,2,1,0,1,2,2] %}
-          {% for level in intensity %}
-          <div class="hw-gh-cell hw-gh-l{{ level }}" title="{{ level }} contributions"></div>
-          {% endfor %}
-        </div>
+        <div class="hw-gh-grid" data-gh-grid></div>
         <div class="hw-gh-scale">
           <span class="hw-gh-scale-label">less</span>
           <span class="hw-gh-cell hw-gh-l0"></span>
@@ -142,45 +79,12 @@
           <span class="hw-gh-scale-label">more</span>
         </div>
         <div class="hw-w-foot">
-          <span class="hw-w-meta">longest streak: 14 days</span>
+          <span class="hw-w-meta" data-gh-meta></span>
           <a class="hw-w-link" href="https://github.com/sean-michael" target="_blank" rel="noopener">profile →</a>
         </div>
       </div>
 
-      <!-- Widget: Reading -->
-      <div class="hw-widget carousel-widget" data-key="reading">
-        <div class="hw-w-head">
-          <span class="hw-w-label">CURRENTLY READING</span>
-          {% if reading.chapter %}<span class="hw-w-meta-sm">{{ reading.chapter }}</span>{% endif %}
-        </div>
-        {% if reading.title %}
-        <div class="hw-read-row">
-          <div class="hw-read-cover">
-            <span class="hw-read-cover-text">{{ reading.cover_abbr or reading.title[:4] }}</span>
-          </div>
-          <div class="hw-read-info">
-            <div class="hw-read-title">{{ reading.title }}</div>
-            <div class="hw-read-author">{{ reading.author }}</div>
-            <div class="hw-read-progress">
-              <div class="hw-read-bar"><div class="hw-read-bar-fill" style="width:{{ reading.progress_pct }}%"></div></div>
-              <div class="hw-read-pct">{{ reading.progress_pct }}% · p. {{ reading.current_page }} of {{ reading.total_pages }}</div>
-            </div>
-          </div>
-        </div>
-        {% if reading.quote_html %}
-        <div class="hw-read-quote">"{{ reading.quote_html | safe }}"</div>
-        {% endif %}
-        <div class="hw-w-foot">
-          {% if reading.started %}<span class="hw-w-meta">started {{ reading.started }}</span>{% endif %}
-          <a class="hw-w-link" href="/blog">notes →</a>
-        </div>
-        {% else %}
-        <p class="hw-w-desc" style="color:var(--ice-300);">Nothing set — update config/widgets.yaml.</p>
-        {% endif %}
-      </div>
-
-    </div><!-- /.hcr-content -->
-  </div><!-- /.hcr-slot -->
+  </div><!-- /.hw-hero-widgets -->
 </div><!-- /.hw-hero-row -->
 
 <!-- Main slab -->
@@ -209,66 +113,25 @@
       </div>
     </div>
 
-    <!-- Right column: Writing + Currently (1fr) -->
-    <div style="display:flex;flex-direction:column;gap:32px;">
-
-      <!-- Writing -->
-      <div>
-        <div class="gs-col-head">
-          <span class="gs-col-num">02</span>
-          <h2 class="gs-col-title">Writing</h2>
-          <a href="/blog" class="gs-col-more">all →</a>
-        </div>
-        <div class="gs-post-list">
-          {% for blog in blogs %}
-          <a href="/blog/{{ blog.slug }}" class="gs-post">
-            <div class="gs-post-date">{{ blog.date.strftime("%b %d") }}</div>
-            <div class="gs-post-title">{{ blog.title }}</div>
-            <div class="gs-post-tags">
-              {% for tag in blog.tags[:2] %}{{ tag }}{% if not loop.last %} · {% endif %}{% endfor %}
-            </div>
-          </a>
-          {% endfor %}
-        </div>
+    <!-- Writing (right, 1fr) -->
+    <div>
+      <div class="gs-col-head">
+        <span class="gs-col-num">02</span>
+        <h2 class="gs-col-title">Writing</h2>
+        <a href="/blog" class="gs-col-more">all →</a>
       </div>
-
-      <!-- Currently -->
-      <div>
-        <div class="gs-col-head">
-          <span class="gs-col-num">03</span>
-          <h2 class="gs-col-title">Currently</h2>
-        </div>
-        <div class="gs-now">
-          <div class="gs-now-row">
-            <span class="gs-now-k">building</span>
-            <span class="gs-now-v">{{ featured.title if featured else "—" }}</span>
+      <div class="gs-post-list">
+        {% for blog in blogs %}
+        <a href="/blog/{{ blog.slug }}" class="gs-post">
+          <div class="gs-post-date">{{ blog.date.strftime("%b %d") }}</div>
+          <div class="gs-post-title">{{ blog.title }}</div>
+          <div class="gs-post-tags">
+            {% for tag in blog.tags[:2] %}{{ tag }}{% if not loop.last %} · {% endif %}{% endfor %}
           </div>
-          <div class="gs-now-row">
-            <span class="gs-now-k">reading</span>
-            <span class="gs-now-v">{{ reading.title if reading.title else "—" }}</span>
-          </div>
-          {% if now.listening %}
-          <div class="gs-now-row">
-            <span class="gs-now-k">listening</span>
-            <span class="gs-now-v">{{ now.listening }}</span>
-          </div>
-          {% endif %}
-          {% if now.climbing %}
-          <div class="gs-now-row">
-            <span class="gs-now-k">climbing</span>
-            <span class="gs-now-v">{{ now.climbing }}</span>
-          </div>
-          {% endif %}
-          {% if now.location %}
-          <div class="gs-now-row">
-            <span class="gs-now-k">location</span>
-            <span class="gs-now-v">{{ now.location }}</span>
-          </div>
-          {% endif %}
-        </div>
+        </a>
+        {% endfor %}
       </div>
-
-    </div><!-- /.right column -->
+    </div>
 
   </div>
 </div>

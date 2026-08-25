@@ -7,7 +7,6 @@ from pathlib import Path
 
 import frontmatter
 import markdown
-import yaml
 from fastapi import FastAPI, Request
 from fastapi.exceptions import HTTPException
 from fastapi.responses import HTMLResponse, PlainTextResponse, Response
@@ -35,7 +34,6 @@ def _ttl_bucket(ttl: int = CACHE_TTL) -> int:
 
 
 BASE_DIR = Path(__file__).parent.parent
-WIDGETS_CONFIG = BASE_DIR / "config" / "widgets.yaml"
 STATIC_DIR = BASE_DIR / "app" / "static"
 TEMPLATES_DIR = BASE_DIR / "app" / "templates"
 
@@ -115,39 +113,11 @@ async def content_not_found(request: Request, exc: ContentNotFoundError):
     return templates.TemplateResponse(request, "404.html", status_code=404)
 
 
-@lru_cache(maxsize=1)
-def load_widget_config(_ttl: int = 0) -> dict:
-    if WIDGETS_CONFIG.exists():
-        return yaml.safe_load(WIDGETS_CONFIG.read_text()) or {}
-    return {}
-
-
-def _reading_context(cfg: dict) -> dict:
-    r = cfg.get("reading") or {}
-    total = r.get("total_pages", 0)
-    current = r.get("current_page", 0)
-    pct = round(current / total * 100) if total else 0
-    quote = r.get("quote", "")
-    highlight = r.get("quote_highlight", "")
-    if highlight and highlight in quote:
-        quote_html = quote.replace(highlight, f"<em>{highlight}</em>", 1)
-    else:
-        quote_html = quote
-    return {**r, "progress_pct": pct, "quote_html": quote_html}
-
-
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
     ttl = _ttl_bucket()
     blogs = load_all_blogs(ttl)
     all_projects = load_all_projects(ttl)
-    cfg = load_widget_config(ttl)
-
-    pinned = (cfg.get("featured_project") or {}).get("slug", "")
-    if pinned:
-        featured = next((p for p in all_projects if p.slug == pinned), None)
-    else:
-        featured = next((p for p in all_projects if p.status == "wip"), None)
 
     return templates.TemplateResponse(
         request,
@@ -155,9 +125,6 @@ async def home(request: Request):
         {
             "blogs": blogs[:3],
             "projects": all_projects,
-            "featured": featured,
-            "reading": _reading_context(cfg),
-            "now": cfg.get("now") or {},
         },
     )
 

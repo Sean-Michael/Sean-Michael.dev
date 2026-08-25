@@ -1,4 +1,4 @@
-// Hydrates the homepage "tides" carousel widget from /api/tides/widget.
+// Hydrates the homepage tides widget from /api/tides/widget.
 // Real Bellingham Bay data; falls back silently (leaves placeholders) on error.
 
 interface WidgetSample {

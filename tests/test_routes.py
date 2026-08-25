@@ -21,10 +21,10 @@ def test_home_contains_hero_label(client: TestClient):
     assert "SEAN-MICHAEL" in client.get("/").text
 
 
-def test_home_carousel_widgets_present(client: TestClient):
+def test_home_live_widgets_present(client: TestClient):
     html = client.get("/").text
-    assert "carousel-widget" in html
-    assert "hcr-tab" in html
+    assert "data-tides-widget" in html
+    assert "data-gh-widget" in html
 
 
 def test_robots_txt(client: TestClient):
