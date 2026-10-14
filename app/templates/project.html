@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}{{ item.title }} — Sean-Michael{% endblock %}
+{% block meta %}{% if item.summary %}<meta name="description" content="{{ item.summary }}">{% endif %}{% endblock %}
+{% block content %}
+<article>
+  <h1>{{ item.title }}</h1>
+  <p class="byline">
+    {% if item.meta.github_url %}<a href="{{ item.meta.github_url }}">GitHub</a>{% endif %}
+    {% if item.meta.demo_url %} · <a href="{{ item.meta.demo_url }}">Live</a>{% endif %}
+    {% if item.meta.tech_stack %} · {{ item.meta.tech_stack | join(", ") }}{% endif %}
+  </p>
+  {% if item.meta.screenshots %}
+  <div class="screenshots">
+    {% for src in item.meta.screenshots %}<a href="{{ src }}"><img src="{{ src }}" alt="Screenshot of {{ item.title }}" loading="lazy"></a>{% endfor %}
+  </div>
+  {% endif %}
+  {{ item.html | safe }}
+</article>
+{% endblock %}

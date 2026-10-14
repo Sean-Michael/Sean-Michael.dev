@@ -1,116 +1,31 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Sean-Michael{% endblock %}</title>
-  <meta name="description" content="{% block description %}Sean-Michael's corner of the internet — building things and exploring the outdoors from Bellingham, WA.{% endblock %}">
-  <meta name="author" content="Sean-Michael">
-  <link rel="canonical" href="https://sean-michael.dev{{ request.url.path }}">
-
-  <meta property="og:title" content="{% block og_title %}{{ self.title() }}{% endblock %}">
-  <meta property="og:description" content="{% block og_description %}{{ self.description() }}{% endblock %}">
-  <meta property="og:type" content="{% block og_type %}website{% endblock %}">
-  <meta property="og:url" content="https://sean-michael.dev{{ request.url.path }}">
-  <meta property="og:site_name" content="Sean-Michael">
-
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="{{ self.title() }}">
-  <meta name="twitter:description" content="{{ self.description() }}">
-
-  <link rel="alternate" type="application/rss+xml" title="Sean-Michael — Blog" href="https://sean-michael.dev/blog/feed.xml">
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  {% block meta %}{% endblock %}
+  <link rel="alternate" type="application/rss+xml" title="Sean-Michael" href="/blog/feed.xml">
   <link rel="stylesheet" href="/static/style.css">
-  <script src="https://unpkg.com/htmx.org@2.0.4" defer></script>
-  <script type="module" src="/js/main.js"></script>
+  {% block head %}{% endblock %}
 </head>
 <body>
-  <div class="site-bg"></div>
-  <div class="site-bg-tint"></div>
-
-  <!-- Mobile nav -->
-  <nav class="site-mobile-nav">
-    <a href="/" class="gs-sb-link{% if request.url.path == '/' %} active{% endif %}">
-      <span class="gs-sb-glyph">~</span>
-    </a>
-    <a href="/blog" class="gs-sb-link{% if '/blog' in request.url.path %} active{% endif %}">
-      <span class="gs-sb-glyph">/</span>
-    </a>
-    <a href="/digest" class="gs-sb-link{% if '/digest' in request.url.path %} active{% endif %}">
-      <span class="gs-sb-glyph">%</span>
-    </a>
-    <a href="/projects" class="gs-sb-link{% if '/projects' in request.url.path %} active{% endif %}">
-      <span class="gs-sb-glyph">#</span>
-    </a>
-    <a href="/tides" class="gs-sb-link{% if request.url.path == '/tides' %} active{% endif %}">
-      <span class="gs-sb-glyph">≈</span>
-    </a>
-    <a href="/about" class="gs-sb-link{% if request.url.path == '/about' %} active{% endif %}">
-      <span class="gs-sb-glyph">@</span>
-    </a>
-  </nav>
-
-  <!-- Sidebar -->
-  <aside class="gs-sidebar">
-    <div class="gs-sidebar-head">
-      <a href="/" class="gs-brand">
-        <span class="gs-brand-mark">›</span>
-        sean-michael
-      </a>
-      <div class="gs-brand-sub">bellingham, wa</div>
-    </div>
-
-    <div class="gs-sb-section">PAGES</div>
-
-    <a href="/" class="gs-sb-link{% if request.url.path == '/' %} active{% endif %}">
-      <span class="gs-sb-glyph">~</span>
-      <span class="gs-sb-name">Home</span>
-      {% if request.url.path == '/' %}<span class="gs-sb-caret">←</span>{% endif %}
-    </a>
-    <a href="/blog" class="gs-sb-link{% if '/blog' in request.url.path %} active{% endif %}">
-      <span class="gs-sb-glyph">/</span>
-      <span class="gs-sb-name">Blog</span>
-      {% if '/blog' in request.url.path %}<span class="gs-sb-caret">←</span>{% endif %}
-    </a>
-    <a href="/digest" class="gs-sb-link{% if '/digest' in request.url.path %} active{% endif %}">
-      <span class="gs-sb-glyph">%</span>
-      <span class="gs-sb-name">Digests</span>
-      {% if '/digest' in request.url.path %}<span class="gs-sb-caret">←</span>{% endif %}
-    </a>
-    <a href="/projects" class="gs-sb-link{% if '/projects' in request.url.path %} active{% endif %}">
-      <span class="gs-sb-glyph">#</span>
-      <span class="gs-sb-name">Projects</span>
-      {% if '/projects' in request.url.path %}<span class="gs-sb-caret">←</span>{% endif %}
-    </a>
-    <a href="/tides" class="gs-sb-link{% if request.url.path == '/tides' %} active{% endif %}">
-      <span class="gs-sb-glyph">≈</span>
-      <span class="gs-sb-name">Tides</span>
-      {% if request.url.path == '/tides' %}<span class="gs-sb-caret">←</span>{% endif %}
-    </a>
-    <a href="/about" class="gs-sb-link{% if request.url.path == '/about' %} active{% endif %}">
-      <span class="gs-sb-glyph">@</span>
-      <span class="gs-sb-name">About</span>
-      {% if request.url.path == '/about' %}<span class="gs-sb-caret">←</span>{% endif %}
-    </a>
-
-    <!-- Recent posts loaded via htmx -->
-    <div style="margin-top: 20px;"
-         hx-get="/partials/sidebar-blogs"
-         hx-trigger="load"
-         hx-swap="innerHTML">
-    </div>
-
-    <div class="gs-sb-foot">
-      <a href="https://github.com/sean-michael" target="_blank" rel="noopener" class="gs-sb-foot-link">github</a>
-      <a href="https://linkedin.com/in/sean-michael-riesterer" target="_blank" rel="noopener" class="gs-sb-foot-link">linkedin</a>
-      <a href="mailto:seanm.riesterer@gmail.com" class="gs-sb-foot-link">contact</a>
-    </div>
-  </aside>
-
-  <main class="gs-main">
+  <header class="site">
+    <a class="name" href="/">Sean-Michael</a>
+    <nav>
+      <a href="/blog">Blog</a>
+      <a href="/projects">Projects</a>
+      <a href="/digest">Digest</a>
+      <a href="/about">About</a>
+    </nav>
+  </header>
+  <main>
     {% block content %}{% endblock %}
   </main>
+  <footer class="site">
+    <a href="https://github.com/sean-michael">GitHub</a> ·
+    <a href="https://www.linkedin.com/in/sean-michael-riesterer/">LinkedIn</a> ·
+    <a href="/blog/feed.xml">RSS</a>
+  </footer>
 </body>
 </html>

@@ -3,9 +3,15 @@
   "configurations": [
     {
       "name": "site",
-      "runtimeExecutable": ".venv/bin/uvicorn",
-      "runtimeArgs": ["app.main:app", "--port", "8000"],
+      "runtimeExecutable": "make",
+      "runtimeArgs": ["dev"],
       "port": 8000
+    },
+    {
+      "name": "tides",
+      "runtimeExecutable": "uv",
+      "runtimeArgs": ["--directory", "../tides", "run", "uvicorn", "tides.main:app", "--port", "8001"],
+      "port": 8001
     }
   ]
 }

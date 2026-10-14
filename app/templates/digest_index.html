@@ -1,55 +1,12 @@
 {% extends "base.html" %}
-
-{% block title %}Daily Digests — Sean-Michael{% endblock %}
-{% block description %}AI and ML infrastructure news{% endblock %}
-
+{% block title %}Digest — Sean-Michael{% endblock %}
 {% block content %}
-<header class="pg-header">
-  <div class="pg-header-left">
-    <div class="gs-hero-label">~/DIGESTS</div>
-    <h1 class="pg-title">Daily digest of AI news</h1>
-    <p class="pg-subtitle">
-      Rotating cast of LLMs on-tap served from my old gaming PC run on a cron to read the latest articles from various
-      sources and distill the key findings. View the code on [GitHub](https://github.com/Sean-Michael/ai-digest)
-    </p>
-  </div>
-  <div class="pg-header-right">
-    <div class="pg-stat">
-      <span class="pg-stat-v">{{ digests | length }}</span>
-      <span class="pg-stat-k">issues</span>
-    </div>
-    <div class="pg-stat">
-      <span class="pg-stat-v pg-stat-good">daily</span>
-      <span class="pg-stat-k">cadence</span>
-    </div>
-  </div>
-</header>
-
-<section class="gs-slab">
-  <div class="dg-list">
-    {% set ns = namespace(count=0) %}
-    {% for digest in digests %}
-    {% if loop.index == 1 %}
-    <div class="dg-group-label">LATEST</div>
-    {% elif loop.index == 8 %}
-    <div class="dg-group-label">EARLIER</div>
-    {% endif %}
-    <a href="/digest/{{ digest.slug }}" class="dg-row">
-      <div class="dg-row-date">
-        <div class="dg-date-day">{{ digest.date.strftime("%d") }}</div>
-        <div class="dg-date-mo">{{ digest.date.strftime("%b") }}</div>
-      </div>
-      <div class="dg-row-body">
-        <h3 class="dg-row-title">{{ digest.title }}</h3>
-        <div class="dg-row-meta">
-          <span class="dg-row-items">{{ digest.date.strftime("%Y-%m-%d") }}</span>
-        </div>
-      </div>
-      <div class="dg-row-arrow">→</div>
-    </a>
-    {% else %}
-    <p style="color: var(--ice-300); padding: 24px 0;">No digests yet.</p>
-    {% endfor %}
-  </div>
-</section>
+<h1>Digest</h1>
+<ul class="dated">
+  {% for d in digests %}
+  <li><time datetime="{{ d.date.isoformat() }}">{{ d.date.strftime("%Y-%m-%d") }}</time> <a href="{{ d.url }}">{{ d.title }}</a></li>
+  {% else %}
+  <li>Nothing here yet.</li>
+  {% endfor %}
+</ul>
 {% endblock %}
