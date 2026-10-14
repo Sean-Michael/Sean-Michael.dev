@@ -51,7 +51,7 @@ On the box, Traefik handles TLS and routing:
 - `/admin/*` goes through **oauth2-proxy** (GitHub login, only users in
   `ADMIN_GITHUB_USERS`), then to the app. The app double-checks the username
   oauth2-proxy forwards.
-- `/tides` and `/api/tides` go to the separate [tides](https://github.com/sean-michael/tides) container.
+- `/tides` and `/api/tides` go to the separate [BTO](https://github.com/Sean-Michael/BTO) container (Bellingham Tidal Observatory).
 - Everything else goes to the app.
 
 ### One-time setup for /admin

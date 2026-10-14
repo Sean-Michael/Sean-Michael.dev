@@ -96,10 +96,10 @@ services:
     networks:
       - traefik-public
 
-  # Tides lives in its own repo (sean-michael/tides) and is served at /tides.
+  # Tides (Bellingham Tidal Observatory) lives in github.com/Sean-Michael/BTO, served at /tides.
   # Enabled by COMPOSE_PROFILES=tides in /opt/app/.env once its image is pushed.
   tides:
-    image: ${TIDES_IMAGE:-seanmichael/tides:latest}
+    image: ${TIDES_IMAGE:-bto:unset}  # set TIDES_IMAGE=<dockerhub user>/bto:latest in /opt/app/.env
     container_name: tides
     restart: unless-stopped
     profiles: ["tides"]
