@@ -79,9 +79,15 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install tfsec
+        # Pinned release + checksum. (The upstream install script changed to
+        # install into /usr/local/bin itself, which broke the old `mv`.)
+        env:
+          TFSEC_VERSION: v1.28.14
+          TFSEC_SHA256: a32d0799bbefababaa4fcd814da9f4d251cd932789590b99d1d5fcb89ace6f68
         run: |
-          curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
-          sudo mv ./tfsec /usr/local/bin/
+          curl -sSfL -o tfsec "https://github.com/aquasecurity/tfsec/releases/download/${TFSEC_VERSION}/tfsec-linux-amd64"
+          echo "${TFSEC_SHA256}  tfsec" | sha256sum -c -
+          sudo install -m 0755 tfsec /usr/local/bin/tfsec
 
       - name: Run tfsec
         run: |
