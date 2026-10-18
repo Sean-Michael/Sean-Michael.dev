@@ -1,55 +1,12 @@
 {% extends "base.html" %}
-
 {% block title %}Blog — Sean-Michael{% endblock %}
-{% block description %}Writing about infrastructure, AI experiments, homelab tinkering, and the occasional trip report.{% endblock %}
-
 {% block content %}
-<header class="pg-header">
-  <div class="pg-header-left">
-    <div class="gs-hero-label">~/BLOG</div>
-    <h1 class="pg-title">Writing</h1>
-    <p class="pg-subtitle">
-      Things I've built, things I've learned, and the occasional trip report
-      from the mountains.
-    </p>
-  </div>
-  <div class="pg-header-right">
-    <div class="pg-stat">
-      <span class="pg-stat-v">{{ blogs | length }}</span>
-      <span class="pg-stat-k">posts</span>
-    </div>
-    <div class="pg-stat">
-      <span class="pg-stat-v">{{ all_tags | length }}</span>
-      <span class="pg-stat-k">tags</span>
-    </div>
-  </div>
-</header>
-
-<section class="pg-filters">
-  <span class="pg-filter-label">FILTER BY</span>
-  <a href="/blog" class="pg-tag-pill{% if not active_tag %} active{% endif %}">all</a>
-  {% for tag in all_tags %}
-  <a href="/blog?tag={{ tag }}" class="pg-tag-pill{% if active_tag == tag %} active{% endif %}">{{ tag }}</a>
+<h1>Blog{% if tag %} <small>tagged “{{ tag }}” · <a href="/blog">all</a></small>{% endif %}</h1>
+<ul class="dated">
+  {% for p in posts %}
+  <li><time datetime="{{ p.date.isoformat() }}">{{ p.date.strftime("%Y-%m-%d") }}</time> <a href="{{ p.url }}">{{ p.title }}</a></li>
+  {% else %}
+  <li>Nothing here yet.</li>
   {% endfor %}
-</section>
-
-<section class="gs-slab">
-  <div class="pg-post-grid">
-    {% for post in blogs %}
-    <a href="/blog/{{ post.slug }}" class="pg-post-card">
-      <div class="pg-post-card-num">{{ "%02d" | format(loop.index) }}</div>
-      <div class="pg-post-card-body">
-        <div class="pg-post-card-date">{{ post.date.strftime("%b %d, %Y") }}</div>
-        <h3 class="pg-post-card-title">{{ post.title }}</h3>
-        <div class="pg-post-card-tags">
-          {% for tag in post.tags %}<span class="pg-post-card-tag">{{ tag }}</span>{% endfor %}
-        </div>
-      </div>
-      <div class="pg-post-card-arrow">→</div>
-    </a>
-    {% else %}
-    <p style="color: var(--ice-300); padding: 24px 0;">No posts found.</p>
-    {% endfor %}
-  </div>
-</section>
+</ul>
 {% endblock %}

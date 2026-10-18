@@ -9,7 +9,6 @@ on:
       - 'Dockerfile'
       - 'app/**'
       - 'tests/**'
-      - 'frontend/**'
       - 'pyproject.toml'
       - 'uv.lock'
   pull_request:
@@ -37,17 +36,3 @@ jobs:
       - name: Test
         run: uv run pytest -v
 
-  build-frontend:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: oven-sh/setup-bun@v2
-
-      - name: Install frontend deps
-        working-directory: frontend
-        run: bun install --frozen-lockfile
-
-      - name: Type-check and build
-        working-directory: frontend
-        run: bun run build

@@ -1,5 +1,8 @@
 name: seanmichael-dev
 
+# Lives on the EC2 box at /opt/app/docker-compose.yaml (copied there by the
+# deploy workflow). Secrets come from /opt/app/.env — see README.
+
 services:
   traefik:
     image: traefik:v3.6
@@ -34,12 +37,81 @@ services:
     restart: unless-stopped
     expose:
       - "8000"
+    environment:
+      ADMIN_GITHUB_USERS: ${ADMIN_GITHUB_USERS:-sean-michael}
     labels:
       - "traefik.enable=true"
+      - "traefik.http.services.app.loadbalancer.server.port=8000"
+      # Public site.
       - "traefik.http.routers.app.rule=Host(`sean-michael.dev`) || Host(`www.sean-michael.dev`)"
       - "traefik.http.routers.app.entrypoints=websecure"
       - "traefik.http.routers.app.tls.certresolver=letsencrypt"
-      - "traefik.http.services.app.loadbalancer.server.port=8000"
+      - "traefik.http.routers.app.service=app"
+      # Nobody outside oauth2-proxy gets to claim an identity on public routes.
+      - "traefik.http.routers.app.middlewares=strip-auth-headers"
+      - "traefik.http.middlewares.strip-auth-headers.headers.customrequestheaders.X-Auth-Request-User="
+      - "traefik.http.middlewares.strip-auth-headers.headers.customrequestheaders.X-Auth-Request-Email="
+      # /admin: same container, but every request goes through oauth2-proxy first.
+      - "traefik.http.routers.admin.rule=(Host(`sean-michael.dev`) || Host(`www.sean-michael.dev`)) && PathPrefix(`/admin`)"
+      - "traefik.http.routers.admin.priority=100"
+      - "traefik.http.routers.admin.entrypoints=websecure"
+      - "traefik.http.routers.admin.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.admin.service=app"
+      - "traefik.http.routers.admin.middlewares=github-auth"
+      - "traefik.http.middlewares.github-auth.forwardauth.address=http://oauth2-proxy:4180/"
+      - "traefik.http.middlewares.github-auth.forwardauth.trustForwardHeader=true"
+      - "traefik.http.middlewares.github-auth.forwardauth.authResponseHeaders=X-Auth-Request-User,X-Auth-Request-Email"
+    networks:
+      - traefik-public
+
+  # GitHub sign-in for /admin. Only the users in OAUTH2_PROXY_GITHUB_USERS get in.
+  oauth2-proxy:
+    image: quay.io/oauth2-proxy/oauth2-proxy:v7.15.5
+    container_name: oauth2-proxy
+    restart: unless-stopped
+    environment:
+      OAUTH2_PROXY_PROVIDER: github
+      OAUTH2_PROXY_CLIENT_ID: ${OAUTH2_PROXY_CLIENT_ID}
+      OAUTH2_PROXY_CLIENT_SECRET: ${OAUTH2_PROXY_CLIENT_SECRET}
+      OAUTH2_PROXY_COOKIE_SECRET: ${OAUTH2_PROXY_COOKIE_SECRET}
+      OAUTH2_PROXY_GITHUB_USERS: ${ADMIN_GITHUB_USERS:-sean-michael}
+      OAUTH2_PROXY_EMAIL_DOMAINS: "*"
+      OAUTH2_PROXY_HTTP_ADDRESS: "0.0.0.0:4180"
+      OAUTH2_PROXY_REDIRECT_URL: https://sean-michael.dev/oauth2/callback
+      OAUTH2_PROXY_WHITELIST_DOMAINS: sean-michael.dev
+      OAUTH2_PROXY_COOKIE_SECURE: "true"
+      OAUTH2_PROXY_COOKIE_EXPIRE: 168h
+      OAUTH2_PROXY_REVERSE_PROXY: "true"
+      OAUTH2_PROXY_SET_XAUTHREQUEST: "true"
+      OAUTH2_PROXY_SKIP_PROVIDER_BUTTON: "true"
+      # Answer 202 when signed in; Traefik then lets the request through to the app.
+      OAUTH2_PROXY_UPSTREAMS: static://202
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.oauth2.rule=Host(`sean-michael.dev`) && PathPrefix(`/oauth2`)"
+      - "traefik.http.routers.oauth2.priority=100"
+      - "traefik.http.routers.oauth2.entrypoints=websecure"
+      - "traefik.http.routers.oauth2.tls.certresolver=letsencrypt"
+      - "traefik.http.services.oauth2.loadbalancer.server.port=4180"
+    networks:
+      - traefik-public
+
+  # Tides (Bellingham Tidal Observatory) lives in github.com/Sean-Michael/BTO, served at /tides.
+  # Enabled by COMPOSE_PROFILES=tides in /opt/app/.env once its image is pushed.
+  tides:
+    image: ${TIDES_IMAGE:-bto:unset}  # set TIDES_IMAGE=<dockerhub user>/bto:latest in /opt/app/.env
+    container_name: tides
+    restart: unless-stopped
+    profiles: ["tides"]
+    expose:
+      - "8000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.tides.rule=Host(`sean-michael.dev`) && (PathPrefix(`/tides`) || PathPrefix(`/api/tides`))"
+      - "traefik.http.routers.tides.priority=100"
+      - "traefik.http.routers.tides.entrypoints=websecure"
+      - "traefik.http.routers.tides.tls.certresolver=letsencrypt"
+      - "traefik.http.services.tides.loadbalancer.server.port=8000"
     networks:
       - traefik-public
 

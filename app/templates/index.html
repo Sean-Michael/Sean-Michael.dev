@@ -1,151 +1,33 @@
 {% extends "base.html" %}
-
-{% block title %}Sean-Michael{% endblock %}
-
 {% block content %}
+<p class="intro">My name is Sean-Michael, and I'm an engineer. This is where I write about life, the outdoors, coding, etc.</p>
 
-<!-- Hero row -->
-<div class="hw-hero-row">
-  <div class="hw-hero-text">
-    <div class="gs-hero-label">~/SEAN-MICHAEL</div>
-    <h1 class="gs-hero-name">Hello World, I'm<br><span style="white-space:nowrap">Sean-Michael.</span></h1>
-    <p class="gs-hero-blurb">
-      I like building things, and getting outside to climb, ski, and ride bikes.
-    </p>
-    <div class="gs-hero-meta">
-      <a href="https://github.com/sean-michael" target="_blank" rel="noopener" class="gs-link-arrow">GitHub
-        <span>↗</span></a>
-      <a href="https://linkedin.com/in/sean-michael-riesterer" target="_blank" rel="noopener"
-        class="gs-link-arrow">LinkedIn <span>↗</span></a>
-      <a href="/about" class="gs-link-arrow">About me <span>→</span></a>
-    </div>
-  </div>
+<h2>Writing</h2>
+<ul class="dated">
+  {% for p in posts %}
+  <li><time datetime="{{ p.date.isoformat() }}">{{ p.date.strftime("%Y-%m-%d") }}</time> <a href="{{ p.url }}">{{ p.title }}</a></li>
+  {% else %}
+  <li>Nothing yet.</li>
+  {% endfor %}
+</ul>
 
-  <!-- Live widgets: tides + github, both hydrated client-side, sliding carousel -->
-  <div class="hcr-slot">
-    <div class="hcr-tabs">
-      <button class="hcr-tab active" data-idx="0"><span class="hcr-tab-dot"></span>tides</button>
-      <button class="hcr-tab" data-idx="1"><span class="hcr-tab-dot"></span>github</button>
-    </div>
+{% if projects %}
+<h2>Projects</h2>
+<ul class="dated">
+  {% for p in projects %}
+  <li><a href="{{ p.url }}">{{ p.title }}</a>{% if p.summary %} — {{ p.summary }}{% endif %}</li>
+  {% endfor %}
+</ul>
+<p><a href="/projects">All projects →</a></p>
+{% endif %}
 
-    <div class="hcr-content">
-
-      <!-- Widget: Tides (Bellingham Bay) — hydrated from /api/tides/widget by tidesWidget() -->
-      <div class="hw-widget carousel-widget active" data-key="tides" data-tides-widget>
-        <a class="hw-w-cover" href="/tides" aria-label="Open the tides dashboard"></a>
-        <div class="hw-w-head">
-          <span class="hw-w-label">BELLINGHAM BAY · TIDES</span>
-          <span class="hw-w-meta-sm" data-tides-time>—:—</span>
-        </div>
-        <div class="hw-tides-now">
-          <div class="hw-tides-current">
-            <span class="hw-tides-h" data-tides-h>—</span>
-            <span class="hw-tides-unit">ft</span>
-          </div>
-          <div class="hw-tides-trend">
-            <span class="hw-tides-arrow" data-tides-arrow>→</span>
-            <span class="hw-tides-state" data-tides-state>loading</span>
-            <span class="hw-tides-next" data-tides-next></span>
-          </div>
-        </div>
-        <svg class="hw-tides-chart" viewBox="0 0 280 80" preserveAspectRatio="none">
-          <defs>
-            <linearGradient id="tideFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="oklch(0.78 0.08 220)" stop-opacity="0.35" />
-              <stop offset="1" stop-color="oklch(0.78 0.08 220)" stop-opacity="0.02" />
-            </linearGradient>
-          </defs>
-          <polyline data-tides-fill points="" fill="url(#tideFill)" stroke="none" />
-          <polyline data-tides-line points="" fill="none" stroke="oklch(0.78 0.08 220)" stroke-width="1.5" />
-          <line data-tides-nowline x1="140" y1="0" x2="140" y2="80" stroke="rgba(255,255,255,0.18)"
-            stroke-dasharray="2 3" />
-          <circle data-tides-nowdot cx="140" cy="40" r="3.5" fill="oklch(0.95 0.02 220)" stroke="oklch(0.78 0.08 220)"
-            stroke-width="1.5" />
-        </svg>
-        <div class="hw-tides-axis">
-          <span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span>
-        </div>
-        <div class="hw-w-foot">
-          <span class="hw-w-meta">noaa · bellingham bay</span>
-          <a class="hw-w-link" href="/tides">open dashboard →</a>
-        </div>
-      </div>
-
-      <!-- Widget: GitHub contributions — hydrated from the public contributions API by githubWidget() -->
-      <div class="hw-widget carousel-widget" data-key="github" data-gh-widget hidden>
-        <a class="hw-w-cover" href="https://github.com/sean-michael" target="_blank" rel="noopener"
-          aria-label="Open my GitHub profile"></a>
-        <div class="hw-w-head">
-          <span class="hw-w-label">GITHUB · LAST YEAR</span>
-          <span class="hw-w-meta-sm" data-gh-total></span>
-        </div>
-        <div class="hw-gh-grid" data-gh-grid></div>
-        <div class="hw-gh-scale">
-          <span class="hw-gh-scale-label">less</span>
-          <span class="hw-gh-cell hw-gh-l0"></span>
-          <span class="hw-gh-cell hw-gh-l1"></span>
-          <span class="hw-gh-cell hw-gh-l2"></span>
-          <span class="hw-gh-cell hw-gh-l3"></span>
-          <span class="hw-gh-cell hw-gh-l4"></span>
-          <span class="hw-gh-scale-label">more</span>
-        </div>
-        <div class="hw-w-foot">
-          <span class="hw-w-meta" data-gh-meta></span>
-          <a class="hw-w-link" href="https://github.com/sean-michael" target="_blank" rel="noopener">profile →</a>
-        </div>
-      </div>
-
-    </div><!-- /.hcr-content -->
-  </div><!-- /.hcr-slot -->
-</div><!-- /.hw-hero-row -->
-
-<!-- Main slab -->
-<div class="gs-slab">
-  <div class="gs-slab-grid">
-
-    <!-- Selected work (left, 1.5fr) -->
-    <div>
-      <div class="gs-col-head">
-        <span class="gs-col-num">01</span>
-        <h2 class="gs-col-title">Selected work</h2>
-        <a href="/projects" class="gs-col-more">all →</a>
-      </div>
-      <div class="gs-proj-list">
-        {% for project in projects[:4] %}
-        <a href="/projects/{{ project.slug }}" class="gs-proj gs-status-{{ project.status }}">
-          <div class="gs-proj-top">
-            <span class="gs-proj-title">{{ project.title }}</span>
-            <span class="gs-proj-status"><span class="gs-proj-dot"></span>{{ project.status }}</span>
-          </div>
-          <div class="gs-proj-desc">
-            {% for tech in project.tech_stack[:3] %}{{ tech }}{% if not loop.last %} · {% endif %}{% endfor %}
-          </div>
-        </a>
-        {% endfor %}
-      </div>
-    </div>
-
-    <!-- Writing (right, 1fr) -->
-    <div>
-      <div class="gs-col-head">
-        <span class="gs-col-num">02</span>
-        <h2 class="gs-col-title">Writing</h2>
-        <a href="/blog" class="gs-col-more">all →</a>
-      </div>
-      <div class="gs-post-list">
-        {% for blog in blogs %}
-        <a href="/blog/{{ blog.slug }}" class="gs-post">
-          <div class="gs-post-date">{{ blog.date.strftime("%b %d") }}</div>
-          <div class="gs-post-title">{{ blog.title }}</div>
-          <div class="gs-post-tags">
-            {% for tag in blog.tags[:2] %}{{ tag }}{% if not loop.last %} · {% endif %}{% endfor %}
-          </div>
-        </a>
-        {% endfor %}
-      </div>
-    </div>
-
-  </div>
-</div>
-
+{% if digests %}
+<h2>Digest</h2>
+<ul class="dated">
+  {% for d in digests %}
+  <li><time datetime="{{ d.date.isoformat() }}">{{ d.date.strftime("%Y-%m-%d") }}</time> <a href="{{ d.url }}">{{ d.title }}</a></li>
+  {% endfor %}
+</ul>
+<p><a href="/digest">All digests →</a></p>
+{% endif %}
 {% endblock %}

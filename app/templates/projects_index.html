@@ -1,73 +1,21 @@
 {% extends "base.html" %}
-
 {% block title %}Projects — Sean-Michael{% endblock %}
-{% block description %}Things I've built — infrastructure tools, AI experiments, homelab builds, and side projects.{% endblock %}
-
 {% block content %}
-<header class="pg-header">
-  <div class="pg-header-left">
-    <div class="gs-hero-label">~/PROJECTS</div>
-    <h1 class="pg-title">Things I've built</h1>
-    <p class="pg-subtitle">
-      Infrastructure tools, AI experiments, homelab builds, and side projects
-      that scratch an itch.
+<h1>Projects</h1>
+{% for p in projects %}
+<section class="project-card">
+  {% if p.meta.screenshots %}<a href="{{ p.url }}"><img src="{{ p.meta.screenshots[0] }}" alt="" loading="lazy"></a>{% endif %}
+  <div>
+    <h2><a href="{{ p.url }}">{{ p.title }}</a></h2>
+    {% if p.summary %}<p>{{ p.summary }}</p>{% endif %}
+    <p class="byline">
+      {% if p.meta.github_url %}<a href="{{ p.meta.github_url }}">GitHub</a>{% endif %}
+      {% if p.meta.demo_url %} · <a href="{{ p.meta.demo_url }}">Live</a>{% endif %}
+      {% if p.meta.tech_stack %} · {{ p.meta.tech_stack | join(", ") }}{% endif %}
     </p>
   </div>
-  <div class="pg-header-right">
-    <div class="pg-stat">
-      <span class="pg-stat-v">{{ projects | length }}</span>
-      <span class="pg-stat-k">projects</span>
-    </div>
-    <div class="pg-stat">
-      <span class="pg-stat-v pg-stat-good">{{ projects | selectattr("status", "equalto", "wip") | list | length }}</span>
-      <span class="pg-stat-k">wip</span>
-    </div>
-  </div>
-</header>
-
-<section class="pg-filters">
-  <span class="pg-filter-label">STATUS</span>
-  <button class="pg-tag-pill active" data-filter="all">all</button>
-  <button class="pg-tag-pill" data-filter="wip">wip</button>
-  <button class="pg-tag-pill" data-filter="active">active</button>
-  <button class="pg-tag-pill" data-filter="archive">archive</button>
 </section>
-
-<section class="gs-slab">
-  <div class="pg-proj-grid">
-    {% for project in projects %}
-    <a href="/projects/{{ project.slug }}" class="pg-proj-card" data-status="{{ project.status }}">
-      <div class="pg-proj-card-top">
-        <div class="pg-proj-glyph">{{ loop.index }}</div>
-        <span class="gs-proj-status gs-status-{{ project.status }}"><span class="gs-proj-dot"></span>{{ project.status }}</span>
-      </div>
-      <h3 class="pg-proj-card-title">{{ project.title }}</h3>
-      {% if project.description %}
-      <p class="pg-proj-card-desc">{{ project.description }}</p>
-      {% endif %}
-      <div class="pg-proj-card-foot">
-        <div class="pg-proj-card-tech">
-          {% for tech in project.tech_stack[:4] %}<span class="hw-w-chip">{{ tech }}</span>{% endfor %}
-        </div>
-        <span class="pg-proj-card-arrow">→</span>
-      </div>
-    </a>
-    {% else %}
-    <p style="color: var(--ice-300); padding: 24px 0;">No projects yet.</p>
-    {% endfor %}
-  </div>
-</section>
-
-<script>
-document.querySelectorAll('.pg-tag-pill[data-filter]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.pg-tag-pill[data-filter]').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const f = btn.dataset.filter;
-    document.querySelectorAll('.pg-proj-card').forEach(card => {
-      card.style.display = (f === 'all' || card.dataset.status === f) ? '' : 'none';
-    });
-  });
-});
-</script>
+{% else %}
+<p>Nothing here yet.</p>
+{% endfor %}
 {% endblock %}

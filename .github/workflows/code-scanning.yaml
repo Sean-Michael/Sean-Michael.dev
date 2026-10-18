@@ -9,7 +9,6 @@ on:
       - 'Dockerfile'
       - 'app/**'
       - 'tests/**'
-      - 'frontend/**'
       - 'pyproject.toml'
       - 'requirements.txt'
   pull_request:

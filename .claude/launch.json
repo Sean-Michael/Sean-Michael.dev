@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "site",
-      "runtimeExecutable": ".venv/bin/uvicorn",
-      "runtimeArgs": ["app.main:app", "--port", "8000"],
+      "runtimeExecutable": "make",
+      "runtimeArgs": ["dev"],
       "port": 8000
     }
   ]

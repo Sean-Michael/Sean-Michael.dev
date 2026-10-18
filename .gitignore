@@ -63,3 +63,5 @@ frontend/dist/
 
 
 *__init__.py
+# Local-only copies of the old app (history is in git)
+archive/
