@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cloud Sandbox — Sean-Michael</title>
+  <meta name="description" content="A CLI utility for creating sandbox VMs to easily access private GKE clusters. This started as a quality of life script for me to just wrap a few GKE commands. Eventually it turned into a little bit more, then a little bit more, then... you know how it is.">
+  <link rel="stylesheet" href="/static/style.css">
+  
+</head>
+<body>
+  <header class="site">
+    <a class="name" href="/">Sean-Michael</a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/blog">Blog</a>
+      <a href="/projects">Projects</a>
+      <a href="/digest">Digest</a>
+      <a href="/about">About</a>
+    </nav>
+  </header>
+  <main>
+    
+<article>
+  <h1>Cloud Sandbox</h1>
+  <p class="byline">
+    <a href="https://github.com/Sean-Michael/cloud-sandbox">GitHub</a>
+    
+     · Shell, GCP, GKE, IAP
+  </p>
+  
+  <p>A CLI utility for creating sandbox VMs to easily access private GKE clusters. This started as a quality of life script for me to just wrap a few GKE commands. Eventually it turned into a little bit more, then a little bit more, then... you know how it is. </p>
+<p>Sometimes having a totally locked down private kubernetes API server is great but it presents some challenges for development.</p>
+<h2 id="what-it-does">What It Does</h2>
+<p>The <code>gke-sandbox.sh</code> script handles the full lifecycle of sandbox VMs — creation, enumeration, and deletion — for accessing private GKE clusters that require administrative access through a bastion-style workflow.</p>
+<p>I tried to make an intuitive interface that was as easy to use as possible. I was wrestling with creating myself bastion VMs.. and didn't want to maintain any terraform state or config for something I intended on deleting as soon as I was done. </p>
+<p>What I like about this tool is it lets me create these super specific VMs on demand and access my cluster in a very secure way.</p>
+<p>I wanted it to be flexible and extensible with different customizations. For example, one could install their favorite ~~spyware~~ "security" tooling automagically to meet company policy guidelines..</p>
+<p>Another part I was proud of was the automatic service account creation related specifically to the VM scope so that permissions were done on a least-privileged basis. The VM gets just enough to manipulate the control plane and that's it. </p>
+<h2 id="features">Features</h2>
+<ul>
+<li><strong>Pre-configured environment</strong> — VMs come with kubectl, helm, jq, and networking pre-configured for API server connectivity</li>
+<li><strong>Secure access</strong> — Uses Identity-Aware Proxy (IAP) tunneling instead of direct exposure</li>
+<li><strong>Customizable setup</strong> — Startup scripts allow configuration of bundled tools and environment parameters</li>
+<li><strong>Self-service</strong> — Users can independently manage VM lifecycle without manual intervention</li>
+</ul>
+</article>
+
+  </main>
+  <footer class="site">
+    <a href="https://github.com/sean-michael">GitHub</a> ·
+    <a href="https://www.linkedin.com/in/sean-michael-riesterer/">LinkedIn</a>
+  </footer>
+</body>
+</html>

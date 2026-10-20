@@ -254,9 +254,7 @@ resource "aws_s3_bucket_policy" "content_images_public" {
   })
 }
 
-# IAM policy for EC2 to read and write the S3 content bucket (the /admin
-# editor saves drafts, publishes, and uploads images). Bucket versioning keeps
-# every overwritten or deleted object recoverable.
+# IAM policy for EC2 to read the S3 content bucket (the app serves digests from it).
 resource "aws_iam_role_policy" "ec2_s3_content_read" {
   name = "${var.project_name}-s3-content-read"
   role = aws_iam_role.ec2_ssm_role.id
@@ -265,13 +263,11 @@ resource "aws_iam_role_policy" "ec2_s3_content_read" {
     Version = "2012-10-17"
     Statement = [
       {
-        Sid    = "S3ContentReadWrite"
+        Sid    = "S3ContentRead"
         Effect = "Allow"
         Action = [
           "s3:GetObject",
-          "s3:ListBucket",
-          "s3:PutObject",
-          "s3:DeleteObject"
+          "s3:ListBucket"
         ]
         Resource = [
           aws_s3_bucket.content.arn,

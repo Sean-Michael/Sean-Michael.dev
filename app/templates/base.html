@@ -1,3 +1,4 @@
+{# Keep the header and footer in sync with the pages in site/. #}
 <!doctype html>
 <html lang="en">
 <head>
@@ -5,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Sean-Michael{% endblock %}</title>
   {% block meta %}{% endblock %}
-  <link rel="alternate" type="application/rss+xml" title="Sean-Michael" href="/blog/feed.xml">
   <link rel="stylesheet" href="/static/style.css">
   {% block head %}{% endblock %}
 </head>
@@ -25,8 +25,7 @@
   </main>
   <footer class="site">
     <a href="https://github.com/sean-michael">GitHub</a> ·
-    <a href="https://www.linkedin.com/in/sean-michael-riesterer/">LinkedIn</a> ·
-    <a href="/blog/feed.xml">RSS</a>
+    <a href="https://www.linkedin.com/in/sean-michael-riesterer/">LinkedIn</a>
   </footer>
 </body>
 </html>

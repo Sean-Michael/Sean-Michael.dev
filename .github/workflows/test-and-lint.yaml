@@ -8,6 +8,7 @@ on:
     paths:
       - 'Dockerfile'
       - 'app/**'
+      - 'site/**'
       - 'tests/**'
       - 'pyproject.toml'
       - 'uv.lock'
