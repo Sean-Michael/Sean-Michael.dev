@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sean-Michael.dev — Sean-Michael</title>
+  <meta name="description" content="This website. A &#34;Website as Code&#34; project where infrastructure, application, and CI/CD are all version-controlled together with GitOps push-based deployment.">
+  <link rel="stylesheet" href="/static/style.css">
+  
+</head>
+<body>
+  <header class="site">
+    <a class="name" href="/">Sean-Michael</a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/blog">Blog</a>
+      <a href="/projects">Projects</a>
+      <a href="/digest">Digest</a>
+      <a href="/about">About</a>
+    </nav>
+  </header>
+  <main>
+    
+<article>
+  <h1>Sean-Michael.dev</h1>
+  <p class="byline">
+    <a href="https://github.com/Sean-Michael/Sean-Michael.dev">GitHub</a>
+     · <a href="https://sean-michael.dev">Live</a>
+     · Python, FastAPI, HTMX, Jinja2, AWS, Terraform, Docker, GitHub Actions
+  </p>
+  
+  <p>This website. A "Website as Code" project where infrastructure, application, and CI/CD are all version-controlled together with GitOps push-based deployment.</p>
+<h2 id="stack">Stack</h2>
+<ul>
+<li><strong>FastAPI</strong> for routing and server-side rendering</li>
+<li><strong>HTMX</strong> for dynamic interactions with zero client-side JavaScript</li>
+<li><strong>Jinja2</strong> templates with Markdown content via frontmatter</li>
+<li><strong>Docker</strong> containerization with Nginx reverse proxy</li>
+</ul>
+<h2 id="infrastructure">Infrastructure</h2>
+<p>All AWS infrastructure is managed with <strong>Terraform</strong>:
+- EC2 instance (Ubuntu 24.04) running Docker Compose
+- Elastic IP with Squarespace DNS
+- S3 bucket for blog and project content (kept out of git)
+- IAM roles with least-privilege access
+- Security groups restricting SSH to my machine</p>
+<h2 id="cicd">CI/CD</h2>
+<p>Three GitHub Actions workflows chain automatically on push to main:
+1. <strong>Test and Lint</strong> — Ruff + pytest, blocks downstream on failure
+2. <strong>Build and Push</strong> — Docker image to Docker Hub with commit SHA tags
+3. <strong>Deploy to EC2</strong> — AWS SSM-based deployment, no SSH keys needed</p>
+</article>
+
+  </main>
+  <footer class="site">
+    <a href="https://github.com/sean-michael">GitHub</a> ·
+    <a href="https://www.linkedin.com/in/sean-michael-riesterer/">LinkedIn</a>
+  </footer>
+</body>
+</html>

@@ -79,35 +79,3 @@ ul.dated time { color: var(--muted); font-size: 0.85rem; margin-right: 0.6rem; f
 .screenshots img { display: block; border: 1px solid var(--rule); }
 @media (max-width: 30rem) { .project-card { grid-template-columns: 1fr; } }
 
-/* Admin */
-.button, button {
-  display: inline-block; font-size: 0.85rem; padding: 0.35rem 0.8rem; border-radius: 4px;
-  border: 1px solid var(--rule); background: var(--code-bg); color: var(--fg); text-decoration: none; cursor: pointer;
-}
-button.primary { background: var(--accent); border-color: var(--accent); color: var(--bg); }
-h2 .button { margin-left: 0.75rem; vertical-align: middle; }
-.status { color: var(--muted); }
-.status-draft { color: var(--danger); }
-.notice { padding: 0.5rem 0.75rem; border-left: 3px solid var(--accent); background: var(--code-bg); font-size: 0.9rem; }
-.notice.error { border-color: var(--danger); }
-
-body:has(.editor) { max-width: 78rem; }
-.editor .fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 0.75rem 1rem; }
-.editor label { display: flex; flex-direction: column; font-size: 0.8rem; color: var(--muted); gap: 0.2rem; }
-.editor label.wide { grid-column: 1 / -1; }
-.editor input, .editor textarea {
-  font: inherit; font-size: 0.95rem; color: var(--fg); background: var(--bg);
-  border: 1px solid var(--rule); border-radius: 4px; padding: 0.4rem 0.5rem;
-}
-.editor input[readonly] { color: var(--muted); }
-.split { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
-.split textarea { min-height: 65vh; resize: vertical; font: 0.9rem/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; padding: 0.75rem; }
-.preview { border: 1px dashed var(--rule); border-radius: 4px; padding: 0 1rem; max-height: 80vh; overflow-y: auto; }
-@media (max-width: 50rem) { .split { grid-template-columns: 1fr; } }
-.actions { display: flex; gap: 0.75rem; align-items: center; }
-.actions small { color: var(--muted); }
-.upload-list { list-style: none; padding: 0; }
-.upload-list li { display: flex; gap: 0.75rem; align-items: center; margin: 0.5rem 0; }
-.upload-list img { width: 5rem; }
-.danger { display: flex; gap: 0.75rem; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--rule); }
-.danger button { color: var(--danger); }

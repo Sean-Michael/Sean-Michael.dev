@@ -1,4 +1,8 @@
+import re
+
 import pytest
+
+from app import main
 
 
 @pytest.mark.parametrize(
@@ -7,65 +11,77 @@ import pytest
         "/",
         "/about",
         "/blog",
-        "/blog/kubernetes-homelab",
+        "/blog/",
+        "/blog/mt-hood-summit",
         "/projects",
-        "/projects/homelab-cluster",
+        "/projects/librarius",
         "/digest",
         "/digest/2026-03-30",
         "/arete/support",
         "/arete/privacy",
+        "/static/style.css",
     ],
 )
 def test_pages_render(client, path):
     assert client.get(path).status_code == 200
 
 
-def test_home_lists_posts_newest_first(client):
-    html = client.get("/").text
-    # building-an-ai-news-digest (2026-04-06) is newer than kubernetes-homelab (2026-02-20)
-    assert html.index("/blog/building-an-ai-news-digest") < html.index("/blog/kubernetes-homelab")
+def test_static_pages_served_as_is(client):
+    res = client.get("/about")
+    assert res.headers["content-type"] == "text/html; charset=utf-8"
+    assert res.content == (main.SITE_DIR / "about.html").read_bytes()
 
 
-def test_post_renders_markdown(client):
-    html = client.get("/blog/kubernetes-homelab").text
-    assert "<h1>Running Kubernetes in My Homelab</h1>" in html
-    assert "<h2" in html and "The Setup" in html
+@pytest.mark.parametrize(
+    "path",
+    ["/nope", "/blog/nope", "/404", "/blog/..%2F..%2Fapp%2Fmain.py", "/digest/nope"],
+)
+def test_unknown_paths_404(client, path):
+    res = client.get(path)
+    assert res.status_code == 404
+    assert "Not found" in res.text
 
 
-def test_tag_filter(client):
-    html = client.get("/blog?tag=kubernetes").text
-    assert "kubernetes-homelab" in html
-    assert "building-an-ai-news-digest" not in html
+def test_every_internal_link_resolves(client):
+    paths = set()
+    for page in main.SITE_DIR.rglob("*.html"):
+        paths |= set(re.findall(r'(?:href|src)="(/[^"#?]*)', page.read_text()))
+    broken = [p for p in sorted(paths) if client.get(p).status_code != 200]
+    assert not broken
 
 
-def test_unknown_and_bad_slugs_404(client):
-    assert client.get("/blog/nope").status_code == 404
-    assert client.get("/blog/..%2F..%2Fetc%2Fpasswd").status_code == 404
-    assert client.get("/projects/Bad_Slug").status_code == 404
+def test_digest_renders_markdown_without_duplicate_title(client):
+    html = client.get("/digest/2026-03-30").text
+    assert "<h1>Tech Digest: March 30, 2026</h1>" in html
+    assert "<h2" in html and "Top Stories" in html
 
 
-def test_drafts_are_not_public(client, store):
-    store.put(
-        "blog/drafts/secret.md", b"---\ntitle: Secret\ndate: 2026-01-01\n---\nshh", "text/markdown"
-    )
-    assert client.get("/blog/secret").status_code == 404
-    assert "Secret" not in client.get("/blog").text
-
-
-def test_digest_drafts_not_listed_as_digests(client, store):
-    store.put("digests/drafts/wip.md", b"---\ntitle: WIP digest\n---\nx", "text/markdown")
+def test_digest_drafts_not_listed(client, store):
+    (store.root / "digests" / "drafts").mkdir()
+    (store.root / "digests" / "drafts" / "wip.md").write_text("---\ntitle: WIP digest\n---\nx")
+    main.digests.refresh()
     assert "WIP digest" not in client.get("/digest").text
 
 
-def test_feed_and_sitemap(client):
-    feed = client.get("/blog/feed.xml")
-    assert feed.headers["content-type"].startswith("application/rss+xml")
-    assert "/blog/kubernetes-homelab" in feed.text
-    assert "/projects/homelab-cluster" in client.get("/sitemap.xml").text
+def test_refresh_only_fetches_changed_digests(store, monkeypatch):
+    digests = main.digests
+    (store.root / "digests" / "2026-04-01.md").write_text("---\ntitle: New one\n---\nhello")
+
+    fetched = []
+    get = store.get
+    monkeypatch.setattr(store, "get", lambda key: fetched.append(key) or get(key))
+    digests.refresh()
+    assert fetched == ["digests/2026-04-01.md"]
+    assert [d.slug for d in digests.list()] == ["2026-04-01", "2026-03-30"]
+
+    (store.root / "digests" / "2026-03-30.md").unlink()
+    digests.refresh()
+    assert [d.slug for d in digests.list()] == ["2026-04-01"]
 
 
-def test_images_served_from_store(client, store):
-    store.put("images/blog/x/pic.png", b"\x89PNG", "image/png")
-    res = client.get("/images/blog/x/pic.png")
-    assert res.status_code == 200 and res.headers["content-type"] == "image/png"
-    assert client.get("/images/blog/x/notes.md").status_code == 404
+def test_sitemap(client):
+    xml = client.get("/sitemap.xml").text
+    assert "<loc>https://sean-michael.dev/</loc>" in xml
+    assert "/blog/mt-hood-summit</loc>" in xml
+    assert "/digest/2026-03-30</loc>" in xml
+    assert "404" not in xml and "arete" not in xml and "static" not in xml

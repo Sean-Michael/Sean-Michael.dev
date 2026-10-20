@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Building an AI News Digest without AI — Sean-Michael</title>
+  <meta name="description" content="I am a daily claude code user, maybe even an addict. I love how effective it makes me at things I&#39;ve already mastered or at the very least gone into a good deal of depth prior; I have intuition on these from years of experience and hours of debugging that helps me to guide the AI and make decisions rather than letting it get carried away.">
+  <link rel="stylesheet" href="/static/style.css">
+  
+</head>
+<body>
+  <header class="site">
+    <a class="name" href="/">Sean-Michael</a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/blog">Blog</a>
+      <a href="/projects">Projects</a>
+      <a href="/digest">Digest</a>
+      <a href="/about">About</a>
+    </nav>
+  </header>
+  <main>
+    
+<article>
+  <h1>Building an AI News Digest without AI</h1>
+  <p class="byline">
+    <time datetime="2026-04-06">April 6, 2026</time>
+    · 5 min read
+     · python · ollama · ai
+  </p>
+  <p>I am a daily claude code user, maybe even an addict. I love how effective it makes me at things I've already mastered or at the very least gone into a good deal of depth prior; I have intuition on these from years of experience and hours of debugging that helps me to guide the AI and make decisions rather than letting it get carried away.</p>
+<p>So when I wanted to learn more about building AI Applications, using LLMs in programs to solve problems, I decided to abstain from my beloved claude altogether. </p>
+<p>I'd played around with building RAG applications like my <a href="https://github.com/Sean-Michael/librarius">Librarius</a> project for WH40k, but wanted to get into agentic applications.</p>
+<p>But with so many possible directions, how could I decide what to build?</p>
+<h2 id="the-ai-newsroom">The AI newsroom</h2>
+<p>I got my inspiration after listening to a chat Addy Osmani had with Tim O'Reilly where Addy mentioned that one could create their own AI Agent to keep up with news about AI Agents since the pace of the industry is so fast and the FOMO is real. I thought about it a bit and knew I wanted to try it out. It's narrow enough in scope (my mind immediately went to parsing RSS feeds) and would actually be useful to me for staying informed.</p>
+<h3 id="building-the-application">Building the application</h3>
+<p>Getting started I knew I had to build the core foundation and just experiment first. So I drafted the idea of an editorial newsroom with LLMs. I envisioned a system where a researcher, writer, and editor would work together to gather information from articles, write a draft digest, and edit for polish in a continuous loop. </p>
+<p>From the beginning the goal was to self-host everything and also to keep it simple. I'd used Ollama before and had it installed on the Homelab (my old gaming PC) and my Macbook so it made sense to use for local inference.</p>
+<p>After reading some docs and starting the implementation, I was pleased that my Python ability had not slipped given that claude does most of the coding for me these days. I got the basic structure in surprisingly quick, RSS feed parsing to dicts, BeautifulSoup enrichment for articles without summaries, the prompts and agent loop.</p>
+<p>Working with the Ollama Python SDK is such a breeze and I had a blast writing out functions that could call LLMs. The ability to call a model with a simple <code>chat()</code>, give it totally unstructured input and get back a structured JSON or really anything is fabulous. It's like a new programming primitive that represents a magic function that can take virtually any input and produce any output you desire, really cool.</p>
+<p>After a few hours of tinkering I had the basics of an AI powered news digest, I went through a few rounds of evaluating different models before settling on <code>gemma4:e4b</code> which produced consistently good results and ran well on my hardware. I wrote my notes on this topic and my process in <a href="https://github.com/Sean-Michael/ai-digest/blob/main/notes/LEARNINGS.md">LEARNINGS.md</a>.</p>
+<h3 id="engineering-a-refined-product">Engineering a refined product</h3>
+<p>The project stalled here with some basic logging and everything thrown in <code>main.py</code> running a daily cron and posting to my personal website at https://sean-michael.dev/digest. After eating my fill of new material I was content, and what remained felt like the tedium I usually leave to claude.</p>
+<p>That was until I started reading AI Engineering by Chip Huyen. The book covers a great many topics and all of them are interesting to me, it gave me tons of inspiration for how I could improve my application. It got me thinking about setting up more robust evals, isolating my prompts into a separate <a href="https://github.com/Sean-Michael/ai-digest/blob/main/prompts.py">prompts.py</a> with versioning, how to write good prompts, so so much information. It was exactly what I needed.</p>
+<p>With this newfound inspiration I put some polish on the system, I added tracing to all of my model calls with <a href="https://github.com/Arize-ai/openinference">OpenInference</a> and containerized the application with a Dockerfile, and alongside <a href="https://github.com/Arize-ai/phoenix">Phoenix</a> in a docker-compose. I added structured logging to files and the console, decomposed the monolithic main into separate domain specific files, and much more.  The biggest win was adding tool calling to the model calls so that the LLMs could use my functions to fetch URLs from the feeds to get more information if the original parsing was too light!</p>
+<h3 id="conclusion">Conclusion</h3>
+<p>I'm still not done with this project but I'm really happy with the progress and how much I learned from building everything by hand. I know that claude code would have whipped this up in a fraction of the time but I wouldn't have learned as much or had as much fun. This isn't a derision against agentic development however, it's actually a commendation because now that I have this deeper knowledge and intuition I am more confident in my ability to "vibe-code" a similar system with far greater complexity with the patterns that I like in mind. It's kind of like writing a detailed outline of an essay, gathering sources and refining your thesis, writing a draft, and then letting an expert author convert that into a final draft.</p>
+<p>I think the next iteration of this will be far more agentic in the truer sense of the term, I'm excited to build it.</p>
+<p>Thank you for reading, it's so fun to build things. I hope that at the very least you are (if you aren't already) inspired like I was to start building AI Applications.</p>
+<hr />
+<p>The code, humble as it is, is available in my GitHub repo: <a href="https://github.com/Sean-Michael/ai-digest">ai-digest</a></p>
+<p>Check out a few of the <a href="https://sean-michael.dev/digest">Daily Digests</a></p>
+</article>
+
+  </main>
+  <footer class="site">
+    <a href="https://github.com/sean-michael">GitHub</a> ·
+    <a href="https://www.linkedin.com/in/sean-michael-riesterer/">LinkedIn</a>
+  </footer>
+</body>
+</html>

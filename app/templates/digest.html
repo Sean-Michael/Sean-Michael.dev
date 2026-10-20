@@ -7,7 +7,6 @@
   <p class="byline">
     <time datetime="{{ item.date.isoformat() }}">{{ item.date.strftime("%B %-d, %Y") }}</time>
     · {{ item.read_time }} min read
-    {% for t in item.tags %} · <a href="/blog?tag={{ t }}">{{ t }}</a>{% endfor %}
   </p>
   {{ item.html | safe }}
 </article>
