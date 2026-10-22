@@ -2,9 +2,12 @@
 {% block title %}Digest — Sean-Michael{% endblock %}
 {% block content %}
 <h1>Digest</h1>
+<p>A daily briefing of article, curated and summarized by a <a href="https://github.com/Sean-Michael/ai-digest">local AI
+    agent.</a></p>
 <ul class="dated">
   {% for d in digests %}
-  <li><time datetime="{{ d.date.isoformat() }}">{{ d.date.strftime("%Y-%m-%d") }}</time> <a href="{{ d.url }}">{{ d.title }}</a></li>
+  <li><time datetime="{{ d.date.isoformat() }}">{{ d.date.strftime("%Y-%m-%d") }}</time> <a href="{{ d.url }}">{{
+      d.title }}</a></li>
   {% else %}
   <li>Nothing here yet.</li>
   {% endfor %}
