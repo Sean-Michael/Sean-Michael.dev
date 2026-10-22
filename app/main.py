@@ -54,7 +54,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None, lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=SITE_DIR / "static"), name="static")
-templates = Jinja2Templates(directory=BASE_DIR / "templates")
+templates = Jinja2Templates([BASE_DIR / "templates", SITE_DIR])
 NOT_FOUND_HTML = (SITE_DIR / "404.html").read_text()
 
 
