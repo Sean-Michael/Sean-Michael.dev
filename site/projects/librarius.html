@@ -1,72 +1,41 @@
-<!doctype html>
-<html lang="en">
+---
+title: "Librarius"
+---
+<article>
+  <h1>Librarius</h1>
+  <p class="byline">
+    <a href="https://github.com/Sean-Michael/librarius">GitHub</a>
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Librarius — Sean-Michael</title>
-  <meta name="description"
-    content="An end-to-end Retrieval Augmented Generation (RAG) system for Warhammer 40K rulebooks. Fully self-hosted on my homelab K3s cluster — no cloud APIs, no subscriptions, just local models and local infrastructure.">
-  <link rel="stylesheet" href="/static/style.css">
+    · Python, PostgreSQL, pgvector, Ollama, Kubernetes
+  </p>
 
-</head>
-
-<body>
-  <header class="site">
-    <a class="name" href="/">Sean-Michael</a>
-    <nav>
-      <a href="/">Home</a>
-      <a href="/blog">Blog</a>
-      <a href="/projects">Projects</a>
-      <a href="/digest">Digest</a>
-      <a href="/about">About</a>
-    </nav>
-  </header>
-  <main>
-
-    <article>
-      <h1>Librarius</h1>
-      <p class="byline">
-        <a href="https://github.com/Sean-Michael/librarius">GitHub</a>
-
-        · Python, PostgreSQL, pgvector, Ollama, Kubernetes
-      </p>
-
-      <p>An end-to-end Retrieval Augmented Generation (RAG) system for Warhammer 40K rulebooks. Fully self-hosted on my
-        homelab K3s cluster.</p>
-      <h2 id="architecture">Architecture</h2>
-      <p>The system is built as a three-phase pipeline, each named after Librarian specializations from the lore:</p>
-      <h3 id="phase-1-lexicanium-data-ingestion">Phase 1: Lexicanium — Data Ingestion</h3>
-      <ul>
-        <li>Extracts PDFs from archives with strict filename schema</li>
-        <li>Partitions documents using semantic chunking that preserves structure (sections, tables, stat blocks)</li>
-        <li>Handles both native and scanned PDFs with OCR via tesseract</li>
-        <li>Stores chunks in PostgreSQL with rich metadata (faction, edition, category, page numbers)</li>
-      </ul>
-      <h3 id="phase-2-epistolary-embedding">Phase 2: Epistolary — Embedding</h3>
-      <ul>
-        <li>Converts text chunks to 1024-dimensional vector embeddings using
-          <code>intfloat/multilingual-e5-large-instruct</code></li>
-        <li>GPU-accelerated batch processing</li>
-        <li>Stored in PostgreSQL with the pgvector extension</li>
-      </ul>
-      <h3 id="phase-3-codicier-retrieval-generation">Phase 3: Codicier — Retrieval &amp; Generation</h3>
-      <ul>
-        <li>Embeds user queries and performs k-NN vector search</li>
-        <li>Provides retrieved context to a local LLM via Ollama</li>
-        <li>Supports interactive chat mode with source citations</li>
-        <li>Filterable by game system (40K, 30K, Kill Team, etc.)</li>
-      </ul>
-      <h2 id="why">Why</h2>
-      <p>LLMs hallucinate game rules constantly. By grounding responses in actual rulebook content with semantic search,
-        the system provides accurate, sourced answers about game mechanics.</p>
-    </article>
-
-  </main>
-  <footer class="site">
-    <a href="https://github.com/sean-michael">GitHub</a> ·
-    <a href="https://www.linkedin.com/in/sean-michael-riesterer/">LinkedIn</a>
-  </footer>
-</body>
-
-</html>
+  <p>An end-to-end Retrieval Augmented Generation (RAG) system for Warhammer 40K rulebooks. Fully self-hosted on my
+    homelab K3s cluster.</p>
+  <h2 id="architecture">Architecture</h2>
+  <p>The system is built as a three-phase pipeline, each named after Librarian specializations from the lore:</p>
+  <h3 id="phase-1-lexicanium-data-ingestion">Phase 1: Lexicanium — Data Ingestion</h3>
+  <ul>
+    <li>Extracts PDFs from archives with strict filename schema</li>
+    <li>Partitions documents using semantic chunking that preserves structure (sections, tables, stat blocks)</li>
+    <li>Handles both native and scanned PDFs with OCR via tesseract</li>
+    <li>Stores chunks in PostgreSQL with rich metadata (faction, edition, category, page numbers)</li>
+  </ul>
+  <h3 id="phase-2-epistolary-embedding">Phase 2: Epistolary — Embedding</h3>
+  <ul>
+    <li>Converts text chunks to 1024-dimensional vector embeddings using
+      <code>intfloat/multilingual-e5-large-instruct</code>
+    </li>
+    <li>GPU-accelerated batch processing</li>
+    <li>Stored in PostgreSQL with the pgvector extension</li>
+  </ul>
+  <h3 id="phase-3-codicier-retrieval-generation">Phase 3: Codicier — Retrieval &amp; Generation</h3>
+  <ul>
+    <li>Embeds user queries and performs k-NN vector search</li>
+    <li>Provides retrieved context to a local LLM via Ollama</li>
+    <li>Supports interactive chat mode with source citations</li>
+    <li>Filterable by game system (40K, 30K, Kill Team, etc.)</li>
+  </ul>
+  <h2 id="why">Why</h2>
+  <p>LLMs hallucinate game rules constantly. By grounding responses in actual rulebook content with semantic search,
+    the system provides accurate, sourced answers about game mechanics.</p>
+</article>

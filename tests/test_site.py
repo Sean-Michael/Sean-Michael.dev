@@ -26,10 +26,29 @@ def test_pages_render(client, path):
     assert client.get(path).status_code == 200
 
 
-def test_static_pages_served_as_is(client):
-    res = client.get("/about")
-    assert res.headers["content-type"] == "text/html; charset=utf-8"
-    assert res.content == (main.SITE_DIR / "about.html").read_bytes()
+def test_pages_get_the_layout(client):
+    html = client.get("/about").text
+    assert '<header class="site">' in html
+    assert "<title>About — Sean-Michael</title>" in html
+    assert "---" not in html.split("<main>")[0]
+
+
+def test_doctype_pages_served_as_is(client):
+    res = client.get("/arete/privacy")
+    assert res.text == (main.SITE_DIR / "arete" / "privacy.html").read_text()
+
+
+def test_posts_get_title_and_date(client):
+    html = client.get("/blog/mt-hood-summit").text
+    assert "<h1>Trip Report: Mt.Hood Summit</h1>" in html
+    assert "May 28, 2025" in html
+
+
+def test_latest_posts_newest_first(client):
+    html = client.get("/blog/latest").text
+    assert html.index("building-an-ai-news-digest") < html.index("mt-hood-summit")
+    assert "<html" not in html
+    assert client.get("/blog/latest?limit=1").text.count("<li>") == 1
 
 
 @pytest.mark.parametrize(

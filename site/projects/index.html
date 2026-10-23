@@ -1,92 +1,61 @@
-<!doctype html>
-<html lang="en">
+---
+title: "Projects"
+---
+<h1>Projects</h1>
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Projects — Sean-Michael</title>
+<section class="project-card">
 
-  <link rel="stylesheet" href="/static/style.css">
+  <div>
+    <h2><a href="/projects/sean-michael-dev">Sean-Michael.dev</a></h2>
+    <p>This website. A &#34;Website as Code&#34; project where infrastructure, application, and CI/CD are all
+      version-controlled together with GitOps push-based deployment.</p>
+    <p class="byline">
+      <a href="https://github.com/Sean-Michael/Sean-Michael.dev">GitHub</a>
+      · <a href="https://sean-michael.dev">Live</a>
+      · Python, FastAPI, HTMX, Jinja2, AWS, Terraform, Docker, GitHub Actions
+    </p>
+  </div>
+</section>
 
-</head>
+<section class="project-card">
 
-<body>
-  <header class="site">
-    <a class="name" href="/">Sean-Michael</a>
-    <nav>
-      <a href="/">Home</a>
-      <a href="/blog">Blog</a>
-      <a href="/projects">Projects</a>
-      <a href="/digest">Digest</a>
-      <a href="/about">About</a>
-    </nav>
-  </header>
-  <main>
+  <div>
+    <h2><a href="/projects/librarius">Librarius</a></h2>
+    <p>An end-to-end Retrieval Augmented Generation (RAG) system for Warhammer 40K rulebooks. Fully self-hosted on
+      my homelab K3s cluster — no cloud APIs, no subscriptions, just local models and local infrastructure.</p>
+    <p class="byline">
+      <a href="https://github.com/Sean-Michael/librarius">GitHub</a>
 
-    <h1>Projects</h1>
+      · Python, PostgreSQL, pgvector, Ollama, Kubernetes
+    </p>
+  </div>
+</section>
 
-    <section class="project-card">
+<section class="project-card">
 
-      <div>
-        <h2><a href="/projects/sean-michael-dev">Sean-Michael.dev</a></h2>
-        <p>This website. A &#34;Website as Code&#34; project where infrastructure, application, and CI/CD are all
-          version-controlled together with GitOps push-based deployment.</p>
-        <p class="byline">
-          <a href="https://github.com/Sean-Michael/Sean-Michael.dev">GitHub</a>
-          · <a href="https://sean-michael.dev">Live</a>
-          · Python, FastAPI, HTMX, Jinja2, AWS, Terraform, Docker, GitHub Actions
-        </p>
-      </div>
-    </section>
+  <div>
+    <h2><a href="/projects/home-kubernetes-cloud">Home Kubernetes Cloud</a></h2>
+    <p>A home lab K3s cluster built from scratch on a KVM hypervisor. The goal is to learn Kubernetes by designing
+      and building real infrastructure — because it&#39;s fun.</p>
+    <p class="byline">
+      <a href="https://github.com/Sean-Michael/home-kubernetes-cloud">GitHub</a>
 
-    <section class="project-card">
+      · Kubernetes, K3s, Terraform, Ansible, ArgoCD, Prometheus, Grafana, HashiCorp Vault, KVM
+    </p>
+  </div>
+</section>
 
-      <div>
-        <h2><a href="/projects/librarius">Librarius</a></h2>
-        <p>An end-to-end Retrieval Augmented Generation (RAG) system for Warhammer 40K rulebooks. Fully self-hosted on
-          my homelab K3s cluster — no cloud APIs, no subscriptions, just local models and local infrastructure.</p>
-        <p class="byline">
-          <a href="https://github.com/Sean-Michael/librarius">GitHub</a>
+<section class="project-card">
 
-          · Python, PostgreSQL, pgvector, Ollama, Kubernetes
-        </p>
-      </div>
-    </section>
+  <div>
+    <h2><a href="/projects/cloud-sandbox">Cloud Sandbox</a></h2>
+    <p>A CLI utility for creating sandbox VMs to easily access private GKE clusters. This started as a quality of
+      life script for me to just wrap a few GKE commands. Eventually it turned into a little bit more, then a little
+      bit more, then... you know how it is.</p>
+    <p class="byline">
+      <a href="https://github.com/Sean-Michael/cloud-sandbox">GitHub</a>
 
-    <section class="project-card">
-
-      <div>
-        <h2><a href="/projects/home-kubernetes-cloud">Home Kubernetes Cloud</a></h2>
-        <p>A home lab K3s cluster built from scratch on a KVM hypervisor. The goal is to learn Kubernetes by designing
-          and building real infrastructure — because it&#39;s fun.</p>
-        <p class="byline">
-          <a href="https://github.com/Sean-Michael/home-kubernetes-cloud">GitHub</a>
-
-          · Kubernetes, K3s, Terraform, Ansible, ArgoCD, Prometheus, Grafana, HashiCorp Vault, KVM
-        </p>
-      </div>
-    </section>
-
-    <section class="project-card">
-
-      <div>
-        <h2><a href="/projects/cloud-sandbox">Cloud Sandbox</a></h2>
-        <p>A CLI utility for creating sandbox VMs to easily access private GKE clusters. This started as a quality of
-          life script for me to just wrap a few GKE commands. Eventually it turned into a little bit more, then a little
-          bit more, then... you know how it is.</p>
-        <p class="byline">
-          <a href="https://github.com/Sean-Michael/cloud-sandbox">GitHub</a>
-
-          · Shell, GCP, GKE, IAP
-        </p>
-      </div>
-    </section>
-
-  </main>
-  <footer class="site">
-    <a href="https://github.com/sean-michael">GitHub</a> ·
-    <a href="https://www.linkedin.com/in/sean-michael-riesterer/">LinkedIn</a>
-  </footer>
-</body>
-
-</html>
+      · Shell, GCP, GKE, IAP
+    </p>
+  </div>
+</section>

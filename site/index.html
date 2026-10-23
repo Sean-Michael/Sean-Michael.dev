@@ -1,59 +1,23 @@
-<!doctype html>
-<html lang="en">
+<p class="intro">Welcome to my website!</p>
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sean-Michael</title>
+<h2>Writing</h2>
+<ul class="dated" hx-get="/blog/latest?limit=5" hx-trigger="load">
+  <li>Loading…</li>
+</ul>
+<p><a href="/blog">All posts →</a></p>
 
-  <link rel="stylesheet" href="/static/style.css">
+<h2>Projects</h2>
+<ul class="dated">
+  <li><a href="/projects/sean-michael-dev">Sean-Michael.dev</a> — This website. A &#34;Website as Code&#34; project
+    where the infrastructure, and app, and CI/CD are setup so a push to main makes it live. And I usually push
+    directly to main..</li>
+  <li><a href="/projects/librarius">Librarius</a> — An end-to-end Retrieval Augmented Generation (RAG) system for
+    Warhammer 40K rulebooks. Self-hosted on my homelab K3s cluster.</li>
+  <li><a href="/projects/home-kubernetes-cloud">Home Kubernetes Cloud</a> — A home lab K3s cluster built on a KVM
+    hypervisor. The goal was to learn Kubernetes and Terraform, without paying a cloud fee.</li>
+</ul>
+<p><a href="/projects">All projects →</a></p>
 
-</head>
-
-<body>
-  <header class="site">
-    <a class="name" href="/">Sean-Michael</a>
-    <nav>
-      <a href="/">Home</a>
-      <a href="/blog">Blog</a>
-      <a href="/projects">Projects</a>
-      <a href="/digest">Digest</a>
-      <a href="/about">About</a>
-    </nav>
-  </header>
-  <main>
-
-    <p class="intro">Welcome to my website!</p>
-
-    <h2>Writing</h2>
-    <ul class="dated">
-      <li><time datetime="2026-04-06">2026-04-06</time> <a href="/blog/building-an-ai-news-digest">Building an AI News
-          Digest without AI</a></li>
-      <li><time datetime="2025-05-28">2025-05-28</time> <a href="/blog/mt-hood-summit">Trip Report: Mt.Hood Summit</a>
-      </li>
-    </ul>
-
-    <h2>Projects</h2>
-    <ul class="dated">
-      <li><a href="/projects/sean-michael-dev">Sean-Michael.dev</a> — This website. A &#34;Website as Code&#34; project
-        where the infrastructure, and app, and CI/CD are setup so a push to main makes it live. And I usually push
-        directly to main..</li>
-      <li><a href="/projects/librarius">Librarius</a> — An end-to-end Retrieval Augmented Generation (RAG) system for
-        Warhammer 40K rulebooks. Self-hosted on my homelab K3s cluster.</li>
-      <li><a href="/projects/home-kubernetes-cloud">Home Kubernetes Cloud</a> — A home lab K3s cluster built on a KVM
-        hypervisor. The goal was to learn Kubernetes and Terraform, without paying a cloud fee.</li>
-    </ul>
-    <p><a href="/projects">All projects →</a></p>
-
-    <h2>Digest</h2>
-    <p>News summaries + Reading lists on AI/MLOps topics, written by a local agent.</p>
-    <p><a href="/digest">All digests →</a></p>
-
-  </main>
-  <footer class="site">
-    <a href="https://github.com/sean-michael">GitHub</a> ·
-    <a href="https://www.linkedin.com/in/sean-michael-riesterer/">LinkedIn</a>
-  </footer>
-</body>
-
-</html>
+<h2>Digest</h2>
+<p>News summaries + Reading lists on AI/MLOps topics, written by a local agent.</p>
+<p><a href="/digest">All digests →</a></p>

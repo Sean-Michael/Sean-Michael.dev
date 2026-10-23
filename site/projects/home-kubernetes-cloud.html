@@ -1,57 +1,35 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Home Kubernetes Cloud — Sean-Michael</title>
-  <meta name="description" content="A home lab K3s cluster built from scratch on a KVM hypervisor. The goal is to learn Kubernetes by designing and building real infrastructure — because it&#39;s fun.">
-  <link rel="stylesheet" href="/static/style.css">
-  
-</head>
-<body>
-  <header class="site">
-    <a class="name" href="/">Sean-Michael</a>
-    <nav>
-      <a href="/">Home</a>
-      <a href="/blog">Blog</a>
-      <a href="/projects">Projects</a>
-      <a href="/digest">Digest</a>
-      <a href="/about">About</a>
-    </nav>
-  </header>
-  <main>
-    
+---
+title: "Home Kubernetes Cloud"
+description: "A home lab K3s cluster built from scratch on a KVM hypervisor. The goal is to learn Kubernetes by
+designing and building real infrastructure — because it's fun."
+---
 <article>
   <h1>Home Kubernetes Cloud</h1>
   <p class="byline">
     <a href="https://github.com/Sean-Michael/home-kubernetes-cloud">GitHub</a>
-    
-     · Kubernetes, K3s, Terraform, Ansible, ArgoCD, Prometheus, Grafana, HashiCorp Vault, KVM
-  </p>
-  
-  <p>A home lab K3s cluster built from scratch on a KVM hypervisor. The goal is to learn Kubernetes by designing and building real infrastructure — because it's fun.</p>
-<h2 id="architecture">Architecture</h2>
-<p>The cluster runs on virtual machines provisioned with <strong>Terraform</strong> using the libvirt API on a KVM hypervisor, enabling fully immutable infrastructure. Post-provisioning configuration is handled by <strong>Ansible</strong>, which manages system updates and K3s installation.</p>
-<h2 id="gitops-automation">GitOps &amp; Automation</h2>
-<ul>
-<li><strong>ArgoCD</strong> for declarative GitOps deployments</li>
-<li><strong>Terraform</strong> for immutable VM provisioning</li>
-<li><strong>Ansible</strong> for mutable node configuration</li>
-</ul>
-<h2 id="observability-security">Observability &amp; Security</h2>
-<ul>
-<li><strong>Prometheus</strong> for time-series metrics collection</li>
-<li><strong>Grafana</strong> for dashboards and visualization</li>
-<li><strong>HashiCorp Vault</strong> for secret management</li>
-</ul>
-<h2 id="what-i-learned">What I Learned</h2>
-<p>Running a home lab teaches you things that reading docs never will. Debugging networking issues, managing certificates, and understanding how all the pieces of a Kubernetes cluster fit together has been invaluable.</p>
-</article>
 
-  </main>
-  <footer class="site">
-    <a href="https://github.com/sean-michael">GitHub</a> ·
-    <a href="https://www.linkedin.com/in/sean-michael-riesterer/">LinkedIn</a>
-  </footer>
-</body>
-</html>
+    · Kubernetes, K3s, Terraform, Ansible, ArgoCD, Prometheus, Grafana, HashiCorp Vault, KVM
+  </p>
+
+  <p>A home lab K3s cluster built from scratch on a KVM hypervisor. The goal is to learn Kubernetes by designing and
+    building real infrastructure — because it's fun.</p>
+  <h2 id="architecture">Architecture</h2>
+  <p>The cluster runs on virtual machines provisioned with <strong>Terraform</strong> using the libvirt API on a KVM
+    hypervisor, enabling fully immutable infrastructure. Post-provisioning configuration is handled by
+    <strong>Ansible</strong>, which manages system updates and K3s installation.</p>
+  <h2 id="gitops-automation">GitOps &amp; Automation</h2>
+  <ul>
+    <li><strong>ArgoCD</strong> for declarative GitOps deployments</li>
+    <li><strong>Terraform</strong> for immutable VM provisioning</li>
+    <li><strong>Ansible</strong> for mutable node configuration</li>
+  </ul>
+  <h2 id="observability-security">Observability &amp; Security</h2>
+  <ul>
+    <li><strong>Prometheus</strong> for time-series metrics collection</li>
+    <li><strong>Grafana</strong> for dashboards and visualization</li>
+    <li><strong>HashiCorp Vault</strong> for secret management</li>
+  </ul>
+  <h2 id="what-i-learned">What I Learned</h2>
+  <p>Running a home lab teaches you things that reading docs never will. Debugging networking issues, managing
+    certificates, and understanding how all the pieces of a Kubernetes cluster fit together has been invaluable.</p>
+</article>

@@ -1,0 +1,5 @@
+{% for post in posts %}
+<li><time datetime="{{ post.date.isoformat() }}">{{ post.date.isoformat() }}</time> <a href="{{ post.url }}">{{ post.title }}</a></li>
+{% else %}
+<li>Nothing here yet.</li>
+{% endfor %}
