@@ -1,7 +1,7 @@
 # sean-michael.dev
 
-My site: blog, projects, and digests. Pages are hand-written HTML files served
-as-is. The only dynamic part is the digest, which comes from S3.
+My site: blog, projects, and digests. Pages are HTML files in `site/`, wrapped in a
+shared layout. The only dynamic part is the digest, which comes from S3.
 
 ## Writing
 
@@ -16,9 +16,28 @@ site/static/style.css            /static/style.css
 site/404.html                    shown for anything that doesn't exist
 ```
 
-To add a post, copy an existing one in `site/blog/`, edit it, and add a line for it
-to `site/blog/index.html` (and `site/index.html` if it should show on the home page).
-Images go in `site/static/images/`. Push to `main` and it deploys.
+Pages contain only their own content. The header, nav and footer live once in
+`app/templates/base.html`.
+
+To write a post, create `site/blog/<slug>.html`:
+
+```html
+---
+title: "My new post"
+date: 2026-10-22
+description: "One line for search results and link previews."
+tags: [climbing]
+---
+<p>Any HTML you want. Add a <style> block for per-post CSS.</p>
+```
+
+That's it: the title, date and read time are added at the top, and the post shows
+up on `/blog` and the home page on its own (htmx loads the list from `/blog/latest`).
+Quote the title if it has a colon in it. Images go in `site/static/images/`.
+Push to `main` and it deploys.
+
+A file that starts with `<!doctype html>` skips the layout and is sent exactly as
+written (see `site/arete/`).
 
 `make test` checks that every internal link in `site/` resolves, so a typo'd URL
 fails CI instead of going live.
@@ -29,9 +48,6 @@ The digest automation writes markdown (YAML frontmatter with `title` and `date`)
 to `s3://smr-webdev-content/digests/<slug>.md`. The app loads all of them into
 memory at startup, already rendered, and checks S3 for new or changed files every
 5 minutes in the background. Page views never wait on S3.
-
-`app/templates/base.html` is the layout for the digest pages. Keep its header and
-footer in sync with the pages in `site/`.
 
 ## Running locally
 
