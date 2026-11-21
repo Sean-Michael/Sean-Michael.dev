@@ -231,3 +231,10 @@ ul.dated time {
     grid-template-columns: 1fr;
   }
 }
+
+.blog-pic img {
+  display: block
+  margin: 1.5rem 0;
+  border: 1px solid var(--rule)
+}
+
