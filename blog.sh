@@ -1,26 +1,15 @@
-#! /bin/bash
+#!/usr/bin/env bash
 # Create a file for a blog with frontmatter template.
 
 DATE=$(date +%Y-%m-%d)
 
-function create_file() {
-    if [[ -z $1 ]]; then
-        echo "Got empty or invalid file name."
-        exit 1
-    fi
+create_file() {
+    [[ -z $1 ]] && { echo "Got empty or invalid file name." >&2; exit 1; }
     dir=${BLOG_DIR:-site/blog}
     path="${dir}/$1.html"
-    if [[ -f $path ]]; then
-        echo "A file named $1 already exists at ${dir}"
-        exit 1
-    fi
-    if touch "$path"; then
-        echo "${path} created"
-    else
-        echo "Failed to write file ${path}"
-        exit 1
-    fi
-    cat <<EOF > "$path"
+    [[ -f $path ]] && 
+    { echo "A file named $1 already exists at ${dir}" >&2 ; exit 1; } 
+    if ! cat <<EOF > "$path"
 ---
 title: ""
 date: $DATE
@@ -29,6 +18,11 @@ description: ""
 ---
 
 EOF
+    then
+        echo "Failed to write file ${path}"
+        exit 1
+    fi
+    ${EDITOR:-code} "$path"
 }
 
 if [[ -n $1 ]]; then
@@ -37,4 +31,3 @@ else
     read -rp "File name: " file_name
     create_file "$file_name"
 fi
-    
