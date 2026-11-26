@@ -26,145 +26,8 @@ provider "aws" {
   }
 }
 
-# Security Group
-resource "aws_security_group" "web_sg" {
-  name        = "${var.project_name}-web-sg"
-  description = "Security group for web server"
-
-  # SSH from home IP only
-  ingress {
-    description = "SSH from home"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = [var.allowed_ssh_cidr]
-  }
-
-  # HTTP from anywhere
-  ingress {
-    description = "HTTP"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  # HTTPS from anywhere
-  ingress {
-    description = "HTTPS"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  # All outbound
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "${var.project_name}-web-sg"
-  }
-}
-
-# Key Pair
-resource "aws_key_pair" "deployer" {
-  key_name   = "${var.project_name}-key"
-  public_key = var.ssh_public_key
-}
-
-# EC2 AMI - Ubuntu 24.04 LTS (Noble Numbat)
-data "aws_ami" "ubuntu" {
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  owners = ["099720109477"] # Canonical
-}
-
-# EC2 Instance
-resource "aws_instance" "app_server" {
-  ami                    = data.aws_ami.ubuntu.id
-  instance_type          = var.instance_type
-  key_name               = aws_key_pair.deployer.key_name
-  vpc_security_group_ids = [aws_security_group.web_sg.id]
-  iam_instance_profile   = aws_iam_instance_profile.ec2_ssm_profile.name
-
-  root_block_device {
-    volume_size = 20
-    volume_type = "gp3"
-  }
-
-  user_data = templatefile("${path.module}/scripts/setup.sh", {
-    docker_image = var.docker_image
-  })
-
-  tags = {
-    Name = var.project_name
-  }
-
-  # The box is long-lived and updated over SSM, not rebuilt. Without this, a
-  # newer Ubuntu AMI or any edit to setup.sh would replace the instance.
-  lifecycle {
-    ignore_changes = [ami, user_data]
-  }
-}
-
-# Elastic IP
-resource "aws_eip" "app_eip" {
-  instance = aws_instance.app_server.id
-  domain   = "vpc"
-
-  tags = {
-    Name = "${var.project_name}-eip"
-  }
-}
-
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
-
-resource "aws_iam_role" "ec2_ssm_role" {
-  name = "${var.project_name}-ec2-ssm-role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Principal = {
-          Service = "ec2.amazonaws.com"
-        }
-      }
-    ]
-  })
-
-  tags = {
-    Name = "${var.project_name}-ec2-ssm-role"
-  }
-}
-
-resource "aws_iam_role_policy_attachment" "ec2_ssm_policy" {
-  role       = aws_iam_role.ec2_ssm_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-}
-
-resource "aws_iam_instance_profile" "ec2_ssm_profile" {
-  name = "${var.project_name}-ec2-ssm-profile"
-  role = aws_iam_role.ec2_ssm_role.name
-}
 
 resource "aws_iam_user" "github_actions_deployer" {
   name = "${var.project_name}-github-deployer"
@@ -172,45 +35,6 @@ resource "aws_iam_user" "github_actions_deployer" {
   tags = {
     Name = "${var.project_name}-github-deployer"
   }
-}
-
-resource "aws_iam_user_policy" "github_actions_ssm_policy" {
-  name = "${var.project_name}-ssm-deploy-policy"
-  user = aws_iam_user.github_actions_deployer.name
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Sid    = "SSMSendCommand"
-        Effect = "Allow"
-        Action = [
-          "ssm:SendCommand"
-        ]
-        Resource = [
-          "arn:aws:ssm:${data.aws_region.current.name}::document/AWS-RunShellScript",
-          aws_instance.app_server.arn
-        ]
-      },
-      {
-        Sid    = "SSMGetCommandStatus"
-        Effect = "Allow"
-        Action = [
-          "ssm:GetCommandInvocation",
-          "ssm:ListCommandInvocations"
-        ]
-        Resource = "*"
-      },
-      {
-        Sid    = "DescribeInstances"
-        Effect = "Allow"
-        Action = [
-          "ec2:DescribeInstances"
-        ]
-        Resource = "*"
-      }
-    ]
-  })
 }
 
 resource "aws_iam_access_key" "github_actions_key" {
@@ -255,31 +79,6 @@ resource "aws_s3_bucket_policy" "content_images_public" {
         Principal = "*"
         Action    = "s3:GetObject"
         Resource  = "${aws_s3_bucket.content.arn}/images/*"
-      }
-    ]
-  })
-}
-
-# IAM policy for EC2 to read the S3 content bucket. The app only reads
-# digests from it; nothing on the box writes to the bucket.
-resource "aws_iam_role_policy" "ec2_s3_content_read" {
-  name = "${var.project_name}-s3-content-read"
-  role = aws_iam_role.ec2_ssm_role.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Sid    = "S3ContentRead"
-        Effect = "Allow"
-        Action = [
-          "s3:GetObject",
-          "s3:ListBucket"
-        ]
-        Resource = [
-          aws_s3_bucket.content.arn,
-          "${aws_s3_bucket.content.arn}/*"
-        ]
       }
     ]
   })
