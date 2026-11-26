@@ -13,6 +13,9 @@ The URL comes from the file path: site/about.html is /about, site/blog/index.htm
 (title, date, read time) and shows up in the post lists.
 
 A file that starts with <!doctype html> skips the layout and is sent exactly as written.
+
+Put <!-- posts --> (or <!-- posts:5 --> for the newest five) inside a <ul> and the
+build fills it with the post list.
 """
 
 from __future__ import annotations

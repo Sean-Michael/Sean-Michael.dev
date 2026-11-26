@@ -1,28 +1,22 @@
-"""Digests: markdown files with YAML frontmatter that the digest automation writes
-to the store under ``digests/``.
-
-Every digest is held in memory, already rendered to HTML. ``refresh()`` runs at
-startup and then in the background, and only fetches files whose version
-changed, so a page view never waits on S3.
+"""Digests: markdown files with YAML frontmatter that ai-newstand uploads to
+``s3://smr-webdev-content/digests/``. The deploy workflow copies them into a local
+folder before the build, so this module only ever reads files from disk.
 """
 
 from __future__ import annotations
 
 import logging
 import re
-from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from datetime import date
+from pathlib import Path
 from typing import Any
 
 import frontmatter
 import markdown
 
-from app.store import Store
-
 logger = logging.getLogger(__name__)
 
-PREFIX = "digests/"
 SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]{0,120}$")
 SLUG_DATE_RE = re.compile(r"(\d{4}-\d{2}-\d{2})$")
 
@@ -75,46 +69,16 @@ def parse(slug: str, text: str) -> Digest:
     )
 
 
-class Digests:
-    def __init__(self, store: Store) -> None:
-        self.store = store
-        self._by_slug: dict[str, Digest] = {}
-        self._versions: dict[str, str] = {}
-        self._newest_first: list[Digest] = []
-        self._pool = ThreadPoolExecutor(max_workers=16, thread_name_prefix="digest-fetch")
-
-    def list(self) -> list[Digest]:
-        return self._newest_first
-
-    def get(self, slug: str) -> Digest | None:
-        return self._by_slug.get(slug)
-
-    def _load(self, slug: str) -> Digest | None:
+def load_all(directory: Path) -> list[Digest]:
+    """Every digest directly in ``directory``, newest first. Subfolders like drafts/
+    are skipped. A file that won't parse is logged and left out, so one bad digest
+    can't block every deploy after it."""
+    found = []
+    for file in directory.glob("*.md"):
+        if not SLUG_RE.match(file.stem):
+            continue
         try:
-            raw = self.store.get(f"{PREFIX}{slug}.md")
-            return None if raw is None else parse(slug, raw.decode("utf-8"))
+            found.append(parse(file.stem, file.read_text(encoding="utf-8")))
         except Exception:
-            logger.exception("Failed to load digest %s", slug)
-            return None
-
-    def refresh(self) -> None:
-        listing = {
-            name[:-3]: version
-            for name, version in self.store.list(PREFIX).items()
-            if name.endswith(".md") and SLUG_RE.match(name[:-3])
-        }
-        # Start from what's still listed; anything that failed to load keeps its old copy
-        # and old version, so it's retried next time.
-        by_slug = {s: d for s, d in self._by_slug.items() if s in listing}
-        versions = {s: v for s, v in self._versions.items() if s in listing}
-        changed = [s for s, v in listing.items() if versions.get(s) != v]
-        for slug, digest in zip(changed, self._pool.map(self._load, changed)):
-            if digest is not None:
-                by_slug[slug] = digest
-                versions[slug] = listing[slug]
-
-        self._by_slug = by_slug
-        self._versions = versions
-        self._newest_first = sorted(by_slug.values(), key=lambda d: d.date, reverse=True)
-        if changed:
-            logger.info("Digests: %d loaded, %d fetched", len(by_slug), len(changed))
+            logger.exception("Skipping digest %s", file.name)
+    return sorted(found, key=lambda d: d.date, reverse=True)

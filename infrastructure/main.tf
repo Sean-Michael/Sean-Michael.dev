@@ -285,7 +285,8 @@ resource "aws_iam_role_policy" "ec2_s3_content_read" {
   })
 }
 
-# IAM policy for GitHub Actions to write to S3 content bucket
+# IAM policy for GitHub Actions to sync the S3 content bucket. GetObject is for the
+# Pages build, which downloads digests/ before building the site.
 resource "aws_iam_user_policy" "github_actions_s3_sync" {
   name = "${var.project_name}-s3-content-sync"
   user = aws_iam_user.github_actions_deployer.name
@@ -297,6 +298,7 @@ resource "aws_iam_user_policy" "github_actions_s3_sync" {
         Sid    = "S3ContentSync"
         Effect = "Allow"
         Action = [
+          "s3:GetObject",
           "s3:PutObject",
           "s3:DeleteObject",
           "s3:ListBucket"
