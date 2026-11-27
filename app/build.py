@@ -79,6 +79,13 @@ def render_page(page: Page, posts: list[Page]) -> str:
     return render("page.html", page=page)
 
 
+def sitemap_url(file: Path) -> str:
+    """The URL GitHub Pages actually serves a file at. A folder's index.html is served
+    at /blog/ (/blog redirects there), so the sitemap lists the slashed form."""
+    url = pages.url_for(file)
+    return url + "/" if file.name == "index.html" and url != "/" else url
+
+
 def sitemap(urls: list[str]) -> str:
     entries = "\n".join(f"  <url><loc>{SITE}{u}</loc></url>" for u in urls)
     return (
@@ -112,13 +119,13 @@ def build(out: Path, digest_dir: Path, check_images: bool = False) -> None:
         images |= set(IMAGE_URL.findall(html))
         write(out / rel, html)
         if rel.parts[0] not in NOT_IN_SITEMAP:
-            urls.append(pages.url_for(file))
+            urls.append(sitemap_url(file))
 
     items = digests.load_all(digest_dir)
     write(out / "digest" / "index.html", render("digest_index.html", digests=items))
     for d in items:
         write(out / "digest" / f"{d.slug}.html", render("digest.html", item=d))
-    urls += ["/digest", *(d.url for d in items)]
+    urls += ["/digest/", *(d.url for d in items)]
 
     write(out / "sitemap.xml", sitemap(sorted(urls)))
     write(out / "robots.txt", f"User-agent: *\nSitemap: {SITE}/sitemap.xml\n")

@@ -116,6 +116,10 @@ def test_sitemap(get):
     assert "<loc>https://sean-michael.dev/</loc>" in xml
     assert "/blog/mt-hood-summit</loc>" in xml
     assert "/digest/2026-03-30</loc>" in xml
+    # Folder pages are listed where Pages serves them, not at the /blog -> /blog/ redirect.
+    assert "<loc>https://sean-michael.dev/blog/</loc>" in xml
+    assert "<loc>https://sean-michael.dev/digest/</loc>" in xml
+    assert "<loc>https://sean-michael.dev/blog</loc>" not in xml
     assert "404" not in xml and "arete" not in xml and "static" not in xml
 
 
